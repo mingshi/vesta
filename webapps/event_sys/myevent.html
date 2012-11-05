@@ -1,0 +1,53 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        <title></title>
+        <link type="text/css" href="css/core.css" rel="Stylesheet" />
+        <link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+    <div class="pagewrap">
+        <div class="homemaincontent">
+            <ul id="pageTabs" class="pagetabs">
+                <li class="selected"><a href="index.php">首页</a></li>
+                <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                <li><a href="index.php?op=week">本周所有事件</a></li>
+                <li><a href="index.php?op=month">本月所有事件</a></li>
+                <li><a href="index.php?op=report">数据统计</a></li>
+                <li><a href="search.html">搜索</a></li>
+                <li><a href="index.php?op=add">添加事件</a></li>
+            </ul>
+            <div id="pageTabs-1">
+                <div class="topinfo">
+                    <div class="welcome">欢迎[<a href="#" class="currentloginer"><?php echo $user; ?></a>] <a href="index.php?op=myatt">我的关注</a> <a href="logout.php">注销</a> </div>				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="li    st.php" method="post"><input class="searchinput" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>			</div>
+                    <?php if(!empty($my_event_page)){foreach($my_event_page as $key=>$v){ ?>
+                    <div class="event">
+                        <div class="event_title"><div class="title"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></div><div class="tright"><div class="datetime"><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></div><div <?php if($v['islock']==0){echo "class='status running'";}else{echo "class='status'";} ?>><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></div></div></div>
+                        <ul class="event_detail mb20">
+                            <li><span class="dt">事件描述：</span><span><?php echo $v['description']; ?></span></li>
+                            <li><span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></span></li>
+                            <li><span class="dt">事件影响：</span><span><?php echo $v['affect']; ?></span></li>
+                            <li><span class="dt">事件等级：</span><span>P<?php echo $v['level']; ?></span></li>
+                        </ul>
+                        <div class="event_footer"><div class="footer"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail">查看事件详情</a> |<a href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a></div></div>
+                        </div>
+                        </li>
+                        <?php } } ?>
+                    </ul>
+                    
+                    <div class="page mt10">
+                        <a href="<?php if($page>1){ ?>index.php?op=myatt&tt=oo&page=<?php echo $page-1;} ?>">上一页</a>
+                        <span>|</span>
+                        <span><?php echo $page; ?>/<?php echo $allpage; ?></span><span>|</span>
+                        <a href="<?php if($page<$allpage){ ?>index.php?op=myatt&tt=oo&page=<?php echo $page+1;} ?>">下一页</a>
+                        </div>
+</div>		
+
+
+
+<div id="pageTabs-2" class="hide"></div>		<div id="pageTabs-3" class="hide"></div>		<div id="pageTabs-4" class="hide"></div>
+<div id="pageTabs-5" class="hide"></div>	</div>	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div></div><script type="text/javascript" src="js/jquery-1.7.1.min.js"></script><script type="text/javascript" src="js/main.js"></script>
+
+
+</body></html>

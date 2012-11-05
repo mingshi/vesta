@@ -1,0 +1,61 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>邮件群组</title>
+<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="Stylesheet" />
+<link type="text/css" href="css/core.css" rel="Stylesheet" />
+<link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+<div class="pagewrap">
+	<div class="homemaincontent">
+		<ul id="pageTabs" class="pagetabs">
+			<li><a href="index.php">首页</a></li>
+                        <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                        <li><a href="index.php?op=week">本周所有事件</a></li>
+			<li><a href="index.php?op=month">本月所有事件</a></li>
+			<li><a href="">数据统计</a></li>
+                        <li><a href="search.html">搜索</a></li>
+                        <li><a href="index.php?op=add">添加事件</a></li>
+		</ul>
+                <div>
+                    <div>我的邮件群组：</div>
+                    <?php if($mymailgroup){ foreach($mymailgroup as $k=>$v){ ?>
+                    <div style="margin-left:30px;"><b><?php echo $v['gname'];?>:</b><a style="margin-left:100px;" href="mailgroup.php?op=del&id=<?php echo $v['id']; ?>">删除</a></div>
+                        <?php foreach($v['mail_arr'] as $key=>$val){ ?>
+                            <div style="margin-left:50px;"><?php echo $val; ?></div>
+                        <?php } ?>
+                        <?php }} ?>      
+                </div>
+                <br />
+                <br />
+                <form action="" method="post">
+                        <link rel="stylesheet" href="css/autocomplate.css" type="text/css" media="screen" charset="utf-8" />
+                                <span class="dt">增加用户到群组：</span>
+                                <span>
+                                        <select id="select3" name="select3">
+                                        </select>
+
+                                </span><br />
+                                <span class="dt">给这个群组一个名称：<input type="text" name="groupname" size="20" /></span>
+                    <div class="button"><input type="hidden" name="op" value="add" /><input type="submit" class="submit" value="提交" /></div>
+		</form>
+	</div>
+	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script src="js/jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+            $(document).ready(function(){                
+                $("#select3").fcbkcomplete({
+                    json_url: "data.txt",
+                    addontab: true,                   
+                    height: 2                    
+                });
+            });
+</script>
+</body>
+</html>

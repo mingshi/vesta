@@ -1,0 +1,161 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        <title></title>
+        <link type="text/css" href="css/core.css" rel="Stylesheet" />
+        <link type="text/css" href="css/style.css" rel="Stylesheet" />
+        </head><body>
+        <div class="pagewrap">
+            <div class="homemaincontent">
+                <ul id="pageTabes" class="pagetabs">
+                    <li class="selected"><a href="index.php">首页</a></li>
+                    <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                    <li><a href="index.php?op=week">本周所有事件</a></li>
+                    <li><a href="index.php?op=month">本月所有事件</a></li>
+                    <li><a href="index.php?op=report">数据统计</a></li>
+                    <li><a href="search.html">搜索</a></li>
+                    <li><a href="index.php?op=add">添加事件</a></li>
+                </ul>
+                <div id="pageTabs-1">
+                    <div class="event mt15">
+                        <form id="form" action="" method="post">
+                        <ul class="event_detail mb20">
+                            <li><span class="dt">事件标题：</span><span><input type="text" name="subject" id="subject" size="40" /></span></li><br />
+                            <li><span class="dt">事件描述：</span><span><input type="text" name="description" id="description" size="40" /></span></li><br />
+                            <li><span class="dt">发生时间：</span><span><input type="text" name="createtime" id="createtime" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></li><br />
+                            <li><span class="dt">事件影响：</span><span><input type="text" name="affect" id="affect" size="40" /></span></li><br />
+                            <li><span class="dt">事件等级：</span><span class="level">
+                                <select name="level" id="level">
+                                    <?php if($cfg['level']){ ?>
+                                    <?php foreach($cfg['level'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k; ?>">P<?php echo $k; ?></option>
+                                        <?php } } ?>
+                                </select>
+                            </span></li><br />
+                            <li><span class="dt">事件类别：</span><span class="etype">
+                                <select name="etype" id="etype">
+                                    <?php if($cfg['etype']){ ?>
+                                    <?php foreach($cfg['etype'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                        <?php } } ?>
+                                </select>
+                            </span></li><br />
+                            <li><span class="dt">事件进度：</span><span class="stype">
+                                <select name="stype" id="stype">
+                                    <?php if($cfg['stype']){ ?>
+                                    <?php foreach($cfg['stype'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                        <?php } } ?>
+                                </select>
+                            </span></li><br />
+                            <li><span class="dt">事业部：</span>
+                            <span>
+                                <select name="division" id="division" style="width:100px;margin-bottom:5px;">
+                <?php foreach($cfg['division'] as $k=>$v){ ?>
+                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                <?php } ?>
+            </select>
+                                </span>
+                            </li><br />
+                            <li><span class="dt">报告者：</span><span><input type="text" name="user" id="user" size="40" value="<?php if(!session_id()) session_start();echo $_SESSION['name'] ?>" readonly /></span></li><br />
+                            <li><span class="dt">状态：</span><span>
+                                <select name="islock" id="islock" style="margin-bottom:5px;">
+                                    <?php foreach($cfg['islock'] as $k=>$v){ ?>
+                                        <option value="<?php echo $k;?>"><?php echo $v; ?></option>
+                                    <?php } ?>
+                                </select>
+                                </span>
+                                </li><br />
+                                <li>
+                                <link rel="stylesheet" href="css/autocomplate.css" type="text/css" media="screen" charset="utf-8" />
+                                <span class="dt">通知到(使用邮件列表)：</span>
+                                <span>
+                                        <select id="select3" name="select3">
+                                        </select>
+                                </span>
+                                </li><br />
+                                <li>
+                                <span class="dt">通知到(使用邮件群组)：</span><br />
+                                    <span>
+                                        <input style="width:500px;height:25px;" type="text" name="mailgroup" id="mailgroup" readonly /><img src="images/user.png" id="clickget" name="clickget" style="cursor:pointer;" />
+                                    </span><br /><br />
+                                <div id="selectmail" name="selectmail" style="width:200px;height:auto;display:none;margin-top:0;z-index:999;">              <script type="text/javascript">
+                                    function icheck(obj){
+                                        if(obj.checked==true){
+                                            document.getElementById('mailgroup').value=document.getElementById('mailgroup').value+obj.value+",";
+                                        }else if(obj.checked==false){
+                                            document.getElementById('mailgroup').value=document.getElementById('mailgroup').value.replace(obj.value+',',"");            }
+                                    }
+                                </script> 
+                                    <?php if($mymailgroup){ foreach($mymailgroup as $k=>$v){ ?>
+                                    <input type="checkbox" id="check_<?php echo $v['id']; ?>" onclick="icheck(this);" value="<?php echo $v['mail_arr']; ?>" />&nbsp;&nbsp;<?php echo $v['gname']; ?>
+                                    <?php }} ?> 
+                                 </div>
+                                </li>
+
+
+<li>
+<span class = "dt">事件概述：</span>
+<br>
+<span>
+<textarea class="e_summary" name="summary"></textarea>
+</span>
+</li>
+<br />
+
+                                <li>
+                                <span class="dt">事件详情：</span><br />
+                                    <textarea id="editor_id" name="content" style="width:auto;height:300px;">
+                                    </textarea>
+                                </li>
+                                <div align="center"><input type="submit" id="button" value="send" />
+                                                <input type="hidden" name="op" value="do_add" /></div>
+                                        </ul>
+                                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div></div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script><script type="text/javascript" src="js/main.js"></script>
+
+<script type="text/javascript">
+       $(function(){
+              //动画速度
+              var speed = 500;
+              //绑定事件处理 
+              $("#clickget").click(function(event){
+                     //取消事件冒泡
+                     event.stopPropagation();
+                     //设置弹出层位置
+                    // var offset = $(event.target).offset();
+                     //设置弹出层位置
+                    // $("#selectmail").css({top:offset.top+$(event.target).height()+"px",left:offset.left});
+                     //动画显示
+                     $("#selectmail").show(speed);         
+              });
+              //单击空白区域隐藏弹出层
+             // $(document).click(function(event){$("#selectmail").hide(speed);});
+       });
+</script>
+
+    <script type="text/javascript" src="js/datetimepicker.js"></script>
+    <script charset="utf-8" src="/editor/kindeditor.js"></script>
+    <script charset="utf-8" src="/editor/lang/zh_CN.js"></script>
+    <script src="js/jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+            $(document).ready(function(){                
+                $("#select3").fcbkcomplete({
+                    json_url: "data.txt",
+                    addontab: true,                   
+                    height: 2                    
+                });
+            });
+    </script>
+    <script>
+           var editor;
+           KindEditor.ready(function(K) {
+           editor = K.create('#editor_id');
+       });
+    </script>
+        </body></html>

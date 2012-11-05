@@ -1,0 +1,1131 @@
+<?php
+/***************************************************
+ * 数据库操作
+ **************************************************/
+class SolrDb {
+    private function SolrDb() {}
+    private static $link = array();
+    public static function getLink($host, $user, $pass, $name) {
+    	$key = md5($host.$user.$pass.$name);
+        if (isset(self::$link[$key])) {
+            return self::$link[$key];
+        }
+        $link = new PDO("mysql:host=$host;dbname=$name;", $user, $pass);
+        $link ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $link->exec('SET CHARACTER SET utf8');
+        $link->exec('SET NAMES utf8');
+        self::$link[$key]=$link;
+        return self::$link[$key];
+    }
+}
+
+function pdo_fetch($pdo, $sql, $params=array()) {
+    $rst = pdo_fetch_all($pdo, $sql, $params);
+    if ($rst) return $rst[0];
+    return false;
+}
+
+function pdo_fetch_column($pdo, $sql, $params=array()) {
+    $rst = pdo_fetch_all($pdo, $sql, $params);
+    if ($rst) return reset($rst[0]);
+    return false;
+}
+
+function pdo_fetch_all($pdo, $sql, $params=array()) {
+    $sth = $pdo->prepare($sql);
+    $sth->execute($params);
+    $sth->setFetchMode(PDO::FETCH_ASSOC);
+    $rst = $sth->fetchAll();
+    if (empty($rst)) return false;
+    return $rst;
+}
+
+/***************************************************
+ * db host
+ **************************************************/
+function get_event_unlock($pdo){
+    return pdo_fetch_all($pdo, 'select * from event where islock=0');
+}
+
+
+function insert_event($pdo,$params){
+    $sql = "insert into event set subject=?,etypeid=?,level=?,createtime=?,fuser=?,islock=?,division=?,stypeid=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['subject'],$params['etypeid'],$params['level'],$params['createtime'],$params['fuser'],$params['islock'],$params['division'],$params['stypeid']));
+    return $pdo->lastInsertId();
+}
+
+function get_event_info($pdo,$id){
+    $event_info['base'] = pdo_fetch($pdo,'select * from event where eid=?',array($id));
+    $event_info['schedule'] = pdo_fetch_all($pdo,'select * from schedule where eid=? order by s_time asc',array($id));
+    $event_info['report'] = pdo_fetch($pdo,'select * from report where eid=?',array($id));
+    return $event_info;
+}
+
+function get_event_report($pdo,$eid){
+    return pdo_fetch($pdo,'select * from report where eid=?',array($eid));
+}
+
+function get_week_event($pdo){
+    return pdo_fetch_all($pdo,"select * from event where YEARWEEK(FROM_UNIXTIME(`createtime`,'%Y-%m-%d %H:%i:%s'),1)=YEARWEEK(now(),1)");
+}
+
+function insert_schedule($pdo,$params){
+    $sql = "insert into schedule set eid=?,stypeid=?,s_subject=?,s_user=?,s_division=?,s_time=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['eid'],$params['stypeid'],$params['s_subject'],$params['s_user'],$params['s_division'],$params['s_time']));
+    return $pdo->lastInsertId();
+}
+
+function update_event_stype($pdo,$params){
+    $sql = "update event set stypeid=? where eid=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['stypeid'],$params['eid']));
+    return $sth->rowCount();
+}
+
+
+function update_event_report($pdo,$params){
+    $sql = "update report set r_user=?,r_division=?,content=?,measure=?,r_time=? where eid=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['r_user'],$params['r_division'],$params['content'],$params['measure'],$params['r_time'],$params['eid']));
+    return $sth->rowCount();
+}
+
+
+
+function insert_event_report($pdo,$params){
+    $sql = "insert into report set eid=?,r_user=?,r_division=?,content=?,measure=?,r_time=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['eid'],$params['r_user'],$params['r_division'],$params['content'],$params['measure'],$params['r_time']));
+    return $pdo->lastInsertId();
+}
+
+
+function update_event($pdo,$params){
+    $sql = "update event set subject=?,etypeid=?,level=?,createtime=?,closetime=?,affecttime=?,fuser=?,islock=?,division=? where eid=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['subject'],$params['etypeid'],$params['level'],$params['createtime'],$params['closetime'],$params['affecttime'],$params['fuser'],$params['islock'],$params['division'],$params['eid']));
+    return $sth->rowCount();
+}
+
+function get_time_affect($affecttime){
+    $day = floor($affecttime/(24*60*60));
+    $hour = floor(($affecttime-$day*24*60*60)/(60*60));
+    $minute = floor(($affecttime-$day*24*60*60-$hour*60*60)/60);
+    $second = $affecttime-$day*24*60*60-$hour*60*60-$minute*60;
+    return $day.":".$hour.":".$minute.":".$second;
+}
+
+//solr program
+
+function get_host_list($pdo){
+    return pdo_fetch_all($pdo, 'select * from host');
+}
+
+function get_host_count($pdo) {
+    $sql="select count('x') as c from host";
+    return pdo_fetch_column($pdo, $sql);
+}
+
+function get_host_info($pdo,$host_id){
+    return pdo_fetch($pdo,'select * from host where host_id=?',array($host_id));
+}
+
+function update_host($pdo,$host_id,$params){
+    $sql = "update host set host_name=?,host_ip=?,host_memory=? where host_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['host_name'],$params['host_ip'],$params['host_memory'],$host_id));
+    return $sth->rowCount();
+}
+
+function classify_instance($instances){
+	if(!$instances)return false;
+    foreach($instances as $v){
+        //if($v['instance_status']!=2)continue;
+        $res[$v['host_id']][]=$v;
+    }
+    foreach($res as $tk=>$tv){
+        $memory = 0;
+        foreach($tv as $tk2=>$tv2){
+            $memory+=$tv2['use_memory'];
+            $res[$tk][$tk2]['use_memory'] = sprintf("%01.2f",round($tv2['use_memory']/1024,2));
+        }
+        $res[$tk]['use_memory']=round($memory/1024,2);
+    }
+    return $res;
+}
+
+/***************************************************
+ * db service
+ **************************************************/
+
+function get_service_count($pdo,$on_serivce=null){
+    $sql="select count('x') as c from service";
+    if($on_serivce===true)$sql.=' where service_status=1';
+    if($on_serivce===false)$sql.=' where service_status=0';
+    return pdo_fetch_column($pdo, $sql);
+}
+
+function pdo_get_service($pdo, $service_name) {
+    $sql = "select * from service where service_name=?";
+    return pdo_fetch($pdo, $sql, array($service_name));
+}
+
+function pdo_get_service_byid($pdo, $service_id) {
+    $sql = "select * from service where service_id=?";
+    return pdo_fetch($pdo, $sql, array($service_id));
+}
+
+function pdo_get_service_id($pdo, $service_name) {
+    $sql = "select service_id from service where service_name=? and service_status=1";
+    return pdo_fetch_column($pdo, $sql, array($service_name));
+}
+
+function get_service_list($pdo){
+    $sql = "select * from service order by service_id";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function get_service_list_running($pdo){
+    $sql = "select * from service where service_status=1 order by service_id";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function get_service_list_by_mapping($pdo,$params){
+    $sql="SELECT *
+                FROM service_mapping AS a
+                LEFT JOIN service AS b ON a.service_id = b.service_id
+                WHERE 1";
+   if(isset($params['instance_id']))$sql.=" and instance_id=".$params['instance_id'];
+   return pdo_fetch_all($pdo, $sql);
+}
+
+function get_service_list_by_urlregex($pdo,$url_regex){
+    $sql = "select * from service where url_regex=?";
+    return pdo_fetch($pdo, $sql, array($url_regex));
+}
+
+function insert_service($pdo,$params){
+    $sql="insert into service set service_name=?,url_regex=?,description=?,hash_type=?,optimize_time=?,service_status=0";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['service_name'],$params['url_regex'],$params['description'],$params['hash_type'],$params['optimize_time']));
+    return $pdo->lastInsertId();
+}
+
+function update_service($pdo,$service_id,$params){
+    $sql="update service set service_name=?,url_regex=?,description=?,hash_type=?,optimize_time=?, config_type=? where service_id = ?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['service_name'],$params['url_regex'],$params['description'],$params['hash_type'],$params['optimize_time'],$params['config_type'], $service_id));
+    return $sth->rowCount();
+}
+
+function lock_service($pdo,$service_id){
+    $sql="update service set is_locked=1 where service_id = ?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($service_id));
+    return $sth->rowCount();
+}
+
+function stop_service($pdo,$service_id){
+    $sql="update service set service_status=0 where service_id = ?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($service_id));
+    return $sth->rowCount();
+}
+
+function start_service($pdo,$service_id){
+    $sql="update service set service_status=1 where service_id = ?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($service_id));
+    return $sth->rowCount();
+}
+
+/***************************************************
+ * db instance
+ **************************************************/
+
+function get_instance_count($pdo,$running=null){
+    $sql="select count('x') as c from instance";
+    if($running===true)$sql.=' where instance_status=2';
+    return pdo_fetch_column($pdo, $sql);
+}
+
+function get_instance_list($pdo){
+    $sql = "select * from instance";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function get_host_max_port_num($pdo,$host_id){
+    $sql = "select max(port_num) from instance where host_id=?";
+    return pdo_fetch_column($pdo, $sql, array($host_id));
+}
+
+function get_instance_list_complex($pdo,$params=array()){
+    $where = "WHERE 1";
+    if(isset($params['service_id'])&&$params['service_id']) $where .=" and b.service_id=".$params['service_id'];
+    if(isset($params['readable'])) $where .=" and a.readable=".$params['readable'];
+    $sql = "SELECT a . * , c.service_id, c.service_name, c.service_status
+                FROM instance a
+                LEFT JOIN service_mapping b ON a.instance_id = b.instance_id
+                LEFT JOIN service c ON b.service_id = c.service_id
+                $where
+                ORDER BY a.host_id asc,a.instance_id asc";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function pdo_get_instance_byid($pdo, $instance_id) {
+    $sql = "select a.*,b.service_id from instance a left join service_mapping b on a.instance_id=b.instance_id where a.instance_id=?";
+    return pdo_fetch($pdo, $sql, array($instance_id));
+}
+
+function get_instance_by_port($pdo,$host_id,$port_num){
+    $sql = "select * from instance where host_id=? and port_num=?";
+    return  pdo_fetch($pdo, $sql, array($host_id,$port_num));
+}
+
+function pdo_get_instances($pdo, $service_id) {
+    $instances = array();
+    $mapping = pdo_get_mapping($pdo, $service_id);
+    if (empty($mapping)) return false;
+
+    foreach ($mapping as $m) {
+        $instance = pdo_get_instance_byid($pdo, $m["instance_id"]);
+        if (!$instance) continue;
+        $instances[] = $instance;
+    }
+
+    return $instances;
+}
+
+function pdo_get_mapping_info($pdo, $service_id) {
+    $sql = "select service_name, url_regex,
+            host_name, host_ip, c.port_num,
+            writable, readable, lb_weight,
+            monitor_status, instance_status
+            from service_mapping a
+            left join service b on a.service_id = b.service_id
+            left join instance c on a.instance_id = c.instance_id
+            left join host d on c.host_id = d.host_id
+            where a.service_id = ${service_id}";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function pdo_get_master_complex($pdo, $service_id) {
+    $sql = "SELECT b.*, c.host_name, c.host_ip
+            FROM service_mapping a
+            LEFT JOIN instance b ON a.instance_id=b.instance_id
+            LEFT JOIN host c ON b.host_id=c.host_id
+            WHERE service_id=$service_id AND writable=1;";
+    return pdo_fetch($pdo, $sql);
+}
+
+function insert_instance($pdo,$params){
+    $sql="insert into  instance set host_id=?,port_num=?,use_memory=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['host_id'],$params['port_num'],$params['use_memory']));
+    return $pdo->lastInsertId();
+}
+
+function update_instance($pdo,$instance_id,$params){
+    $sql="update instance set host_id=?,port_num=? where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['host_id'],$params['port_num'],$instance_id));
+    return $sth->rowCount();
+}
+
+function update_instance_rw($pdo,$instance_id,$params){
+    $sql="update instance set writable=?,readable=? where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($params['writable'],$params['readable'],$instance_id));
+    return $sth->rowCount();
+}
+
+function update_instance_lb_weight($pdo,$instance_id,$lb_weight){
+    $sql="update instance set lb_weight=? where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($lb_weight,$instance_id));
+    return $sth->rowCount();
+}
+
+function update_instance_use_memory($pdo,$instance_id,$use_memory){
+    $sql="update instance set use_memory=? where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($use_memory,$instance_id));
+    return $sth->rowCount();
+}
+
+function change_instance_readable($pdo,$instance_id){
+    $sql="update instance set readable=1 where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($instance_id));
+    return $sth->rowCount();
+}
+
+function change_instance_unreadable($pdo,$instance_id){
+    $sql="update instance set readable=0 where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($instance_id));
+    return $sth->rowCount();
+}
+
+function lock_instance($pdo,$instance_id){
+    $sql="update instance set is_locked=1 where instance_id = ?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($instance_id));
+    return $sth->rowCount();
+}
+
+function add_instance_into_service($pdo,$instance_id,$service_id){
+    $service_mapping = pdo_get_mapping_by_service_id($pdo,$service_id);
+    if(!$service_mapping){
+        $instance_attr['writable'] = 1;
+        $instance_attr['readable'] = 1;
+        update_instance_rw($pdo,$instance_id,$instance_attr);
+        insert_action_queue($pdo,INSTANCE_RECONFIGURE_SCHEMA,$instance_id);
+    }else{
+        $instance_attr['writable'] = 0;
+        $instance_attr['readable'] = 0;
+        update_instance_rw($pdo,$instance_id,$instance_attr);
+    }
+    $mapping_attr['service_id'] = $service_id;
+    $mapping_attr['instance_id'] = $instance_id;
+    insert_service_mapping($pdo,$mapping_attr);
+
+    lock_instance($pdo, $instance_id);
+    insert_action_queue($pdo,INSTANCE_RECONFIGURE_SCHEMA,$instance_id);
+    insert_action_queue($pdo,INSTANCE_RECONFIGURE_SOLRCONF,$instance_id);
+    insert_action_queue($pdo,INSTANCE_START,$instance_id);
+}
+
+function remove_instance_from_service($pdo,$instance_id){
+
+    $service_mapping = pdo_get_mapping_by_instance_id($pdo, $instance_id);
+
+    $instance_attr['writable'] = 0;
+    $instance_attr['readable'] = 0;
+    update_instance_rw($pdo,$instance_id,$instance_attr);
+
+    delete_service_mapping($pdo,$instance_id);
+    lock_instance($pdo, $instance_id);
+    insert_action_queue($pdo,INSTANCE_STOP,$instance_id);
+}
+
+function reload_service_by_instance($pdo,$instance_id){
+    $service_mapping = pdo_get_mapping_by_instance_id($pdo, $instance_id);
+    lock_service($pdo, $service_mapping['service_id']);
+    insert_action_queue($pdo,SERVICE_RECONFIGURE,$service_mapping['service_id']);
+    insert_action_queue($pdo,SERVICE_RELOAD,$service_mapping['service_id']);
+}
+
+/***************************************************
+ * db service_mapping
+ **************************************************/
+
+function pdo_get_mapping($pdo, $service_id) {
+    $sql = "select * from service_mapping where service_id=?";
+    return pdo_fetch_all($pdo, $sql, array($service_id));
+}
+
+function pdo_get_mapping_by_instance_id($pdo, $instance_id) {
+    $sql = "select * from service_mapping where instance_id=?";
+    return pdo_fetch($pdo, $sql, array($instance_id));
+}
+
+function pdo_get_mapping_by_service_id($pdo, $service_id) {
+    $sql = "select * from service_mapping where service_id=?";
+    return pdo_fetch($pdo, $sql, array($service_id));
+}
+
+function insert_service_mapping($pdo,$params){
+    $sql = "insert into service_mapping set service_id=?,instance_id=?";
+    $sth = $pdo ->prepare($sql);
+    $sth->execute(array($params['service_id'],$params['instance_id']));
+    return $sth->rowCount();
+}
+
+function update_service_mapping($pdo,$instance_id,$params){
+    $sql = "update service_mapping set service_id=? where instance_id=?";
+    $sth = $pdo ->prepare($sql);
+    $sth->execute(array($params['service_id'],$instance_id));
+    return $sth->rowCount();
+}
+
+function delete_service_mapping($pdo,$instance_id){
+    $sql = "delete from  service_mapping where instance_id=?";
+    $sth = $pdo ->prepare($sql);
+    $sth->execute(array($instance_id));
+    return $sth->rowCount();
+}
+
+/***************************************************
+ * db jetty_config
+ **************************************************/
+function pdo_get_jetty_config($pdo, $instance_id) {
+    $sql = "select * from jetty_config where instance_id=?";
+    return pdo_fetch($pdo, $sql, array($instance_id));
+}
+
+function insert_jetty_config($pdo, $params){
+    $config['jetty.port'] = $params['jetty.port'];
+    $config = json_encode($config);
+    $sql = "insert into  jetty_config set config_json =?,instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth -> execute(array($config,$params['instance_id']));
+    return $sth->rowCount();
+}
+
+function update_jetty_config($pdo, $instance_id,$params){
+    $config['jetty.port'] = $params['jetty.port'];
+    $config = json_encode($config);
+    $sql = "update jetty_config set config_json = ? where instance_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth -> execute(array($config,$instance_id));
+    return $sth->rowCount();
+}
+
+/***************************************************
+ * db solr_config
+ **************************************************/
+function pdo_get_solr_config($pdo, $service_id) {
+    $sql = "select * from solr_config where service_id=?";
+    return pdo_fetch($pdo, $sql, array($service_id));
+}
+
+function _encode_solr_config($params){
+    $config['maxDocs'] = $params['maxDocs'];
+    $config['maxTime'] = $params['maxTime'];
+    $config['pollInterval'] = $params['pollInterval'];
+    return  json_encode($config);
+}
+
+function insert_solr_config($pdo, $params){
+    $config = _encode_solr_config($params);
+    $sql = "insert into  solr_config set config_json = ? , service_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth -> execute(array($config,$params['service_id']));
+    return $sth->rowCount();
+}
+
+function update_solr_config($pdo, $service_id,$params){
+    $config = _encode_solr_config($params);
+    $sql = "update solr_config set config_json = ? where service_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth -> execute(array($config,$service_id));
+    return $sth->rowCount();
+}
+
+/***************************************************
+ * db solr_schema
+ **************************************************/
+function pdo_get_solr_schema($pdo, $service_id) {
+    $sql = "select * from solr_schema where service_id=?";
+    return pdo_fetch($pdo, $sql, array($service_id));
+}
+
+function init_schema($pdo,$service_id){
+    $config['uniqueKey'] = '';
+    $config['defaultSearchField'] = '';
+    $config['defaultOperator'] = "AND";
+    $config['fields'] = array();
+    $config['dynamicFields'] = array();
+    $config = json_encode($config);
+    $sql = "insert into  solr_schema set schema_json=? , service_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth->execute(array($config,$service_id));
+    return $sth->rowCount();
+}
+
+function update_schema_config($pdo,$service_id,$config){
+    $sql = "update solr_schema set schema_json=? where service_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth->execute(array($config,$service_id));
+    return $sth->rowCount();
+}
+
+function update_schema($pdo,$service_id,$params){
+    $schema_config = pdo_get_solr_schema($pdo, $service_id);
+    $config = json_decode($schema_config['schema_json'],true);
+    $config['uniqueKey'] = $params['uniqueKey'];
+    $config['defaultSearchField'] = $params['defaultSearchField'];
+    $config['defaultOperator'] = $params['defaultOperator'];
+    $config = json_encode($config);
+    update_schema_config($pdo,$service_id,$config);
+}
+
+function get_schema_field($pdo,$service_id,$name){
+    $schema_config = pdo_get_solr_schema($pdo, $service_id);
+    $config = json_decode($schema_config['schema_json'],true);
+    $fields = isset($config['fields'])?$config['fields']:false;
+    if($fields){
+        foreach($fields as $field){
+            if($field['name']==$name){
+               $field['is_dynamic_field'] = false;
+               return $field;
+            }
+        }
+    }
+    $fields = isset($config['dynamicFields'])?$config['dynamicFields']:false;
+    if($fields){
+        foreach($fields as $field){
+            if($field['name']==$name){
+                $field['is_dynamic_field'] = true;
+               return $field;
+            }
+        }
+    }
+    return false;
+}
+
+function get_schema_fields_list($pdo,$service_id){
+    $schema_config = pdo_get_solr_schema($pdo, $service_id);
+    $config = json_decode($schema_config['schema_json'],true);
+    $fields = isset($config['fields'])?$config['fields']:array();
+    $dynamicFields = isset($config['dynamicFields'])?$config['dynamicFields']:array();
+    $res = array_merge($fields,$dynamicFields);
+    return $res;
+}
+
+function remove_field_from_schema_json($config,$field_name){
+
+    $config_fields = @$config['fields'];
+    if($config_fields){
+        foreach($config_fields as $k=>$v){
+            if($v['name']==$field_name){
+               unset($config_fields[$k]);
+            }
+        }
+        $config['fields'] =  array_values($config_fields);
+    }
+
+    $config_fields = @$config['dynamicFields'];
+    if($config_fields){
+        foreach($config_fields as $k=>$v){
+            if($v['name']==$field_name){
+               unset($config_fields[$k]);
+            }
+        }
+        $config['dynamicFields'] =  array_values($config_fields);
+    }
+
+    return $config;
+}
+
+function update_schema_fields($pdo,$field,$service_id,$is_dynamic=false){
+    $schema_config = pdo_get_solr_schema($pdo, $service_id);
+    $config = json_decode($schema_config['schema_json'],true);
+
+    $config = remove_field_from_schema_json($config,$field['name']);
+    if($is_dynamic){
+        if(!isset($config['dynamicFields']))$config['dynamicFields']=array();
+        $config['dynamicFields'][] =  $field;
+    }else{
+        if(!isset($config['fields']))$config['fields']=array();
+        $config['fields'][] =  $field;
+    }
+
+    $config = json_encode($config);
+    update_schema_config($pdo,$service_id,$config);
+}
+
+function delete_schema_fields($pdo,$name,$service_id){
+    $schema_config = pdo_get_solr_schema($pdo, $service_id);
+    $config = json_decode($schema_config['schema_json'],true);
+
+    $config = remove_field_from_schema_json($config,$name);
+
+    $config = json_encode($config);
+    update_schema_config($pdo,$service_id,$config);
+}
+
+/***************************************************
+ * db schema_type
+ **************************************************/
+function get_schema_type_list($pdo){
+    $sql="select * from schema_type";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function get_schema_type_by_name($pdo,$type_name){
+    $sql="select * from schema_type where name=?";
+    return pdo_fetch($pdo, $sql,array($type_name));
+}
+
+/***************************************************
+ * db schema_field_options
+ **************************************************/
+function get_schema_option_by_ids($pdo,$ids){
+     $sql="select * from schema_field_options where id in (".implode(',',$ids).")";
+     return pdo_fetch_all($pdo, $sql);
+}
+
+function get_schema_field_support_options($pdo,$type_name){
+    $type = get_schema_type_by_name($pdo,$type_name);
+    $support_field_option_ids=explode("|",$type['support_field_options']);
+    $option_list = get_schema_option_by_ids($pdo,$support_field_option_ids);
+    return $option_list;
+}
+
+/***************************************************
+ * db action queue
+ **************************************************/
+function insert_action_queue($pdo,$action_id,$target_id,$session_id=""){
+
+    if ($session_id=="" && isset($_COOKIE['queue_session_id'])) {
+        $session_id = $_COOKIE['queue_session_id'];
+    }
+
+    $sql="insert into action_queue set queue_time=?,queue_status=0,action_id=?,target_id=?,session_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth->execute(array(date("Y-m-d H::i:s"),$action_id,$target_id,$session_id));
+    return $sth->rowCount();
+}
+
+function get_queue_list_complex($pdo, $limit=50, $start=0){
+    $sql="SELECT a.*, b.* FROM action_queue a
+          LEFT JOIN action b on a.action_id = b.action_id
+          ORDER BY queue_id desc
+          LIMIT $start, $limit";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function get_queue_list_complex2($pdo,$start=0,$limit=50,$params=array()){
+    $where = '';
+    if(isset($params['service_id']))$str[]="(b.action_type='service' and a.target_id in (".implode(',',$params['service_id']).'))';
+    if(isset($params['instance_id']))$str[]="(b.action_type='instance' and a.target_id in (".implode(',',$params['instance_id']).'))';
+    if(isset($str))$where = 'WHERE '.implode(' or ',$str);
+    $sql="SELECT a.*, b.* FROM action_queue a
+          LEFT JOIN action b on a.action_id = b.action_id
+          $where
+          ORDER BY queue_id desc
+          LIMIT $start, $limit";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+function confirm_action_queue($pdo){
+    $sql="update action_queue set queue_status=0 where queue_status=-1 and session_id=?";
+    $sth = $pdo->prepare($sql);
+    $sth->execute(array($_COOKIE['queue_session_id']));
+    return $sth->rowCount();
+}
+
+function pdo_get_last_nginx_reload($pdo) {
+    $sql="select * from action_queue where queue_status=1 and action_id=1 order by queue_id desc limit 1;";
+    $sth=$pdo->prepare($sql);
+    $sth->execute();
+    return pdo_fetch($pdo, $sql);
+}
+
+/***************************************************
+ * log_service_access
+ **************************************************/
+function pdo_get_service_access($pdo, $service_id, $limit=25, $start=0) {
+    $sql="select * from log_service_access where service_id=? order by log_time desc limit $start, $limit";
+    return pdo_fetch_all($pdo, $sql, array($service_id));
+}
+
+function pdo_get_cloud_access($pdo, $limint=25, $start=0) {
+    $sql="select log_time, sum(num_updates) as num_updates, sum(num_selects) as num_selects from log_service_access group by log_time desc limit $start, $limint;";
+    return pdo_fetch_all($pdo, $sql);
+}
+
+/***************************************************
+ * current status
+ **************************************************/
+function get_current_status($pdo,$status_type,$status_name){
+	$sql="select * from current_status where status_type=? and status_name=?";
+	return pdo_fetch_all($pdo, $sql, array($status_type,$status_name));
+}
+
+function add_current_status($pdo,$type,$name,$target_id,$value,$time){
+	$sql="replace into current_status set status_type=?,status_name=?,target_id=?,status_value=?,status_time=?";
+	$sth = $pdo->prepare($sql);
+    $sth->execute(array($type,$name,$target_id,$value,$time));
+    return $sth->rowCount();
+}
+
+/***************************************************
+ * job scheduler
+ **************************************************/
+function get_job_list($pdo){
+	$sql="select * from job_scheduler where status=1 order by plan_run_order asc";
+	return pdo_fetch_all($pdo, $sql);
+}
+
+function upd_job_run_time($pdo,$job_id,$time){
+	$sql="update job_scheduler set last_run_time=? where job_id=?";
+	$sth = $pdo->prepare($sql);
+    $sth->execute(array($time,$job_id));
+    return $sth->rowCount();
+}
+
+
+/***************************************************
+ * log_service_access
+ **************************************************/
+function get_service_speed_log($pdo_log,$idc,$service_id,$limit=60){
+	$sql="select * from log_service_speed where service_id=? and idc=? order by log_time desc limit ".$limit;
+	return pdo_fetch_all($pdo_log, $sql, array($service_id,$idc));
+}
+
+function get_status_logs($pdo_log,$log_idc,$log_type,$log_name,$target_id,$limit){
+	$sql="select * from status_logs where log_idc=? and log_type=? and log_name=? and target_id=? order by log_time desc limit ".$limit;
+	return pdo_fetch_all($pdo_log, $sql, array($log_idc,$log_type,$log_name,$target_id));
+}
+
+/***************************************************
+ * common functions
+ **************************************************/
+function out_location($service, $path="update") {
+    global $cfg;
+    $str  = "location %s%s {\n";
+    $str .= "    access_log ".$cfg['access_log_path']."/%s.access.log main;\n";
+    $str .= "    rewrite    %s%s(.*)$ /solr/%s$1 break;\n";
+    $str .= "    proxy_pass http://%s-%s;\n";
+    $str .= "}\n";
+    return sprintf(
+            $str,
+            $service["url_regex"],
+            $path, $service["service_name"],
+            $service["url_regex"],
+            $path,
+            $path,
+            $service["service_name"],
+            $path
+    );
+}
+
+function out_upstream($instances, $type, $hash_type) {
+    $service_name = $instances[0]["service_name"];
+    $type=="writable"?$path="update" : $path="select";
+    $str = "upstream $service_name-$path {\n";
+
+    if ($hash_type == 1) {
+        $str .= '    consistent_hash $request_uri;'."\n";
+    }
+
+    foreach ($instances as $i) {
+        if ($i[$type] != 1) continue;
+        if ($hash_type == 1) {
+            $str .= sprintf("    server %s:%s;\n", $i["host_ip"], $i["port_num"]);
+        } else {
+            $str .= sprintf("    server %s:%s %s;\n", $i["host_ip"], $i["port_num"], $i["lb_weight"]);
+        }
+    }
+    $str .= "}\n";
+    return $str;
+}
+
+function build_path_jettyconfig($solr_root, $port_num) {
+    return $solr_root . "/cloud/" . $port_num . "/server/etc/solr.xml";
+}
+
+function build_path_solrconfig($solr_root, $port_num) {
+    return $solr_root . "/cloud/" . $port_num . "/idx/conf/solrconfig.xml";
+}
+
+function build_path_solrschema($solr_root, $port_num) {
+    return $solr_root . "/cloud/" . $port_num . "/idx/conf/schema.xml";
+}
+
+function build_url_replication($host, $port) {
+    return sprintf("http://%s:%s/solr/replication", $host, $port);
+}
+
+function build_url_instance($host,$port_num){
+    $url = "http://%s:%s/solr/select/?q=*:*";
+    return sprintf($url,$host,$port_num);
+}
+
+function build_str_interval($sec) {
+    return "00:00:" . build_str_fixwidth($sec);
+}
+
+function build_str_fixwidth($str, $l=2, $p="0") {
+    $sl = strlen((string)$str);
+    if ($sl < $l) {
+        $str = str_repeat($p, $l-$sl) . $str;
+    }
+    return $str;
+}
+
+function msg_redirect($url,$msg=""){
+    header("Content-type: text/html; charset=utf-8");
+    $script="<script>";
+    if($msg){
+        $script.="alert('".$msg."');";
+    }
+    if($url=='back'){
+        $script.= "history.go(-1);";
+    }else{
+        $script.="window.location ='".$url."';";
+    }
+    $script.="</script>";
+    echo $script;exit;
+}
+
+function get_params(){
+    $params = array_merge($_GET,$_POST);
+    foreach($params as $params_key=>$params_value){
+        $params[$params_key]=is_array($params_value)?$params_value:trim($params_value);
+    }
+    return $params;
+}
+
+function rand_string($len=6,$type='',$addChars='') {
+    $str ='';
+    switch($type) {
+        case 0:
+            $chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.$addChars;
+            break;
+        case 1:
+            $chars= str_repeat('0123456789',3);
+            break;
+        case 2:
+            $chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.$addChars;
+            break;
+        case 3:
+            $chars='abcdefghijklmnopqrstuvwxyz'.$addChars;
+            break;
+        default :
+            // 默认去掉了容易混淆的字符oOLl和数字01，要添加请使用addChars参数
+            $chars='ABCDEFGHIJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'.$addChars;
+            break;
+    }
+    if($len>10 ) {//位数过长重复字符串一定次数
+        $chars= $type==1? str_repeat($chars,$len) : str_repeat($chars,5);
+    }
+    $chars   =   str_shuffle($chars);
+    $str     =   substr($chars,0,$len);
+    return $str;
+}
+
+function change_array_key($array,$key){
+	if(!$array)return array();
+    foreach($array as $v){
+        $array_tmp[$v[$key]]=$v;
+    }
+    return $array_tmp;
+}
+
+function p(){
+    echo "<pre>";
+    foreach(func_get_args() as $v){
+        print_r($v);
+    }
+    echo "</pre>";
+}
+
+function pe(){
+    foreach(func_get_args() as $v){
+        p($v);
+    }
+    exit;
+}
+
+function build_line_chart_lc($data, $level=200, $size="320x125", $chco="224499") {
+    foreach ($data as $i => $a) {
+        $raw[$i] = $a[1];
+
+        if ($i%2 == 0) {
+            $chxl[0][$i] = $a[0];
+        } else {
+            $chxl[0][$i] = "";
+        }
+    }
+
+    $max = max($raw);
+    $min = min($raw);
+
+    $roof = $max + $level - ($max % $level);
+    $floor = $min - ($min % $level);
+    $height = $roof - $floor;
+
+    foreach ($raw as $i => $d) {
+        $chd[$i] = intval(($d - $floor) / $height * 100);
+    }
+
+    $step = 4;
+    $intval = $height / $step;
+    for ($i=0;$i<$step+1;$i++) {
+        if ($i == 0) {
+            $chxl[1][$i] = "";
+        } else {
+            $chxl[1][$i] = $i * $intval + $floor;
+        }
+    }
+
+    $p["cht"]  = "lc";
+    $p["chs"]  = $size;
+    $p["chco"] = $chco;
+    $p["chxt"] = "x,y";
+    $p["chxl"] = "0:|" . implode("|", $chxl[0]);
+    $p["chxl"].= "|1:|" . implode("|", $chxl[1]);
+    $p["chd"]  = "t:" . implode(",", $chd);
+    $p["chm"]  = "B,EEEEEE,0,0,0";
+
+    $url = GOOGLE_CHART;
+    foreach ($p as $k => $v) {
+        $url .= $k . "=" . urlencode($v) . "&";
+        #$url .= $k . "=" . $v . "&";
+    }
+
+    $url = substr($url, 0, -1);
+
+    return $url;
+}
+
+function do_call($host, $port, $uri, $request) {
+    $fp = fsockopen($host, $port, $errno, $errstr);
+    $query = "POST $uri HTTP/1.0\nHost: $host\nContent-Type: text/xml\nContent-Length: ".strlen($request)."\n\n$request\n";
+
+    if (!fputs($fp, $query, strlen($query))) {
+        return false;
+    }
+
+    $contents = '';
+    while (!feof($fp)) {
+        $contents .= fgets($fp);
+    }
+
+    fclose($fp);
+    return $contents;
+}
+
+function extract_xml($content) {
+    $s = strstr($content, '<');
+    return $s;
+}
+
+function cat_confd($path, $ptn=null) {
+    if (! is_dir($path)) return "";
+    if (! $dh = opendir($path)) return "";
+
+    $content = "";
+    while (($file = readdir($dh)) !== false) {
+
+        if (!empty($ptn) && !preg_match($ptn, $file)) {
+            continue;
+        }
+
+        if (preg_match("/\.conf$/", $file)) {
+            $content .= file_get_contents($path . "/" . $file);
+        }
+    }
+    closedir($dh);
+
+    return $content;
+}
+
+/**
+ * $array['title']
+ * $array['legend_y']
+ * $array['legend_x']
+ * $array['values']
+ * $array['values_key']
+ * $array['range_max']
+ * $array['range_step']
+ * @param $array
+ * @return unknown_type
+ */
+function create_chart_data($array){
+	if(!$array) return;
+
+	require_once('OFC/OFC_Chart.php');
+    $chart = new OFC_Chart();
+    $chart -> set_bg_colour('#ffffff');
+
+    $title = new OFC_Elements_Title( $array['title'] );
+	$title -> set_style('{color: #567300; font-size: 16px; font-weight:bold;}');
+	$chart->set_title( $title );
+
+	$yl = new OFC_Elements_Legend_Y( $array['legend_y'] );
+	$yl -> set_style('{font-size:18px;}');
+	$chart->set_y_legend($yl);
+
+	$xl = new OFC_Elements_Legend_X($array['legend_x']);
+	$xl -> set_style('{font-size:18px;color:#Ff0}');
+	$chart->set_x_legend($xl);
+
+	$elements=array();
+	$colors=array('','#CC00AA','#9C48F0');
+
+	foreach($array['values'] as $k=>$v){
+		ksort($v,SORT_STRING);
+		$line = new OFC_Charts_Line();
+		$line->set_key( $array['values_key'][$k], 12 );
+		$colors[$k]?$line->set_colour($colors[$k]):'';
+		$line->set_values( array_values($v) );
+		$default_dot = new OFC_Charts_Line_Dot();
+    	$default_dot -> tooltip('#x_label#<br>#val#');
+    	$line->set_default_dot_style($default_dot);
+    	$elements[]=$line;
+    	$array['values'][$k]=&$v;
+	}
+
+	foreach($elements as $element){
+		$chart->add_element( $element );
+	}
+
+	$x = new OFC_Elements_Axis_X();
+	$x->colour = '#909090';
+	$x_axis_labels = new OFC_Elements_Axis_X_Label_Set();
+	$x->set_steps($array['show_step']);
+	$x_axis_labels->set_steps($array['show_step']);
+
+	if(is_array($array['values'][0])) $keys=array_keys($array['values'][0]);
+	else $keys=array_keys($array['values']);
+	$x_axis_labels->set_labels( $keys );
+	$x_axis_labels->set_size(12);
+	$x_axis_labels->set_colour('#Ff0');
+	$x_axis_labels->set_rotate('-45');
+	$x->set_labels( $x_axis_labels );
+	$chart->set_x_axis( $x );
+
+	$y = new OFC_Elements_Axis_Y();
+	$range_min=isset($array['range_min'])?$array['range_min']:0;
+	$y ->set_range( $range_min, $array['range_max'], $array['range_step'] );
+	$chart->set_y_axis( $y );
+
+	return $chart->toPrettyString();
+}
+
+function build_chart_data($logs,$deadline_value=100){
+	if(!$logs){
+		$res['max']=0;
+		$res['min']=0;
+		$res['data']=array();
+		$res['deadline']=array();
+	}else{
+		$max = 0;
+		$min = 999999999;
+		foreach($logs as $v){
+			$key = substr($v['log_time'],5,11);
+			$data[$key] = (float)$v['log_value'];
+			$deadline[$key]=$deadline_value;
+			
+			$max = max($max,$data[$key]);
+			$min = min($min,$data[$key]);
+		}
+		if(!$deadline_value){
+			$res['max']=$max;
+		}else{
+			$res['max']=max($max,$deadline_value);
+		}
+		$res['min']=$min;
+		$res['data']=$data;
+		$res['deadline']=$deadline;
+	}	
+	return $res;
+}
+
+function curl_get_content($url){
+	$ch = curl_init();
+	curl_setopt($ch,CURLOPT_HTTPHEADER,array("Content-type:text/xml; charset=utf-8"));
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,20);
+	curl_setopt($ch,CURLOPT_TIMEOUT,20);
+	curl_setopt($ch,CURLOPT_URL,$url);
+	$res = curl_exec($ch);
+	return $res;
+}

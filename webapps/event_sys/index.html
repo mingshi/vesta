@@ -1,0 +1,65 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>OPS-Event</title>
+<link type="text/css" href="css/core.css" rel="Stylesheet" />
+<link type="text/css" href="css/style.css" rel="Stylesheet" />
+<base target="mainframe" />
+</head>
+<body scroll="no">
+<div id="wrap" class="wrap">
+	<div id="collapsControl" class="collapscontrol" title="Collapse Controls"> </div>
+	<div id="leftPanel" class="leftpanel">
+		<div id="tabs" class="tabs">
+			<ul id="tabsNav" class="tabsnav"><li class="selected"><span href="#tabs-1">站点地图</span></li><li><span href="#tabs-2">页面注释</span></li><li><span href="#tabs-3">脚本扩展</span></li></ul>
+			<div id="tabs-1" class="panel">
+				 <div class="showlinkurl">Map</div>
+				<ul class="panellink">
+					<li><a href="oauthlogin.php" target="mainframe" class="navilink">登录</a></li>
+					<li><a href="index.php" class="selected navilink">首页</a></li>
+                                        <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                                        <li><a href="index.php?op=week" target="mainframe" class="navilink">本周所有事件</a></li>
+					<li><a href="index.php?op=month" target="mainframe" class="navilink">本月所有事件</a></li>
+					<li><a href="search.html" target="mainframe" class="navilink">搜索</a></li>
+					<li><a href="index.php" class="navilink">数据统计</a></li>
+                                        <li><a href="index.php?op=add" class="navilink" target="mainframe">添加事件</a></li>
+				</ul>
+			</div>
+			<div id="tabs-2" class="panel hide"></div>
+			<div id="tabs-3" class="panel hide"></div>
+		</div>
+	</div> <!-- end leftPanel -->
+	
+	<div id="vsplitBar" class="vsplitbar"></div> <!-- end vsplitbar -->
+	<div id="rightPanel" class="rightpanel">
+		<iframe id="mainFrame" name="mainframe" frameborder="0" width="100%" src="index.php"></iframe>
+	</div> <!-- end rightPanel -->
+	
+</div> <!-- end outerContainer -->
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript">
+    $(document).ready(
+            function () {
+                $(".navilink").click(function () {
+                    $('.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                });
+            } 
+    );
+</script>
+<script type="text/javascript">
+    $("#collapsControl").click(function(e){
+            if($('#leftPanel').css('display')=="none"){
+            $("#leftPanel").show();
+            $("#vsplitBar").show(); 
+            }else{
+		$("#leftPanel").hide();
+                $("#vsplitBar").hide();
+            }
+	});
+</script>
+</body>
+</html>

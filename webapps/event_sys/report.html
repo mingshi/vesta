@@ -1,0 +1,418 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        <title>首页</title>
+        <link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="Stylesheet" />
+        <link type="text/css" href="css/core.css" rel="Stylesheet" />
+        <link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+    <div class="pagewrap">
+        <div class="homemaincontent">
+            <ul id="pageTabs" class="pagetabs">
+                <li><a href="index.php">首页</a></li>
+                <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                <li><a href="index.php?op=week">本周所有事件</a></li>
+                <li><a href="index.php?op=month">本月所有事件</a></li>
+                <li class="selected"><a href="index.php?op=report">数据统计</a></li>
+                <li><a href="search.html">搜索</a></li>
+                <li><a href="index.php?op=add">添加事件</a></li>
+            </ul>
+            <div class="event mt15" style="width:70%;">
+                <h1>月度事件走势图</h1>
+                <div class="row">从：<input type="text" id="start" name="start" /> 到：<input type="text" id="stop" name="stop" />&nbsp;&nbsp;<input type="button" id="monthsearch" name="monthsearch" value="Search" /></div>
+                <div id="chartdiv" style="width: 100%; height: 300px;"></div>
+            </div>
+            <div class="event mt15" style="width:70%;">
+                <h1>可用度走势图</h1>
+                <div class="row">从：<input type="text" id="useable_start" name="useable_start" /> 到：<input type="text" id="useable_stop" name="useable_stop" />&nbsp;&nbsp;<input type="button" id="useablesearch" name="useablesearch" value="Search" /></div>
+                <div id="chartdiv_useable" style="width: 100%; height: 300px;"></div>
+            </div>
+
+            <div class="event mt15" style="width:70%;">
+                <h1>类别走势图</h1>
+                <div class="row">从：<input type="text" id="type_start" name="type_start" /> 到：<input type="text" id="type_stop" name="type_stop" />&nbsp;&nbsp;<input type="radio" id="mw" name="mw" value="1" checked />按月&nbsp;&nbsp;<input type="radio" id="mw" name="mw" value="2" />按周&nbsp;&nbsp;<input type="button" id="typesearch" name="typesearch" value="Search" /></div>
+                <div id="chartdiv_type" style="width: 100%; height: 300px;"></div>
+            </div>
+
+            <div class="event mt15" style="width:70%;">
+                <h1>事业部走势图</h1>
+                <div class="row">从：<input type="text" id="division_start" name="division_start" /> 到：<input type="text" id="division_stop" name="division_stop" />&nbsp;&nbsp;<input type="radio" id="mw_division" name="mw_division" value="1" checked />按月&nbsp;&nbsp;<input type="radio" id="mw_division" name="mw_division" value="2" />按周&nbsp;&nbsp;<input type="button" id="divisionsearch" name="divisionsearch" value="Search" /></div>
+                <div id="chartdiv_division" style="width: 100%; height: 300px;"></div>
+            </div>
+     </div>
+
+<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script src="js/amcharts.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var chartmain;
+    var graph;
+    var chartData = <?php echo $graph_data; ?>;
+    AmCharts.ready(function () {
+        // SERIAL CHART
+        chartmain = new AmCharts.AmSerialChart();
+        chartmain.pathToImages = "images/";
+        chartmain.dataProvider = chartData;
+        chartmain.marginLeft = 10;
+        chartmain.categoryField = "date";
+        chartmain.zoomOutButton = {
+            backgroundColor: '#000000',
+            backgroundAlpha: 0.15
+        };
+
+        // listen for "dataUpdated" event (fired when chartmain is inited) and call zoomChart method when it happens
+        //chartmain.addListener("dataUpdated", zoomChart);
+
+        // AXES
+        // category
+        var categoryAxis = chartmain.categoryAxis;
+        categoryAxis.parseDates = true; // as our data is date-based, we set parseDates to true
+        categoryAxis.minPeriod = "YYYY"; // our data is yearly, so we set minPeriod to YYYY
+        categoryAxis.gridAlpha = 0;
+
+        // value
+        var valueAxis = new AmCharts.ValueAxis();
+        valueAxis.axisAlpha = 0;
+        valueAxis.inside = true;
+        chartmain.addValueAxis(valueAxis);
+
+        // GRAPH                
+        graph = new AmCharts.AmGraph();
+        graph.type = "smoothedLine"; // this line makes the graph smoothed line.
+        graph.lineColor = "#d1655d";
+        graph.negativeLineColor = "#637bb6"; // this line makes the graph to change color when it drops below 0
+        graph.bullet = "round";
+        graph.bulletSize = 5;
+        graph.lineThickness = 2;
+        graph.valueField = "value";
+        chartmain.addGraph(graph);
+
+        // CURSOR
+        var chartCursor = new AmCharts.ChartCursor();
+        chartCursor.cursorAlpha = 0;
+        chartCursor.cursorPosition = "mouse";
+        chartCursor.categoryBalloonDateFormat = "YYYY";
+        chartmain.addChartCursor(chartCursor);
+
+        // SCROLLBAR
+        var chartScrollbar = new AmCharts.ChartScrollbar();
+        chartScrollbar.graph = graph;
+        chartScrollbar.backgroundColor = "#DDDDDD";
+        chartScrollbar.scrollbarHeight = 30;
+        chartScrollbar.selectedBackgroundColor = "#FFFFFF";
+        chartmain.addChartScrollbar(chartScrollbar);
+
+        // WRITE
+        chartmain.write("chartdiv");
+    });
+
+    // this method is called when chartmain is first inited as we listen for "dataUpdated" event
+    function zoomChart() {
+        // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+        chartmain.zoomToDates(new Date(201201, 0), new Date(201512, 0));
+    }
+</script>
+<script type="text/javascript">
+    var chartuseable;
+    var graph;
+    var chartData_useable = <?php echo $useable_data; ?>;
+    AmCharts.ready(function () {
+        // SERIAL CHART
+        chartuseable = new AmCharts.AmSerialChart();
+        chartuseable.pathToImages = "images/";
+        chartuseable.dataProvider = chartData_useable;
+        chartuseable.marginLeft = 10;
+        chartuseable.categoryField = "date";
+        chartuseable.zoomOutButton = {
+            backgroundColor: '#000000',
+            backgroundAlpha: 0.15
+        };
+
+        // listen for "dataUpdated" event (fired when chart is inited) and call zoomChart method when it happens
+        //chart.addListener("dataUpdated", zoomChart);
+
+        // AXES
+        // category
+        var categoryAxis = chartuseable.categoryAxis;
+        categoryAxis.parseDates = true; // as our data is date-based, we set parseDates to true
+        categoryAxis.minPeriod = "YYYY"; // our data is yearly, so we set minPeriod to YYYY
+        categoryAxis.gridAlpha = 0;
+
+        // value
+        var valueAxis = new AmCharts.ValueAxis();
+        valueAxis.axisAlpha = 0;
+        valueAxis.inside = true;
+        chartuseable.addValueAxis(valueAxis);
+
+        // GRAPH                
+        graph = new AmCharts.AmGraph();
+        graph.type = "smoothedLine"; // this line makes the graph smoothed line.
+        graph.lineColor = "green";
+        graph.negativeLineColor = "red"; // this line makes the graph to change color when it drops below 0
+        graph.bullet = "round";
+        graph.bulletSize = 5;
+        graph.lineThickness = 2;
+        graph.valueField = "value";
+        chartuseable.addGraph(graph);
+
+        // CURSOR
+        var chartCursor = new AmCharts.ChartCursor();
+        chartCursor.cursorAlpha = 0;
+        chartCursor.cursorPosition = "mouse";
+        chartCursor.categoryBalloonDateFormat = "YYYY";
+        chartuseable.addChartCursor(chartCursor);
+
+        // SCROLLBAR
+        var chartScrollbar = new AmCharts.ChartScrollbar();
+        chartScrollbar.graph = graph;
+        chartScrollbar.backgroundColor = "#DDDDDD";
+        chartScrollbar.scrollbarHeight = 30;
+        chartScrollbar.selectedBackgroundColor = "#FFFFFF";
+        chartuseable.addChartScrollbar(chartScrollbar);
+
+        // WRITE
+        chartuseable.write("chartdiv_useable");
+    });
+
+    // this method is called when chart is first inited as we listen for "dataUpdated" event
+    function zoomChart() {
+        // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+        chartuseable.zoomToDates(new Date(201201, 0), new Date(201512, 0));
+    }
+</script>
+<script type="text/javascript">
+    var charttype;
+    var chartData_month_type = <?php echo $month_type_graph; ?>;
+    AmCharts.ready(function () {
+        // SERIAL CHART
+        charttype = new AmCharts.AmSerialChart();
+        charttype.dataProvider = chartData_month_type;
+        charttype.categoryField = "month";
+        charttype.startDuration = 0.5;
+        charttype.balloon.color = "#000000";
+        
+
+        // AXES
+        // category
+        var categoryAxis = charttype.categoryAxis;
+        categoryAxis.fillAlpha = 1;
+        categoryAxis.fillColor = "#FAFAFA";
+        categoryAxis.gridAlpha = 0;
+        categoryAxis.axisAlpha = 0;
+        categoryAxis.gridPosition = "start";
+        categoryAxis.position = "bottom";
+
+        // value
+        var valueAxis = new AmCharts.ValueAxis();
+        valueAxis.title = "Place taken";
+        valueAxis.dashLength = 5;
+        valueAxis.axisAlpha = 0;
+        valueAxis.minimum = 1;
+        valueAxis.maximum = 10;
+        valueAxis.integersOnly = true;
+        valueAxis.gridCount = 10;
+        valueAxis.reversed = false; // this line makes the value axis reversed
+        charttype.addValueAxis(valueAxis);
+
+        // GRAPHS
+        // Italy graph
+        <?php 
+            foreach($cfg['etype'] as $k=>$v){
+                echo "var graph = new AmCharts.AmGraph();\n";
+                echo "graph.title = '$v';\n";
+                echo "graph.valueField = '$v';\n";
+                echo "graph.hidden = false;\n";
+                echo "graph.balloonText = 'place taken by $v in [[category]]: [[value]]';\n";
+                echo "graph.lineAlpha = 1;\n";
+                echo "graph.bullet = 'round';\n";
+                echo "charttype.addGraph(graph);\n";
+            }
+        ?>
+
+        // LEGEND
+        var legend = new AmCharts.AmLegend();
+        legend.markerType = "circle";
+        charttype.addLegend(legend);
+
+        // WRITE
+        charttype.write("chartdiv_type");
+    });
+
+</script>
+<script type="text/javascript">
+    var chartdivision;
+    var chartData_division_type = <?php echo $month_division_graph; ?>;
+    AmCharts.ready(function () {
+        // SERIAL CHART
+        chartdivision = new AmCharts.AmSerialChart();
+        chartdivision.dataProvider = chartData_division_type;
+        chartdivision.categoryField = "month";
+        chartdivision.startDuration = 0.5;
+        chartdivision.balloon.color = "#000000";
+        
+
+        // AXES
+        // category
+        var categoryAxis = chartdivision.categoryAxis;
+        categoryAxis.fillAlpha = 1;
+        categoryAxis.fillColor = "#FAFAFA";
+        categoryAxis.gridAlpha = 0;
+        categoryAxis.axisAlpha = 0;
+        categoryAxis.gridPosition = "start";
+        categoryAxis.position = "bottom";
+
+        // value
+        var valueAxis = new AmCharts.ValueAxis();
+        valueAxis.title = "Place taken";
+        valueAxis.dashLength = 5;
+        valueAxis.axisAlpha = 0;
+        valueAxis.minimum = 1;
+        valueAxis.maximum = 10;
+        valueAxis.integersOnly = true;
+        valueAxis.gridCount = 10;
+        valueAxis.reversed = false; // this line makes the value axis reversed
+        chartdivision.addValueAxis(valueAxis);
+
+        // GRAPHS
+        // Italy graph
+        <?php 
+            foreach($cfg['division'] as $k=>$v){
+                echo "var graph = new AmCharts.AmGraph();\n";
+                echo "graph.title = '$v';\n";
+                echo "graph.valueField = '$v';\n";
+                echo "graph.hidden = false;\n";
+                echo "graph.balloonText = 'place taken by $v in [[category]]: [[value]]';\n";
+                echo "graph.lineAlpha = 1;\n";
+                echo "graph.bullet = 'round';\n";
+                echo "chartdivision.addGraph(graph);\n";
+            }
+        ?>
+
+        // LEGEND
+        var legend = new AmCharts.AmLegend();
+        legend.markerType = "circle";
+        chartdivision.addLegend(legend);
+
+        // WRITE
+        chartdivision.write("chartdiv_division");
+    });
+
+</script>
+
+<script type="text/javascript">
+    $(function(){
+        $('#monthsearch').click(function(){
+            if($("#start").val()=="" || $("#stop").val()==""){
+                alert('未填写搜索月份区域');return false;
+            }else{
+                var start = $("#start").val();
+                var stop = $("#stop").val();
+                var url = "index.php?op=ajax&type=monthsearch";
+                var data = {'start': start, 'stop': stop};
+                $.post(url,data,function(result) {
+                    data = [];
+                    for (i in result) {
+                        data.push({"date": new Date(result[i].date, 0), "value": result[i].value});
+                    }
+                    chartmain.dataProvider = data;
+                    chartmain.validateData();    
+                }, "json");
+            }
+            
+        });
+    });
+    
+    $(function(){
+        $('#useablesearch').click(function(){
+            if($("#useable_start").val()=="" || $("#useable_stop").val()==""){
+                alert('未填写搜索月份区域');return false;
+            }else{
+                var start = $("#useable_start").val();
+                var stop = $("#useable_stop").val();
+                var url = "index.php?op=ajax&type=useablesearch";
+                var data = {'start': start, 'stop': stop};
+                $.post(url,data,function(result){
+                    data = [];
+                    for (i in result){
+                        data.push({"date": new Date(result[i].date, 0), "value": result[i].value});
+                    }
+                    chartuseable.dataProvider = data;
+                    chartuseable.validateData();
+                }, "json");
+            }        
+        });
+    });
+
+    $(function(){
+        $('#typesearch').click(function(){
+            if($('#type_start').val()=="" || $('#type_stop').val()==""){
+                alert('未填写搜索时间范围');return false;
+            }else{
+                var mw = $("input[name='mw']:checked").val();
+                var start = $('#type_start').val();
+                var stop = $('#type_stop').val();
+                var url = "index.php?op=ajax&type=typesearch";
+                var data = {'start': start, 'stop': stop, 'mw': mw};
+                $.post(url,data,function(result){
+                    data = [];
+                    for (i in result){
+                        ob = {};
+                        ob.month = i;
+                        //var dt = <?php echo count($cfg['etype']); ?>;
+                        <?php for($n=1;$n<=count($cfg['etype']);$n++){ ?>
+                            var type = '<?php echo $cfg['etype'][$n]; ?>';
+                            if(result[i][type] != ""){
+                                ob.<?php echo $cfg['etype'][$n]; ?> = result[i][type];
+                            }else{
+                                ob.<?php echo $cfg['etype'][$n]; ?> = 0;
+                            }
+                        <?php } ?>
+                        data.push(ob);
+                    }
+                    charttype.dataProvider = data;
+                    charttype.validateData(); 
+                }, "json"); 
+            }
+        });
+    });
+
+    $(function(){
+        $('#divisionsearch').click(function(){
+            if($('#division_start').val()=="" || $('#division_stop').val()==""){
+                alert('未填写搜索时间范围');return false;
+            }else{
+                var mw = $("input[name='mw_division']:checked").val();
+                var start = $('#division_start').val();
+                var stop = $('#division_stop').val();
+                var url = "index.php?op=ajax&type=divisionsearch";
+                var data = {'start': start, 'stop': stop, 'mw': mw};
+                $.post(url,data,function(result){
+                    data_division = [];
+                    for (i in result){
+                        ob_division = {};
+                        ob_division.month = i;
+                        //var dt = <?php echo count($cfg['etype']); ?>;
+                        <?php for($n=1;$n<=count($cfg['division']);$n++){ ?>
+                            var division = '<?php echo $cfg['division'][$n]; ?>';
+                            if(result[i][division] != ""){
+                                ob_division.<?php echo $cfg['division'][$n]; ?> = result[i][division];
+                            }else{
+                                ob_division.<?php echo $cfg['division'][$n]; ?> = 0;
+                            }
+                        <?php } ?>
+                        data_division.push(ob_division);
+                    }
+                    chartdivision.dataProvider = data_division;
+                    chartdivision.validateData(); 
+                }, "json"); 
+            }
+        });
+    });
+</script>
+</body>
+</html>

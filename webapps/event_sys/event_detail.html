@@ -1,0 +1,389 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        <title></title>
+        <link type="text/css" href="css/core.css" rel="Stylesheet" />
+        <link type="text/css" href="css/style.css" rel="Stylesheet" />
+        </head><body>
+        <div class="pagewrap">
+            <div class="homemaincontent">
+                <ul id="pageTabes" class="pagetabs">
+                    <li class="selected"><a href="index.php">首页</a></li>
+                    <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                    <li><a href="index.php?op=week">本周所有事件</a></li>
+                    <li><a href="index.php?op=month">本月所有事件</a></li>
+                    <li><a href="">数据统计</a></li>
+                    <li><a href="search.html">搜索</a></li>
+                    <li><a href="index.php?op=add">添加事件</a></li>
+                </ul>
+                <div id="pageTabs-1">
+                    <?php if(!isset($_SESSION['user']) || $_SESSION['user'] != true || !isset($_SESSION['name']) || (isset($_SESSION['user']) && $_SESSION['user']===true) && isset($_SESSION['name']) && $cfg['authority'][$username] != 1){ ?>
+                    <div class="event mt15">
+                        <div class="event_title"><div class="title"><?php echo $event_info['base']['subject']; ?></div></div>
+                        <ul class="event_detail mb20">
+                            <li><span class="dt">事件描述：</span><span><?php echo $event_info['base']['description']; ?></span></li>
+							
+							<li><span class="dt">相关事件：</span>
+							<span>
+							<?php foreach ($event_info['relate'] as $key){
+									if ($key['eid']==$event_info['base']['eid']) continue;
+							?>
+							<a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank"><?php echo $key['subject'];?></a>
+							<?}?>
+							</span>
+							</li>
+                            <li>
+							<span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?></span>&nbsp;
+							<span class="dt">解决时间：</span><span><?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?></span>
+							</li>
+                            <li>
+				<span class="dt">影响时长：</span><span>
+					<?php if($event_info['base']['solvetime']){echo $event_info['base']['affecttime']."分钟";}else{echo "至今";} ?>
+				</span>
+                                </li>
+                                <li><span class="dt">关闭时间：</span><span><?php if($event_info['base']['islock']==1){?><?php echo date('Y-m-d H:i:s',$event_info['base']['closetime']);?><?php } ?></span></li>
+                            <li><span class="dt">事件影响：</span><span><?php echo $event_info['base']['affect']; ?></span></li>
+                            <li>
+							<span class="dt">事件等级：</span><span>P<?php echo $event_info['base']['level']; ?></span><a href="levelinfo.php" target="_blank">[等级说明]</a>&nbsp;&nbsp;&nbsp;
+							<span class="dt">事件类型：</span><span><?php echo $cfg['etype'][$event_info['base']['etypeid']]; ?></span>
+							</li>
+                            <li><span class="dt">报告者：</span><span><?php echo $event_info['base']['fuser']; ?></span></li>
+                            <li>
+							<span class="dt">责任部门：</span><span><?php echo $cfg['division'][$event_info['base']['division']]; ?></span>&nbsp;&nbsp;&nbsp;
+							<span class="dt">责任人：</span><span><?php echo $event_info['base']['who']; ?></span>
+                            </li>
+                            <li><span class="dt">状态：</span><span>
+                                <?php if($event_info['base']['islock']==0){echo "进行中";}else{echo "已关闭";} ?>
+                            </span>
+                            </li>
+                            <li><span class="dt">通知到：</span>
+                                <div style="word-wrap:break-word; width:75%">
+                                    <?php
+										$mail = explode(",",$event_info['base']['tomail']);
+                                                                                $name = file_get_contents("data.txt");
+										$array = json_decode($name);
+										$text = '';
+										foreach ($mail as $key1){
+											$id = 0;
+											foreach ($array as $key2){
+												if ($key1==$key2->value){
+													$text = $text.$key2->key.',';
+													$id = 1;
+												}
+											}
+											if ($id == 0) {
+												$text = $text.$key1.',';
+											}
+										}
+										echo substr($text, 0, -1);
+									?>
+                                </div>
+                            </li>
+                            <li><span class = "dt">事件概述：</span><span><?php echo $event_info['base']['summary']; ?></span></li>
+                        </ul>
+                        <table class="table mb40">
+                            <tr class="caption"><td colspan="4">事件处理经过</td></tr>
+                            <tr class="thead" ><td>序号</td><td>处理时间</td><td>处理信息</td><td style="white-space:nowrap;">处理人</td></tr>
+                            <?php if(!empty($event_info['schedule'])){foreach($event_info['schedule'] as $key=>$v){ ?>
+                            <tr><td><?php echo $key+1; ?></td><td><?php echo date('Y-m-d H:i:s',$v['s_time']); ?></td><td style="text-align:left;"><?php echo $v['s_subject']; ?></td><td style="white-space:nowrap;"><?php echo $v['s_user']; ?></td></tr>
+                            <?php } } ?>
+                        </table>
+                        <div class="commondiv mb20">
+                            <div class="commondiv_title">事件详情</div>
+                            <div class="commmondiv_content"><?php echo $event_info['base']['content']; ?></div>
+                        </div>
+                        <table class="table mb20">
+                            <tr class="caption"><td colspan="6">改进措施</td></tr>
+                            <tr class="thead" ><td>序号</td><td>改进措施</td><td style="white-space:nowrap;">负责人</td><td>计划完成时间表</td><td>完成状态</td></tr>
+                            
+                                <?php if(!empty($measure)){foreach($measure as $k=>$v){ ?>
+                            <tr>
+                                <td><?php echo $k+1; ?></td>
+                                <td style="text-align:left;"><?php echo $v['measure']; ?></td>
+                                <td style="white-space:nowrap;"><?php echo $v['muser']; ?></td>
+                                <td><?php echo date('Y-m-d',$v['mtime']); ?></td>
+                                <td><?php if($v['status']==0){echo "进行中";}else{echo "已完成";} ?></td></tr>
+                                <?php } } ?>
+                        </table>
+                    </div>
+
+                    <?php }else if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['authority'][$username]==1){  ?>
+                    <form name="form1" action="" method="post">
+                    <div class="event_title"><div class="title"><input type="text" name="subject" value="<?php echo $event_info['base']['subject']; ?>" size="40"style="margin-top:10px;" /></div></div>
+                        <ul class="event_detail mb20">
+                            <li><span class="dt">事件描述：</span><span><input type="text" name="description" value="<?php echo $event_info['base']['description']; ?>" size="40" /></span></li>
+							<li><span class="dt">相关事件：</span>
+							<span>
+							<?php foreach ($event_info['relate'] as $key){
+									if ($key['eid']==$event_info['base']['eid']) continue;
+							?>
+							<a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank"><?php echo $key['subject'];?></a>
+							<?}?>
+							</span>
+							</li>
+                            <li><span class="dt">发生时间：</span><span><input type="text" id="createtime" name="createtime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?>" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></li>
+                            <li><span class="dt">解决时间：</span><span><input type="text" id="solvetime" name="solvetime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?>" onclick="javascript:NewCssCal('solvetime','yyyymmdd','arrow',true,24,false);" /></span></li>
+                            <li><span class="dt">事件影响：</span><span><input type="text" name="affect" value="<?php echo $event_info['base']['affect']; ?>" size="40" /></span></li>
+                            <li><span class="dt">事件等级：</span>
+                            <span class="level">
+                                <select name="level">
+                                    <?php if(!empty($cfg['level'])){foreach($cfg['level'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k;?>"<?php if($k==$event_info['base']['level'])echo selected; ?>><?php echo $v; ?></option>
+                            <?php } } ?>
+                        </select>
+                    </span>
+                    <a href="levelinfo.php" target="_blank">[等级说明]</a>
+                            </li>
+                            <li><span class="dt">事件类型：</span>
+                            <span class="etype">
+                                <select name="etypeid">
+                                    <?php if(!empty($cfg['etype'])){foreach($cfg['etype'] as $k=>$v){ ?>
+                                        <option value="<?php echo $k; ?>"<?php if($k==$event_info['base']['etypeid'])echo selected; ?>><?php echo $v; ?></option>
+                                    <?php }} ?>
+                                </select>
+                            </span>
+                            </li>
+                            <li><span class="dt">报告者：</span>
+                                <span class="fuser">
+                                    <input type="text" value="<?php echo $event_info['base']['fuser']; ?>" readonly />
+                                </span>    
+                            </li>
+                            <li><span class="dt">责任部门：</span><span>
+                                <select name="division">
+                                    <?php if(!empty($cfg['division'])){foreach($cfg['division'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['division'])echo selected; ?>><?php echo $v; ?></option>
+                                    <?php } } ?>
+                                </select>
+                            </span>
+                            </li>
+                            <li><span class="dt">责任人：</span><span>
+                                <input type="text" name="who" value="<?php echo $event_info['base']['who']; ?>" />
+                            </li>
+                            <li><span class="dt">状态：</span><span>
+                                <select name="islock">
+                                    <?php if(!empty($cfg['islock'])){foreach($cfg['islock'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option>
+                                    <?php } }?>
+                                </select>
+                            </span><br />
+                            </li>
+                            <li>
+                                <link rel="stylesheet" href="css/autocomplate.css" type="text/css" media="screen" charset="utf-8" />
+                                <span class="dt">通知到：</span>
+                                <span>
+                                        <select id="select3" name="select3">
+                                        </select>							
+									<div style="word-wrap:break-word; width:75%">
+                                    <?php
+										$mail = explode(",",$event_info['base']['tomail']);
+										$name = file_get_contents("data.txt");
+										$array = json_decode($name);
+										$text = '';
+										foreach ($mail as $key1){
+											$id = 0;
+											foreach ($array as $key2){
+												if ($key1==$key2->value){
+													$text = $text.$key2->key.',';
+													$id = 1;
+												}
+											}
+											if ($id == 0) {
+												$text = $text.$key1.',';
+											}
+										}
+										echo substr($text, 0, -1);
+									?>
+                                </div>
+                                </span>
+                                </li>
+<li>
+<span class = "dt">事件概述：</span>
+<br>
+<span>
+<textarea class="e_summary" name="summary"><?php echo $event_info['base']['summary']; ?></textarea>
+</span>
+</li>
+
+
+<br />
+                             
+                            <div><input type="hidden" name="op" value="e_edit" />
+                                <input type="hidden" name="eid" value="<?php echo $event_info['base']['eid']; ?>" />
+                                <input type="submit" value="保存" />
+                            </div>
+                        </ul>
+                        </form>
+                        <table class="table mb40">
+                            <tr class="caption"><td colspan="5">事件处理经过</td></tr>
+                            <tr class="thead" ><td>序号</td><td>处理时间</td><td>处理信息</td><td>处理人</td><td>操作</td></tr>
+
+
+                            <?php if(!empty($event_info['schedule'])){foreach($event_info['schedule'] as $key=>$v){ ?>
+                            <form action="" method="post" />
+                            <tr>
+                                <td><?php echo $key+1;?></td>
+                                <td><input type="text" name="edit_stime_<?php echo $v['sid']; ?>" id="edit_stime_<?php echo $v['sid']; ?>" value="<?php echo date('Y-m-d H:i:s',$v['s_time']); ?>" onclick="javascript:NewCssCal('edit_stime_<?php echo $v["sid"]; ?>','yyyymmdd','arrow',true,24,false);" /></td>
+                                <td><textarea name="edit_subject"><?php echo $v['s_subject'] ?></textarea></td>
+                                <td><input type="text" name="edit_suser" value="<?php echo $v['s_user']; ?>" /></td>
+                            <td><input type="hidden" name="op" value="s_edit" />
+                                <input type="hidden" name="s_sid" value="<?php echo $v['sid']; ?>" />
+								<input type="hidden" name="s_eid_edit" value="<?php echo $event_info['base']['eid']; ?>">
+								<input type="hidden" name="content_s" id="content_s">
+                                <input type="submit" value="保存" onclick="return content_submit_s()" />&nbsp;
+								<input type="button" value="删除" onclick="location.href='index.php?op=s_del&eid=<?php echo $event_info['base']['eid']; ?>&sid=<?php echo $v['sid']; ?>'">
+                            </td></tr>
+                        </form>
+                        <?php } } ?>
+                        <form action="" method="post">
+                            <tr>
+                            <td></td>
+                            <td><input type="text" name="s_start" id="s_start" onclick="avascript:NewCssCal('s_start','yyyymmdd','arrow',true,24,false);" /></td>
+                            <td><textarea  name="s_subject"></textarea></td>
+                            <td><input type="text" name="s_user" /></td>
+                            <td><input type="hidden" name="op" value="s_add" />
+                                <input type="hidden" name="s_eid" value="<?php echo $event_info['base']['eid']; ?>" />
+                                <input type="submit" value="增加" />
+                            </td>
+                        </tr>
+                        </form>
+                        </table>
+                        <div class="commondiv mb20">
+                            <div class="commondiv_title">事件详情</div>
+                            <div class="commmondiv_content">
+                                <form action="" method="post">
+                                <textarea id="editor_id" name="content" style="width:auto;height:300px;">
+                                    <?php echo $event_info['base']['content']; ?>
+                                </textarea>
+                                <div align="center"><input type="hidden" name="op" value="c_edit" />
+                                    <input type="hidden" name="c_eid" value="<?php echo $event_info['base']['eid']; ?>" />
+                                    <input type="submit" value="保存" />
+                                </div>
+                                </form>
+                                </div>
+                        </div>
+                        <table class="table mb20">
+                            <tr class="caption"><td colspan="6">改进措施</td></tr>
+                            <tr class="thead" ><td>序号</td><td>改进措施</td><td>负责人</td><td>计划完成时间表</td><td>完成状态</td><td>操作</td></tr>
+                            <?php if(!empty($measure)){foreach($measure as $k=>$v){ ?>
+                            <form action="" method="post">
+                            <tr>
+                                <td><?php echo $k+1; ?></td>
+                                <td><input type="text" name="c_measure" value="<?php echo $v['measure']; ?>" /></td>
+                                <td><input type="text" name="c_user" value="<?php echo $v['muser']; ?>" /></td>
+                                <td><input type="text" name="c_time_<?php echo $v['mid']; ?>" id="c_time_<?php echo $v['mid']; ?>" value="<?php echo date('Y-m-d',$v['mtime']); ?>" onclick="javascript:NewCssCal('c_time_<?php echo $v["mid"]; ?>','yyyymmdd','arrow',true,24,false);" /></td>
+                                <td>
+                                    <select name="mstatus">
+                                        <option value="0" <?php if($v['status']==0)echo selected; ?>>进行中</option>
+                                        <option value="1" <?php if($v['status']==1)echo selected; ?>>已完成</option>
+                                    </select> 
+                                        
+                                </td>
+                                <td>
+                                     <input type="hidden" name="op" value="m_edit" />
+                                     <input type="hidden" name="mid" value="<?php echo $v['mid']; ?>" />
+                                     <input type="hidden" name="m_eid_edit" value="<?php echo $event_info['base']['eid']; ?>">
+									 <input type="hidden" name="content_m" id="content_m">
+                                     <input type="submit" value="保存" onclick="return content_submit_m()" />&nbsp;
+									 <input type="button" value="删除" onclick="location.href='index.php?op=m_del&eid=<?php echo $event_info['base']['eid']; ?>&mid=<?php echo $v['mid']; ?>'">
+                                </td>
+                            </tr></form>
+                            <?php } } ?>
+
+                            <form action="" method="post">
+                            <tr>
+                                <td></td>
+                                <td><input type="text" name="measure" /></td>
+                                <td><input type="text" name="muser" /></td>
+                                <td><input type="text" name="mtime" id="mtime" onclick="javascript:NewCssCal('mtime','yyyymmdd','arrow',true,24,false);" /></td>
+                                <td>
+                                    <select name="status">
+                                        <option value="0">进行中</option>
+                                        <option value="1">已完成</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="op" value="m_add" />
+                                    <input type="hidden" name="m_eid_add" value="<?php echo $event_info['base']['eid']; ?>" />
+                                    <input type="submit" value="增加" />
+                                </td>
+                            </tr>
+                            </form>
+
+
+
+                        </table>
+                    </div> 
+                        
+                        <?php } ?>
+                        <table class="table mb40">
+                            <tr class="caption"><td colspan="3">评论</td></tr>
+                            <tr class="thead" >
+							<td width="10%">评论人</td>
+							<td width="75%">评论内容</td>
+							<td width="15%">评论时间</td>
+                            <?php if(!empty($comment)){foreach($comment as $key=>$v){ ?>
+                            <tr>
+							<td style="white-space:nowrap;"><?php echo $v['user']; ?></td>
+							<td style="text-align:left;"><?php echo $v['comment']; ?></td>
+							<td><?php echo date('Y-m-d H:i:s',$v['mtime']); ?></td>
+							</tr>
+                            <?php } } ?>
+						</table>
+
+                        <form action="" method="post">
+							<textarea class="m_comment" name="m_comment"></textarea>
+                            <input type="hidden" name="op" value="c_add" />
+                            <input type="hidden" name="c_eid" value="<?php echo $event_info['base']['eid']; ?>" />
+							<?php
+								if ($_SESSION['name'])$user = $_SESSION['name'];
+								else $user = 'guest';
+							?>
+							<input type="hidden" name="c_user" value="<?php echo $user;?>" />
+                            <input type="submit" value="评论" />
+                        </form>
+
+						
+
+
+	<!--
+
+                    <div class="event">
+                        <div class="event_title"><div class="title">相关事件</div></div>
+                        <div class="event_detail mb20">
+                            <ul class="relationevent">
+                                <li><span>2012-2-25</span> <span>济南经济人无法上传图片</span></li>
+                                <li><span>2012-2-25</span> <span>济南经济人无法上传图片</span></li>
+                                <li><span>2012-2-25</span> <span>济南经济人无法上传图片</span></li>
+                            <ul>
+    </div>			</div>		</div>-->	</div>	
+    
+    
+    <div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div></div><script type="text/javascript" src="js/jquery-1.7.1.min.js"></script><script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/datetimepicker.js"></script>
+<script charset="utf-8" src="/editor/kindeditor.js"></script>
+<script charset="utf-8" src="/editor/lang/zh_CN.js"></script>
+<script src="js/jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+            $(document).ready(function(){                
+                $("#select3").fcbkcomplete({
+                    json_url: "data.txt",
+                    addontab: true,                   
+                    height: 2                    
+                });
+            });
+</script>
+<script>
+var editor;
+KindEditor.ready(function(K) {
+        editor = K.create('#editor_id');
+});
+function content_submit_s(){
+	document.getElementById("content_s").value = editor.text();
+	return true;
+}
+function content_submit_m(){
+	document.getElementById("content_m").value = editor.text();
+	return true;
+}
+</script>
+    </body></html>

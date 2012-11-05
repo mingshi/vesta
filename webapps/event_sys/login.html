@@ -1,0 +1,46 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title></title>
+<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="Stylesheet" />
+<link type="text/css" href="css/core.css" rel="Stylesheet" />
+<link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+<div class="pagewrap">
+		<form name="loginform" class="loginform" action="" method="POST">
+			<div class="logincontent">
+                            <div class="row"><input type="text" class="username" name="username" <?php if(!$_COOKIE['username']){ ?>value="用户名"  onclick="clearDefaultText(this,'用户名');"<?php } ?> <?php if($_COOKIE['username']){ ?> value="<?php echo $_COOKIE['username']; ?>" <?php } ?> /></div>
+                            <div class="row"><input type="password" name="passwd" class="password" <?php if(!$_COOKIE['password']){ ?>value="密码" onclick="clearDefaultText(this,'密码');"<?php } ?> <?php if($_COOKIE['password']){ ?> value="<?php echo $_COOKIE['password']; ?>"<?php } ?> /></div>
+                        <div class="button"><input class="checkbox" type="checkbox" /><label>记住我</label>
+                            <input type="hidden" name="op" value="login" />
+                            <input type="submit" class="submit" value="登录" /></div>
+			</div>
+			<div class="tipmsg"></div>
+		</form>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript">
+    function clearDefaultText (el,message)
+{
+    var obj = el;
+    if(typeof(el) == "string")
+        obj = document.getElementById(id);
+    if(obj.value == message)
+    {
+        obj.value = "";
+    }
+    obj.onblur = function()
+    {
+        if(obj.value == "")
+        {
+               obj.value = message;
+        }
+    }
+}
+</script>
+</body>
+</html>

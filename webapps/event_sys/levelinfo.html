@@ -1,0 +1,69 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title></title>
+<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="Stylesheet" />
+<link type="text/css" href="css/core.css" rel="Stylesheet" />
+<link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+<div class="pagewrap">
+	<div class="homemaincontent">
+		<ul id="pageTabs" class="pagetabs">
+			<li><a href="index.php">首页</a></li>
+                        <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                        <li><a href="index.php?op=week">本周所有事件</a></li>
+			<li><a href="index.php?op=month">本月所有事件</a></li>
+			<li><a href="index.php?op=report">数据统计</a></li>
+                        <li><a href="search.html">搜索</a></li>
+                        <li><a href="index.php?op=add">添加事件</a></li>
+                </ul>
+                <style type="text/css">
+                    .table .thead td {
+                        background-color: #4F81BC;
+                        height: 35px;
+                    }
+                    .thead td {
+                        color: #FFFFFF;
+                        font-weight: bold;
+                        font-size: 14px;
+                    }
+                    .table .thead_u td {
+                        background-color: #D0D7E7;
+                        height: 35px;
+                    }
+                    .thead_u td{
+                        color: #264967;
+                        font-weight: bold;
+                        font-size: 14px;
+                    }
+                    .table .thead_w td {
+                        background-color: #FFFFFF;
+                        height: 35px;
+                    }
+                    .thead_w td {
+                        color: #264967;
+                        font-weight: bold;
+                        font-size: 14px;
+                    }
+                </style>
+                <table class="table mt15" style="width:60%;">
+                    <tr class="thead"><td>级别</td><td>影响范围</td><td>影响类型</td><td>持续时间</td></tr>
+                    <tr class="thead_u"><td>P1</td><td>无影响</td><td>N/A</td><td>N/A</td></tr>
+                    <tr class="thead_w"><td>P2</td><td>次要功能</td><td>异常</td><td>N/A</td></tr>
+                    <tr class="thead_u"><td>P3</td><td>次要功能</td><td>不可用</td><td><5分钟</td></tr>
+                    <tr class="thead_w"><td>P4</td><td>次要功能</td><td>不可用</td><td>>=5分钟</td></tr>
+                    <tr class="thead_u"><td>P5</td><td>重要功能</td><td>异常/不可用</td><td><5分钟</td></tr>
+                    <tr class="thead_w"><td>P6</td><td>重要功能</td><td>异常/不可用</td><td>>=5分钟</td></tr>
+                </table>
+        </div>
+        
+	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
+</body>
+</html>

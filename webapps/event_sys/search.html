@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title></title>
+<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="Stylesheet" />
+<link type="text/css" href="css/core.css" rel="Stylesheet" />
+<link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+<div class="pagewrap">
+	<div class="homemaincontent">
+		<ul id="pageTabs" class="pagetabs">
+			<li><a href="index.php">首页</a></li>
+                        <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                        <li><a href="index.php?op=week">本周所有事件</a></li>
+			<li><a href="index.php?op=month">本月所有事件</a></li>
+			<li><a href="index.php?op=report">数据统计</a></li>
+                        <li class="selected"><a href="search.html">搜索</a></li>
+                        <li><a href="index.php?op=add">添加事件</a></li>
+		</ul>
+		<form name="searchform" class="searchform" action="list.php" method="post">
+			<div class="row"><label>关键字：</label> <input type="text" name="keyword" value="" /></div>
+                        <div class="row"><span>类别：</span> 
+                            <select name="status"><option value="2">所有</option><option value="0">开启</option><option value="1">已关闭</option></select>
+                            <select name="level"><option value="0">所有</option>
+                                <option value="1">P1</option>
+                                <option value="2">P2</option>
+
+                                <option value="3">P3</option>
+                                <option value="4">P4</option>
+
+                                <option value="5">P5</option>
+                                <option value="6">P6</option>
+
+                                <option value="7">P7</option>
+                            </select>
+                            <select name="etype"><option value="0">所有</option>
+                                <option value="1">运营商故障</option>
+                                <option value="2">网络故障</option>
+                                <option value="3">硬件故障</option>
+                                <option value="4">人为故障</option>
+                                <option value="5">程序bug</option>
+                                <option value="6">安全事故</option>
+                                <option value="7">配置问题</option>
+                            </select>
+			</div>
+			<div class="row"><span>时段:</span>从：<input type="text" name="start" id="datepk1" /> 到：<input type="text" name="stop" id="datepk2"/></div>
+                        <div class="button"><input type="hidden" name="op" value="search" /><input type="submit" class="submit" value="搜索" /></div>
+		</form>
+	</div>
+	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
+</body>
+</html>

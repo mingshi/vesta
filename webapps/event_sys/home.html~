@@ -1,0 +1,265 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        <title>首页</title>
+        <link type="text/css" href="css/core.css" rel="Stylesheet" />
+        <link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+    <div class="pagewrap">
+        <div class="homemaincontent">
+            <ul id="pageTabs" class="pagetabs">
+                <li class="selected"><a href="index.php">首页</a></li>
+                <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                <li><a href="index.php?op=week">本周所有事件</a></li>
+                <li><a href="index.php?op=month">本月所有事件</a></li>
+                <li><a href="index.php?op=report">数据统计</a></li>
+                <li><a href="search.html">搜索</a></li>
+                <li><a href="index.php?op=add">添加事件</a></li>
+            </ul>
+            <div id="pageTabs-1">
+                <div class="topinfo">
+                    <div class="welcome">欢迎[<a href="#" class="currentloginer"><?php echo $user; ?></a>] <a href="index.php?op=myatt">我的关注</a>&nbsp;<a href="mailgroup.php">邮件群组</a><?php if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){ ?> <a href="logout.php">注销</a><?php } ?> <?php if(!isset($_SESSION['user']) && $_SESSION['user'] != true && !isset($_SESSION['name'])){ ?><a href="oauthlogin.php">登录</a> <?php } ?></div>
+				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="list.php" method="post"><input class="searchinput" id="keywds" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton" onclick="javascript:document.getElementById('keywds').value='';"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
+			</div>
+
+
+            <style tyle="text/css">
+                .tj {
+                    width: 25%;
+                    float: left;
+                    font-weight: bold;
+                    font-size: 14px;
+                    color: #4F81BC;
+                }
+                .tb_tj {
+                    border-collapse: collapse;
+                    width: 95%;
+                }
+                .tb_tr th{
+                    border: 1px solid #777;
+                    background-color: #CCCCCC;
+                }
+                .tb_td td {
+                    border: 1px solid #777;
+                    color: #264967;
+                    text-align: center;
+                }
+            </style>
+            <div style="width:100%;height:230px;">
+                <div style="color:#4F81BC;font-size:14px;font-weight:bold;overflow:hidden;">最近一个月TOP排名</div>
+                <div class="tj">
+                    <div>
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>事业部</th>
+                                <th>事件数</th>
+                            </tr>
+                            <?php foreach($by_division as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=params&params_name=division&params_value=<?php echo $v['division']; ?>" target="_blank"><?php echo $cfg['division'][$v['division']]; ?></td>
+                                <td><?php echo $v['total']; ?></td>
+                            </tr>
+                            <?php }  ?>
+                        </table>
+                    </div>
+                </div>
+                <div class="tj">
+                    <div>
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>类型</th>
+                                <th>事件数</th>
+                            </tr>
+                            <?php foreach($by_type as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid']; ?>" target="_blank"><?php echo $cfg['etype'][$v['etypeid']]; ?></td>
+                                <td><?php echo $v['total']; ?></td>
+                            <?php } ?>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                    
+
+                <div class="tj">
+                    <div>
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>责任人</th>
+                                <th>事件数</th>
+                            </tr>
+                            <?php foreach($by_who as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=params&params_name=who&params_value=<?php echo $v['who']; ?>" target="_blank"><?php echo $v['who']; ?></td>
+                                <td><?php echo $v['total']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
+                </div>
+                <div class="tj">
+                    <div>
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>事件ID</th>
+                                <th>影响时长(分钟)</th>
+                            </tr>
+                            <?php foreach($by_affecttime as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" target="_blank"><?php echo $v['eid']; ?></a></td>
+                                <td><?php echo $v['affecttime']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
+                </div>
+            </div>
+<?php if(!empty($event_unlock_now['event']) && $page==1){ ?>                
+<ul class="eventlist">
+    <li>
+        <div class="event highlight">
+            <div class="event_title">
+                <div class="title"><a href="index.php?op=detail&eid=<?php echo $event_unlock_now['event']['eid']; ?>"><?php echo $event_unlock_now['event']['subject']; ?></a></div>
+                <div class="tright"><div class="status running">进行中</div></div>
+            </div>
+            <div class="datetime"><?php echo date('Y-m-d H:i:s',$event_unlock_now['event']['createtime']); ?></div>
+            <ul class="event_detail mb20">
+<?php
+    if ($event_unlock_now['event']['summary']){
+?>
+                                <li>
+<a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $event_unlock_now['event']['etypeid'];?>">
+<img border="0" align="right" width=100px height=100px alt="事件类型<?php echo $event_unlock_now['event']['etypeid'];?>" src="/images/type_icons/<?php echo $event_unlock_now['event']['etypeid'];?>.png">
+</a>
+<span class="dt"><?php echo $event_unlock_now['event']['summary']?></span>
+
+</li>
+<?php
+}
+else{
+?>
+<a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $event_unlock_now['event']['etypeid'];?>">
+<img border="0" align="right" width=100px height=100px alt="事件类型<?php echo $event_unlock_now['event']['etypeid'];?>" src="/images/type_icons/<?php echo $event_unlock_now['event']['etypeid'];?>.png">
+</a>
+                            <li><span class="dt">事件描述：</span><span><?php echo $event_unlock_now['event']['description']; ?></span></li>
+                            <li><span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$event_unlock_now['event']['createtime']); ?></span></li>
+                            <li><span class="dt">事件影响：</span><span><?php echo $event_unlock_now['event']['affect']; ?></span></li>
+                            <li><span class="dt">事件等级：</span><span>P<?php echo $event_unlock_now['event']['level']; ?></span><a href="levelinfo.php" target="_blank">[等级说明]</a></li>
+
+<?php
+}
+?>
+
+            </ul>						
+            <table class="table mb20">
+                <tr class="thead" >
+                    <td style="white-space:nowrap;">序号</td>
+                    <td>处理时间</td>
+                    <td>处理信息</td>
+                    <td style="white-space:nowrap;">处理人</td>
+                </tr>
+<?php if(!empty($event_unlock_now['schedule'])){foreach($event_unlock_now['schedule'] as $key=>$v){ ?>
+                <tr>
+                    <td><?php echo $key+1;?></td>
+                    <td><?php echo date('Y-m-d H:i:s',$v['s_time']); ?></td>
+                    <td style="text-align:left;"><?php echo $v['s_subject']; ?></td>
+                    <td style="white-space:nowrap;"><?php echo $v['s_user']; ?></td>
+                </tr>
+<?php } } ?>
+            </table>						
+            <div class="event_footer">
+                <div class="footer">
+                    <a href="index.php?op=detail&eid=<?php echo $event_unlock_now['event']['eid']; ?>" class="view_detail">详细内容</a> |
+                    <span class="view_detail">查看次数: <?php echo $event_unlock_now['event']['view_count'];?></span> |
+                    <span class="view_detail">评论数: <?php echo  $event_unlock_now['comment_count']['count(*)'];?></span> |
+<?php if(empty($event_unlock_now['att'])){?>
+                    <a href="index.php?op=attention&eid=<?php echo $event_unlock_now['event']['eid']; ?>" class="focus" >加入关注</a>
+<?php }else{ ?>
+                    <a href="index.php?op=delatt&eid=<?php echo $event_unlock_now['event']['eid']; ?>">取消关注</a>
+<?php } ?>
+                </div>
+            </div>
+        </div>
+    </li>
+<?php } ?>
+
+        <?php if(!empty($event_page)){foreach($event_page as $key=>$v){ ?>
+        <div
+        <?php if($v['islock']==1){echo "class='event'";}else{echo "class='event highlight'";} ?>>
+            <div class="event_title">
+                <div class="title">
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a>
+                </div>
+                <div class="tright">
+                    <div <?php if($v['islock']==0){ echo "class='status running'";}else{echo "class='status'";} ?>><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?>
+                    </div>
+                </div>
+            </div>
+            <div class="datetime">
+                <?php echo date('Y-m-d H:i:s',$v['createtime']); ?>
+            </div>
+            <ul class="event_detail mb20">
+<?php
+    if ($v['summary']){
+?>
+                <li>
+<a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid'];?>">
+<img border="0" align="right" width=100px height=100px alt="事件类型<?php echo $v['etypeid'];?>" src="/images/type_icons/<?php echo $v['etypeid'];?>.png">
+</a>
+<span class="dt"><?php echo $v['summary']?></span>
+
+</li>
+
+<?php
+}
+else{
+?>
+<a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid'];?>">
+<img border="0" align="right" width=100px height=100px alt="事件类型<?php echo $v['etypeid'];?>" src="/images/type_icons/<?php echo $v['etypeid'];?>.png">
+</a>
+                            <li><span class="dt">事件描述：</span><span><?php echo $v['description']; ?></span></li>
+                            <li><span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></span></li>
+                            <li><span class="dt">影响时长：</span><span><?php echo $v['affecttime']."分钟";?></span></li>
+                            <li><span class="dt">事件影响：</span><span><?php echo $v['affect']; ?></span></li>
+                            <li><span class="dt">事件等级：</span><span>P<?php echo $v['level']; ?></span><a href="levelinfo.php" target="_blank">[等级说明]</a></li>
+<?
+}
+?>
+
+            </ul>
+            <div class="event_footer">
+                <div class="footer">
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail">详细内容</a> |
+                    <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
+                    <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
+<?php if(empty($v['att'])){ ?>
+                    <a href="index.php?op=attention&eid=<?php echo $v['eid']; ?>" class="focus" >加入关注</a><?php }else{ ?><a href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
+<?php } ?>
+                </div>
+            </div>
+        </div>
+<?php } } ?>
+</ul>
+                   <!-- 
+                    <div class="page mt10">
+                        <a href="<?php if($page>1){ ?>index.php?op=page&page=<?php echo $page-1;} ?>">上一页</a>
+                        <span>|</span>
+                        <span><?php echo $page; ?>/<?php echo $allpage; ?></span><span>|</span>
+                        <a href="<?php if($page<$allpage){ ?>index.php?op=page&page=<?php echo $page+1;} ?>">下一页</a>
+                    </div>
+                    -->
+</div>		
+
+
+
+<div id="pageTabs-2" class="hide"></div>		<div id="pageTabs-3" class="hide"></div>		<div id="pageTabs-4" class="hide"></div>
+<div id="pageTabs-5" class="hide"></div>	</div>	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+
+
+</body>
+</html>
