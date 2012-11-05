@@ -1,30 +1,9 @@
--- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
--- http://www.phpmyadmin.net
---
--- 主机: localhost
--- 生成日期: 2012 年 11 月 05 日 13:55
--- 服务器版本: 5.5.24
--- PHP 版本: 5.3.10-1ubuntu3.4
+
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- 数据库: `vesta`
---
-
--- --------------------------------------------------------
-
---
--- 表的结构 `attention`
---
 
 DROP TABLE IF EXISTS `attention`;
 CREATE TABLE IF NOT EXISTS `attention` (
@@ -35,11 +14,7 @@ CREATE TABLE IF NOT EXISTS `attention` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `comment`
---
 
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE IF NOT EXISTS `comment` (
@@ -51,11 +26,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   PRIMARY KEY (`cid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `event`
---
 
 DROP TABLE IF EXISTS `event`;
 CREATE TABLE IF NOT EXISTS `event` (
@@ -81,11 +52,7 @@ CREATE TABLE IF NOT EXISTS `event` (
   PRIMARY KEY (`eid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=265 ;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `mailgroup`
---
 
 DROP TABLE IF EXISTS `mailgroup`;
 CREATE TABLE IF NOT EXISTS `mailgroup` (
@@ -97,11 +64,7 @@ CREATE TABLE IF NOT EXISTS `mailgroup` (
   KEY `uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `measure`
---
 
 DROP TABLE IF EXISTS `measure`;
 CREATE TABLE IF NOT EXISTS `measure` (
@@ -114,11 +77,7 @@ CREATE TABLE IF NOT EXISTS `measure` (
   PRIMARY KEY (`mid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `report`
---
 
 DROP TABLE IF EXISTS `report`;
 CREATE TABLE IF NOT EXISTS `report` (
@@ -131,11 +90,7 @@ CREATE TABLE IF NOT EXISTS `report` (
   PRIMARY KEY (`eid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `schedule`
---
 
 DROP TABLE IF EXISTS `schedule`;
 CREATE TABLE IF NOT EXISTS `schedule` (
@@ -149,11 +104,7 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   PRIMARY KEY (`sid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
--- --------------------------------------------------------
 
---
--- 表的结构 `user`
---
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
@@ -165,6 +116,4 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=386 ;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
