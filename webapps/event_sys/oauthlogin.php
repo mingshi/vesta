@@ -2,9 +2,8 @@
 require_once '../libraries/common.lib.php';
 $client_id = 'sl11011';/*在oAuth注册的应用名*/
 $client_secret = 'd32a2b01';/*在oAuth注册的应用密码*/
-//$oauth_url = 'https://auth.corp.anjuke.com';/*线上oAuth地址*/
+$oauth_url = 'https://auth.corp.anjuke.com';/*线上oAuth地址*/
 
-$oauth_url = 'http://192.168.201.99/oauth/oauth';
 if(!session_id()) session_start();
 /*
 * 用户身份认证，

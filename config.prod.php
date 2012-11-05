@@ -1,13 +1,14 @@
 <?php
-$cfg['database']['host']='127.0.0.1';
+$cfg['database']['host']='10.10.8.35';
 $cfg['database']['port']='3306';
-$cfg['database']['user']='root';
-$cfg['database']['password']='123456';
+$cfg['database']['user']='uvesta';
+$cfg['database']['password']='pvesta';
 $cfg['database']['dbname']='vesta';
 
 
-$cfg['ldapurl'] = "http://192.168.1.8/ldap/ldap_anjuke_login.php";
-$cfg['hostname'] = "ops-event.yundu.dev.anjuke.com";
+$cfg['ldapurl'] = "http://10.11.6.164/ldap/2.1/ldap_anjuke_login.php";
+$cfg['hostname'] = "vesta.corp.anjuke.com";
+
 
 $cfg['checkermail'] = array(
     '1' => 'mingshi@anjuke.com',
