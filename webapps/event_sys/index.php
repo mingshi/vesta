@@ -670,7 +670,7 @@ case 'do_add':
         $page = $params['page'];
         if(!$page)$page = 1;
         $total = get_event_count($pdo);
-        $offset = 5;
+        $offset = 50;
         $allpage = ceil($total['total']/$offset);
         if(!$op) $op="page";
         if($op=="page"){
