@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="pagewrap">
-        <div class="homemaincontent">
+        <div class="homemaincontentindex">
             <ul id="pageTabs" class="pagetabs">
                 <li class="selected"><a href="index.php">首页</a></li>
                 <li><a href="index.php?op=lastweek">上周所有事件</a></li>
@@ -24,98 +24,8 @@
 				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="list.php" method="post"><input class="searchinput" id="keywds" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton" onclick="javascript:document.getElementById('keywds').value='';"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
 			</div>
 
-
-            <style tyle="text/css">
-                .tj {
-                    width: 25%;
-                    float: left;
-                    font-weight: bold;
-                    font-size: 14px;
-                    color: #4F81BC;
-                }
-                .tb_tj {
-                    border-collapse: collapse;
-                    width: 95%;
-                }
-                .tb_tr th{
-                    border: 1px solid #777;
-                    background-color: #CCCCCC;
-                }
-                .tb_td td {
-                    border: 1px solid #777;
-                    color: #264967;
-                    text-align: center;
-                }
-            </style>
-            <div style="width:100%;height:230px;">
-                <div style="color:#4F81BC;font-size:14px;font-weight:bold;overflow:hidden;">最近一个月TOP排名</div>
-                <div class="tj">
-                    <div>
-                        <table class="tb_tj" style="margin:10px 0 0 0;">
-                            <tr class="tb_tr">
-                                <th>事业部</th>
-                                <th>事件数</th>
-                            </tr>
-                            <?php foreach($by_division as $v){ ?>
-                            <tr class="tb_td">
-                                <td><a href="index.php?op=params&params_name=division&params_value=<?php echo $v['division']; ?>" target="_blank"><?php echo $cfg['division'][$v['division']]; ?></td>
-                                <td><?php echo $v['total']; ?></td>
-                            </tr>
-                            <?php }  ?>
-                        </table>
-                    </div>
-                </div>
-                <div class="tj">
-                    <div>
-                        <table class="tb_tj" style="margin:10px 0 0 0;">
-                            <tr class="tb_tr">
-                                <th>类型</th>
-                                <th>事件数</th>
-                            </tr>
-                            <?php foreach($by_type as $v){ ?>
-                            <tr class="tb_td">
-                                <td><a href="index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid']; ?>" target="_blank"><?php echo $cfg['etype'][$v['etypeid']]; ?></td>
-                                <td><?php echo $v['total']; ?></td>
-                            <?php } ?>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                    
-
-                <div class="tj">
-                    <div>
-                        <table class="tb_tj" style="margin:10px 0 0 0;">
-                            <tr class="tb_tr">
-                                <th>责任人</th>
-                                <th>事件数</th>
-                            </tr>
-                            <?php foreach($by_who as $v){ ?>
-                            <tr class="tb_td">
-                                <td><a href="index.php?op=params&params_name=who&params_value=<?php echo $v['who']; ?>" target="_blank"><?php echo $v['who']; ?></td>
-                                <td><?php echo $v['total']; ?></td>
-                            </tr>
-                            <?php } ?>
-                        </table>
-                    </div>
-                </div>
-                <div class="tj">
-                    <div>
-                        <table class="tb_tj" style="margin:10px 0 0 0;">
-                            <tr class="tb_tr">
-                                <th>事件ID</th>
-                                <th>影响时长(分钟)</th>
-                            </tr>
-                            <?php foreach($by_affecttime as $v){ ?>
-                            <tr class="tb_td">
-                                <td><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" target="_blank"><?php echo $v['eid']; ?></a></td>
-                                <td><?php echo $v['affecttime']; ?></td>
-                            </tr>
-                            <?php } ?>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<br>
+            
 <?php if(!empty($event_unlock_now['event']) && $page==1){ ?>                
 <ul class="eventlist">
     <li>
@@ -171,7 +81,7 @@ else{
             </table>						
             <div class="event_footer">
                 <div class="footer">
-                    <a href="index.php?op=detail&eid=<?php echo $event_unlock_now['event']['eid']; ?>" class="view_detail">详细内容</a> |
+                    <a href="index.php?op=detail&eid=<?php echo $event_unlock_now['event']['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
                     <span class="view_detail">查看次数: <?php echo $event_unlock_now['event']['view_count'];?></span> |
                     <span class="view_detail">评论数: <?php echo  $event_unlock_now['comment_count']['count(*)'];?></span> |
 <?php if(empty($event_unlock_now['att'])){?>
@@ -231,7 +141,7 @@ else{
             </ul>
             <div class="event_footer">
                 <div class="footer">
-                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail">详细内容</a> |
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
                     <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
                     <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
 <?php if(empty($v['att'])){ ?>

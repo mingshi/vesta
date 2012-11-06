@@ -161,6 +161,20 @@ case 'do_add':
         if(!$event_info) msg_redirect('index.php','Parameter error OR No result!');
         $template = 'event_detail';
         break;
+    case 'edit':
+        if(!session_id())session_start();
+        if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
+            $username = $_SESSION['name'];
+        }
+        $eid = intval($params['eid']);
+        update_view_count ($pdo,$eid);
+        $event_info = get_event_info($pdo,$eid);
+        $report = get_event_report($pdo,$eid);
+        $measure = get_event_measure($pdo,$eid);
+		$comment = get_event_comment($pdo,$eid);
+        if(!$event_info) msg_redirect('index.php','Parameter error OR No result!');
+        $template = 'event_edit';
+        break;
     case 'week':
         $event_week = get_week_event($pdo);
         $template = 'week_event';
@@ -443,6 +457,10 @@ case 'do_add':
     break;	
 		
     case 'report':
+        $by_division = get_by_division($pdo);
+        $by_type = get_by_type($pdo);
+        $by_who = get_by_who($pdo);
+        $by_affecttime = get_by_affecttime($pdo);
         $nowyear = date('Y',time());
         $nowmonth = date('m',time());
         //每月时间统计
@@ -639,10 +657,7 @@ case 'do_add':
         break;
     default:
         // 按照事业部统计
-        $by_division = get_by_division($pdo);
-        $by_type = get_by_type($pdo);
-        $by_who = get_by_who($pdo);
-        $by_affecttime = get_by_affecttime($pdo);
+
         if(!session_id()) session_start();
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
             $user = $_SESSION['name'];

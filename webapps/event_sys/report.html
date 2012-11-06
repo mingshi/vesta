@@ -19,24 +19,123 @@
                 <li><a href="search.html">搜索</a></li>
                 <li><a href="index.php?op=add">添加事件</a></li>
             </ul>
-            <div class="event mt15" style="width:70%;">
+<style tyle="text/css">
+                .tj {
+                    width: 25%;
+                    float: left;
+                    font-weight: bold;
+                    font-size: 14px;
+                    color: #4F81BC;
+                }
+                .tb_tj {
+                    border-collapse: collapse;
+                    width: 95%;
+                }
+                .tb_tr th{
+                    border: 1px solid #777;
+                    background-color: #CCCCCC;
+                }
+                .tb_td td {
+                    border: 1px solid #777;
+                    color: #264967;
+                    text-align: center;
+                }
+            </style>
+            <div style="height:230px;">
+                <div style="color:#4F81BC;font-size:14px;font-weight:bold;overflow:hidden;">最近一个月TOP排名</div>
+                <div class="tj">
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>事业部</th>
+                                <th>事件数</th>
+                            </tr>
+                            <?php foreach($by_division as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=params&params_name=division&params_value=<?php echo $v['division']; ?>" target="_blank"><?php echo $cfg['division'][$v['division']]; ?></td>
+                                <td><?php echo $v['total']; ?></td>
+                            </tr>
+                            <?php }  ?>
+                        </table>
+                </div>
+                <div class="tj">
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>类型</th>
+                                <th>事件数</th>
+                            </tr>
+                            <?php foreach($by_type as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid']; ?>" target="_blank"><?php echo $cfg['etype'][$v['etypeid']]; ?></td>
+                                <td><?php echo $v['total']; ?></td>
+                            <?php } ?>
+                            </tr>
+                        </table>
+                </div>
+                    
+
+                <div class="tj">
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>责任人</th>
+                                <th>事件数</th>
+                            </tr>
+                            <?php foreach($by_who as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=params&params_name=who&params_value=<?php echo $v['who']; ?>" target="_blank"><?php echo $v['who']; ?></td>
+                                <td><?php echo $v['total']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                </div>
+                <div class="tj">
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>事件ID</th>
+                                <th>影响时长(分钟)</th>
+                            </tr>
+                            <?php foreach($by_affecttime as $v){ ?>
+                            <tr class="tb_td">
+                                <td><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" target="_blank"><?php echo $v['eid']; ?></a></td>
+                                <td><?php echo $v['affecttime']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="event mt15" >
                 <h1>月度事件走势图</h1>
                 <div class="row">从：<input type="text" id="start" name="start" /> 到：<input type="text" id="stop" name="stop" />&nbsp;&nbsp;<input type="button" id="monthsearch" name="monthsearch" value="Search" /></div>
                 <div id="chartdiv" style="width: 100%; height: 300px;"></div>
             </div>
-            <div class="event mt15" style="width:70%;">
+            <div class="event mt15" >
                 <h1>可用度走势图</h1>
                 <div class="row">从：<input type="text" id="useable_start" name="useable_start" /> 到：<input type="text" id="useable_stop" name="useable_stop" />&nbsp;&nbsp;<input type="button" id="useablesearch" name="useablesearch" value="Search" /></div>
                 <div id="chartdiv_useable" style="width: 100%; height: 300px;"></div>
             </div>
 
-            <div class="event mt15" style="width:70%;">
+            <div class="event mt15" >
                 <h1>类别走势图</h1>
                 <div class="row">从：<input type="text" id="type_start" name="type_start" /> 到：<input type="text" id="type_stop" name="type_stop" />&nbsp;&nbsp;<input type="radio" id="mw" name="mw" value="1" checked />按月&nbsp;&nbsp;<input type="radio" id="mw" name="mw" value="2" />按周&nbsp;&nbsp;<input type="button" id="typesearch" name="typesearch" value="Search" /></div>
                 <div id="chartdiv_type" style="width: 100%; height: 300px;"></div>
             </div>
 
-            <div class="event mt15" style="width:70%;">
+            <div class="event mt15" >
                 <h1>事业部走势图</h1>
                 <div class="row">从：<input type="text" id="division_start" name="division_start" /> 到：<input type="text" id="division_stop" name="division_stop" />&nbsp;&nbsp;<input type="radio" id="mw_division" name="mw_division" value="1" checked />按月&nbsp;&nbsp;<input type="radio" id="mw_division" name="mw_division" value="2" />按周&nbsp;&nbsp;<input type="button" id="divisionsearch" name="divisionsearch" value="Search" /></div>
                 <div id="chartdiv_division" style="width: 100%; height: 300px;"></div>
