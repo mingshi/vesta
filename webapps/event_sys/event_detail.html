@@ -21,7 +21,7 @@
                     <div class="event mt15">
                         <div class="event_title"><div class="title"><?php echo $event_info['base']['subject']; ?></div><?php if($cfg['authority'][$username]==1){?>&nbsp;<input type="button" value="编辑事件" onclick="location.href='index.php?op=edit&eid=<?php echo $event_info['base']['eid'];?>'"><?php }?></div>
 
-                        <table class="mb80">
+                        <table class="mb80" border="1px"  bordercolor="" style="border-collapse:collapse;table-layout:fixed;word-break:break-all;word-wrap:break-all;">
 <tbody>
 <tr><th width=15%></th><td width=35%></td><th width=15%></th><td width=35%></td></tr>
 <tr><th class = "detail_event"><span class="dt">事件描述：</span></th><td><span><?php echo $event_info['base']['description']; ?></span></td></tr>
@@ -65,7 +65,6 @@
 										echo substr($text, 0, -1);
 									?>
                                 </div></td></tr>
-<tr><td></td><td></td><td></td><td></td></tr>
 <tr><td></td><td></td><td></td><td></td></tr>
 </tbody>
                         </table>
