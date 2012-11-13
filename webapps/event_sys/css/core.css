@@ -115,7 +115,7 @@ border-style:solid;
 /* page css */
 .homemaincontent {
 margin: 12px auto 20px;
-width:850px;
+width:800px;
 }
 .pagetabs {
 overflow:hidden;
@@ -338,7 +338,7 @@ margin-bottom:20px;
 
 .mb80{
 margin-bottom:20px;
-border: 1px solid #D7D7D7;
+border: 1px solid #F0F0F0;
 width:100%;
 }
 
@@ -393,6 +393,7 @@ min-height:650px;
 }
 .homemaincontent {
 min-height:650px;
+width:850px;
 }
 .homemaincontentindex {
 min-height:650px;
