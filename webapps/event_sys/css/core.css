@@ -338,8 +338,7 @@ margin-bottom:20px;
 
 .mb80{
 margin-bottom:20px;
-border-width:1px;
-border-style:solid;
+border: 2px solid #F7F7F7;
 width:100%;
 }
 
