@@ -342,6 +342,17 @@ border: 2px solid #F7F7F7;
 width:100%;
 }
 
+.oioi{
+border-top:5px solid #f7f7f7;
+border-bottom:5px solid #f7f7f7;
+border-collapse: collapse;
+}
+.oioi td{
+border-top:1px solid #f7f7f7;}
+
+.col1{width:10%;}
+.col2{width:40%;}
+
 .caption td {
 text-align:left;
 padding-left:2px;
