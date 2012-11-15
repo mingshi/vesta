@@ -77,7 +77,7 @@
 
                         <table class="table mb60">
                             <tr class="caption"><td colspan="4">事件处理经过</td></tr>
-                            <tr class="thead" ><td>序号</td><td>处理时间</td><td>处理信息</td><td style="white-space:nowrap;">处理人</td></tr>
+                            <tr class="thead" ><td width=5%>序号</td><td width = 20%>处理时间</td><td width = 60%>处理信息</td><td width = 10% style="white-space:nowrap;">处理人</td></tr>
                             <?php if(!empty($event_info['schedule'])){foreach($event_info['schedule'] as $key=>$v){ ?>
                             <tr><td><?php echo $key+1; ?></td><td><?php echo date('Y-m-d H:i:s',$v['s_time']); ?></td><td style="text-align:left;"><?php echo $v['s_subject']; ?></td><td style="white-space:nowrap;"><?php echo $v['s_user']; ?></td></tr>
                             <?php } } ?>
