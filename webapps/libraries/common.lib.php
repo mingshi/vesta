@@ -14,12 +14,12 @@ $pdo = SolrDb::getLink(
     $cfg['database']['dbname']
 );//实例化pdo链接
 
-$pdo_cost = SolrDb::getLink(
+/*$pdo_cost = SolrDb::getLink(
     $cfg['database_cost']['host'],
     $cfg['database_cost']['user'],
     $cfg['database_cost']['password'],
     $cfg['database_cost']['dbname']
-);
+);*/
 
 $params = get_params();
 
