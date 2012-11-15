@@ -21,10 +21,10 @@ case 'm_add':
     $measure['mtime'] = strtotime($params['mtime']);
     $measure['status'] = intval($params['status']);
     if(!$measure['measure'] || !$measure['muser'] || !$measure['mtime']){
-        msg_redirect('index.php?op=detail&eid='.$measure['eid'],'填写完整再提交！');
+        msg_redirect('index.php?op=edit&eid='.$measure['eid'],'填写完整再提交！');
     }else{
         if(insert_measure($pdo,$measure)){
-            msg_redirect('index.php?op=detail&eid='.$measure['eid'],'增加成功');
+            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'增加成功');
             $email_arr = get_email_arr($pdo,$measure['eid']);
             $esub = get_event_info($pdo,$measure['eid']);
             $subject = "您关注的事件：".$esub['base']['subject']."有更新";
@@ -36,7 +36,7 @@ case 'm_add':
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         }else{
-            msg_redirect('index.php?op=detail&eid='.$measure['eid'],'增加失败');
+            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'增加失败');
         }
     }
     break;
@@ -50,10 +50,10 @@ case 'm_edit':
     $measure['mtime'] = strtotime($params['c_time_'.$measure['mid']]);
     $measure['status'] = intval($params['mstatus']);
     if(!$measure['measure'] || !$measure['muser'] || !$measure['mtime']){
-        msg_redirect('index.php?op=detail&eid='.$measure['eid'],'填写完整再提交！');
+        msg_redirect('index.php?op=edit&eid='.$measure['eid'],'填写完整再提交！');
     }else{
         if(update_measure($pdo,$measure) || update_content($pdo,$content,$eid)){
-            msg_redirect('index.php?op=detail&eid='.$measure['eid'],'更新成功');
+            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'更新成功');
             $email_arr = get_email_arr($pdo,$measure['eid']);
             $esub = get_event_info($pdo,$measure['eid']);
             $subject = "您关注的事件：".$esub['base']['subject']."有更新";
@@ -65,7 +65,7 @@ case 'm_edit':
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         }else{
-            msg_redirect('index.php?op=detail&eid='.$measure['eid'],'更新失败');
+            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'更新失败');
         }
     }
     break;
@@ -73,9 +73,9 @@ case 'm_del':
     $mid = intval($params['mid']);
     $eid = intval($params['eid']);
     if(delete_measure($pdo,$mid)){
-        msg_redirect('index.php?op=detail&eid='.$eid);
+        msg_redirect('index.php?op=edit&eid='.$eid);
     }else{
-        msg_redirect('index.php?op=detail&eid='.$eid,'删除失败！');
+        msg_redirect('index.php?op=edit&eid='.$eid,'删除失败！');
     }
     break;
 case 'do_add':
@@ -201,11 +201,11 @@ case 'do_add':
         $schedule['s_time'] = strtotime($params['s_start']);
         $schedule['eid'] = intval($params['s_eid']);
         if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']){
-            msg_redirect('index.php?op=detail&eid='.$schedule['eid'],'add schedule failed');
+            msg_redirect('index.php?op=edit&eid='.$schedule['eid'],'add schedule failed');
         }
         if(insert_schedule($pdo,$schedule)){
             //if(update_event_stype($pdo,$schedule)){
-                msg_redirect('index.php?op=detail&eid='.$schedule['eid'],'add schedule success');
+                msg_redirect('index.php?op=edit&eid='.$schedule['eid'],'add schedule success');
                 $email_arr = get_email_arr($pdo,$schedule['eid']);
             $esub = get_event_info($pdo,$schedule['eid']);
             $subject = "您关注的事件：".$esub['base']['subject']."有更新";
@@ -220,7 +220,7 @@ case 'do_add':
               //  msg_redirect('index.php?op=detail&eid='.$schedule['eid'],'will not update event stypeid');
            // }
         }else{
-            msg_redirect('index.php?op=detail&eid='.$schedule['eid'],'add schedule failed');
+            msg_redirect('index.php?op=edit&eid='.$schedule['eid'],'add schedule failed');
         }
         break;
 	case 'c_add':
@@ -316,7 +316,7 @@ case 'do_add':
                 }
         }
         if(update_content($pdo,$content,$eid)){
-            msg_redirect('index.php?op=detail&eid='.$eid,'modify content success!');
+            msg_redirect('index.php?op=edit&eid='.$eid,'modify content success!');
             $email_arr = get_email_arr($pdo,$eid);
             $esub = get_event_info($pdo,$eid);
             $subject = "您关注的事件：".$esub['base']['subject']."有更新";
@@ -328,7 +328,7 @@ case 'do_add':
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         }else{
-            msg_redirect('index.php?op=detail&eid='.$eid,'failed!');
+            msg_redirect('index.php?op=edit&eid='.$eid,'failed!');
         } 
         break;
     case 'e_edit':
@@ -363,10 +363,10 @@ case 'do_add':
         } 
         if($event['islock']==1){
             if($event['createtime']>$event['solvetime']){
-                msg_redirect('index.php?op=detail&eid='.$event['eid'],'关闭时间不能小于创建时间');
+                msg_redirect('index.php?op=edit&eid='.$event['eid'],'关闭时间不能小于创建时间');
             }
            // $measure = get_event_measure($pdo,$event['eid']);
-            // if(!$measure) msg_redirect('index.php?op=detail&eid='.$event['eid'],'必须填写改进措施之后才能关闭');
+            // if(!$measure) msg_redirect('index.php?op=edit&eid='.$event['eid'],'必须填写改进措施之后才能关闭');
             $event['islock'] = 0;
             $subject = $event['subject']."即将关闭";
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
@@ -380,9 +380,9 @@ case 'do_add':
         
             $event['affecttime'] = ceil(($event['solvetime']-$event['createtime'])/60);
             if(update_event($pdo,$event)){
-                msg_redirect('index.php?op=detail&eid='.$event['eid'],'edit event success');
+                msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event success');
             }else{
-                msg_redirect('index.php?op=detail&eid='.$event['eid'],'edit event failed');
+                msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event failed');
             }
        // }
             break;
@@ -440,9 +440,9 @@ case 'do_add':
         $schedule['s_time'] = strtotime($params['edit_stime_'.$schedule['sid']]);
         if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']) msg_redirect('index.php?op=detail&eid='.$params['eid'],'empty any option!');
         if(update_schedule($pdo,$schedule) || update_content($pdo,$content,$eid)){
-            msg_redirect('index.php?op=detail&eid='.$params['eid'],'Oh Yeah! success!!'); 
+            msg_redirect('index.php?op=edit&eid='.$params['eid'],'Oh Yeah! success!!'); 
         }else{
-            msg_redirect('index.php?op=detail&eid='.$params['eid'],'edit schedule failed');
+            msg_redirect('index.php?op=edit&eid='.$params['eid'],'edit schedule failed');
         }
         break;
 		
@@ -450,9 +450,9 @@ case 'do_add':
 		$sid = intval($params['sid']);
 		$eid = intval($params['eid']);
 		if(delete_schedule($pdo,$sid)){
-			msg_redirect('index.php?op=detail&eid='.$eid);
+			msg_redirect('index.php?op=edit&eid='.$eid);
 		}else{
-			msg_redirect('index.php?op=detail&eid='.$eid,'删除失败！');
+			msg_redirect('index.php?op=edit&eid='.$eid,'删除失败！');
 		}
     break;	
 		
