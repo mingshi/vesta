@@ -657,8 +657,23 @@ case 'do_add':
         }
 
         break;
+    case 'all':
+        $page = $params['page'];
+        if(!$page)$page = 1;
+        $total = get_event_count($pdo);
+        $offset = 10;
+        $allpage = ceil($total['total']/$offset);
+            if($page){
+                $limit = (($page-1) * $offset).', '.$offset;
+                    $event_page = get_all_event_page($pdo,$limit);
+            }
+        $template = 'event_all';
+        break;
+
+
+
+
     default:
-        // 按照事业部统计
 
         if(!session_id()) session_start();
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){

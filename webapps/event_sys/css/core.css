@@ -438,6 +438,9 @@ margin-left:300px;
 clear:both;
 border:1px solid #777;
 padding-left:15px;
+padding-right:15px;
+float:right;
+
 }
 .page a,.page span {
 color:#006699;

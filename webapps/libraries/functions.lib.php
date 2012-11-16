@@ -115,6 +115,14 @@ function get_event_page($pdo,$limit){
     }    
 }
 
+function get_all_event_page($pdo,$limit){
+    $event_page = pdo_fetch_all($pdo,'select * from event order by createtime desc limit '.$limit);
+    foreach($event_page as $k=>$v){
+        $event_page[$k]['comment_count'] = pdo_fetch($pdo,'select count(*) from comment where eid='.$v['eid']);
+    }
+    return $event_page;
+}
+
 function get_my_att($pdo,$uid){
     return pdo_fetch_all($pdo,'select a.time,e.* from attention a left join event e ON e.eid=a.eid where a.uid='.$uid.' order by e.createtime desc');
 }
