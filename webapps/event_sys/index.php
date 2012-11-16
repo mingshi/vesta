@@ -389,20 +389,27 @@ case 'do_add':
        // }
             break;
     case 'checkclose':
+        if(!session_id())session_start();
         $eid = intval($params['eid']);
-        $ok = intval($params['ok']);
-        if($ok === 1) checkclose($pdo,$eid);
-        $esub = get_event_info($pdo,$eid);
-        $email_arr = get_email_arr($pdo,$eid);
-        $subject = "您关注的事件 ".$esub['base']['subject']." 已经关闭";
-        $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-        $body = "详情点击："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$eid."'>这里查看</a>";
-        $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-        $smtp->debug = false;
-        foreach($email_arr as $k=>$v){
-        $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
+        if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])) $username = $_SESSION['name'];
+        if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['close'][$username]==1){
+            $ok = intval($params['ok']);
+            if($ok === 1) checkclose($pdo,$eid);
+            $esub = get_event_info($pdo,$eid);
+            $email_arr = get_email_arr($pdo,$eid);
+            $subject = "您关注的事件 ".$esub['base']['subject']." 已经关闭";
+            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+            $body = "详情点击："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$eid."'>这里查看</a>";
+            $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
+            $smtp->debug = false;
+            foreach($email_arr as $k=>$v){
+                $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
+            }
+            header("Location:index.php");
         }
-        header("Location:index.php");
+        else{
+            msg_redirect('index.php?op=detail&eid='.$eid,'您无权关闭该事件');
+        }
         break;
     case 'myatt':
         if(!session_id())session_start();
