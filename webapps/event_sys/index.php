@@ -370,7 +370,9 @@ case 'do_add':
             $event['islock'] = 0;
             $subject = $event['subject']."即将关闭";
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = "事件标题：".$event['subject']."<br>"."事件描述：".$event['description']."<br>"."事件影响：".$event['affect']."<br>"."解决时间：".$params['solvetime']."<br>"."事件类型：".$cfg['etype'][$event['etypeid']]."<br>"."事件等级：".$event['level']."<br>"."责任部门：".$cfg['division'][$event['division']]."<br>"."责任人：".$event['who']."<br>"."详情："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$event['eid']."'>点击查看详情</a>.<br><a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=checkclose&eid=".$event['eid']."&ok=1'>关闭</a>";
+            $body = "事件标题：".$event['subject']."<br>"."事件描述：".$event['description']."<br>"."事件影响：".$event['affect']."<br>"."解决时间：".$params['solvetime']."<br>"."事件类型：".$cfg['etype'][$event['etypeid']]."<br>"."事件等级：".$event['level']."<br>"."责任部门：".$cfg['division'][$event['division']]."<br>"."责任人：".$event['who']."<br>"."详情："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$event['eid']."'>点击查看详情</a>";
+
+//".<br><a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=checkclose&eid=".$event['eid']."&ok=1'>关闭</a>";
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach ($cfg['checkermail'] as $v){

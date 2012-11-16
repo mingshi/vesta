@@ -19,7 +19,13 @@
                 <div id="pageTabs-1">
                     <?php if(!isset($_SESSION['user']) || $_SESSION['user'] != true || !isset($_SESSION['name']) || (isset($_SESSION['user']) && $_SESSION['user']===true) && isset($_SESSION['name']) ){ ?>
                     <div class="event mt15">
-                        <div class="event_title"><div class="title"><?php echo $event_info['base']['subject']; ?></div><?php if($cfg['authority'][$username]==1){?>&nbsp;<input type="button" value="编辑事件" onclick="location.href='index.php?op=edit&eid=<?php echo $event_info['base']['eid'];?>'"><?php }?></div>
+                        <div class="event_title"><div class="title"><?php echo $event_info['base']['subject']; ?></div><?php if($cfg['authority'][$username]==1){?>&nbsp;
+<input type="button" value="编辑事件" onclick="location.href='index.php?op=edit&eid=<?php echo $event_info['base']['eid'];?>'">
+<?php }?>
+<?php if($cfg['close'][$username]==1){?>
+<input type="button" value="关闭事件" onclick="location.href='index.php?op=checkclose&eid=<?php echo $event_info['base']['eid'];?>&ok=1'">
+
+<?php }?></div>
 
 <table class="oioi" style="word-break:break-all;word-wrap:break-all;">
 <tbody>

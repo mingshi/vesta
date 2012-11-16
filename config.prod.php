@@ -90,6 +90,12 @@ $cfg['authority'] = array(
     'huashengliao' => '1',
 	'yundu' => '1',
 );
+
+$cfg['close'] = array(
+    'kevinkuang' => '1',
+    'yundu' => '1',
+);
+
 $cfg['color'] = array(
     '1' => '#C72C95',
     '2' => '#D8E0BD',
