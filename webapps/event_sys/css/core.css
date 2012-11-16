@@ -330,10 +330,14 @@ top:10px;
 
 .mb20{
 margin-bottom:20px;
+word-break:break-all;
+word-wrap:break-all;
 }
 
 .mb60{
 margin-bottom:20px;
+word-break:break-all;
+word-wrap:break-all;
 }
 
 .mb80{
@@ -343,6 +347,7 @@ width:100%;
 }
 
 .oioi{
+width:100%;
 border-top:5px solid #f7f7f7;
 border-bottom:5px solid #f7f7f7;
 border-left:1px solid #f7f7f7;
@@ -351,8 +356,12 @@ border-collapse: collapse;
 table-layout: fixed;
 }
 
-.oioi td{
-border-top:1px solid #f7f7f7;}
+.oioj{
+width:100%;
+}
+
+.oioj td{
+border-bottom:1px solid #f7f7f7;}
 
 .col1{width:10%;}
 .col2{width:40%;}

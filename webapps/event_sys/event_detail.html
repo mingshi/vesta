@@ -20,31 +20,41 @@
                     <?php if(!isset($_SESSION['user']) || $_SESSION['user'] != true || !isset($_SESSION['name']) || (isset($_SESSION['user']) && $_SESSION['user']===true) && isset($_SESSION['name']) ){ ?>
                     <div class="event mt15">
                         <div class="event_title"><div class="title"><?php echo $event_info['base']['subject']; ?></div><?php if($cfg['authority'][$username]==1){?>&nbsp;<input type="button" value="编辑事件" onclick="location.href='index.php?op=edit&eid=<?php echo $event_info['base']['eid'];?>'"><?php }?></div>
-    
-                    <table class="oioi" style="word-break:break-all;word-wrap:break-all;">
+
+<table class="oioi" style="word-break:break-all;word-wrap:break-all;">
 <tbody>
-<tr><th class="col1"></th><td class="col2"></td><th class="col1"></th><td class="col2"></td></tr>
-<tr><th class = "detail_event"><span class="dt">事件描述：</span></th><td><span><?php echo $event_info['base']['description']; ?></span></td></tr>
-<tr><th class = "detail_event"><span class="dt">相关事件：</span></th><td><span>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">事件描述：</span></th><td width = 90%><span><?php echo $event_info['base']['description']; ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">相关事件：</span></th><td width = 90%><span>
 							<?php foreach ($event_info['relate'] as $key){
 									if ($key['eid']==$event_info['base']['eid']) continue;
 							?>
 							<a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank"><?php echo $key['subject'];?></a>
 							<?}?>
-							</span></td><td></td><td></td></tr>
-<tr><th class = "detail_event"><span class="dt">发生时间：</span></th><td><span><?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?></span></td><th class = "detail_event"><span class="dt">解决时间：</span></th><td><span><?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?></span></td></tr>
-<tr><th class = "detail_event"><span class="dt">影响时长：</span></th><td><span>
+							</span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">发生时间：</span></th><td width = 40%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?></span></td><th class = "detail_event" width = 10%><span class="dt">解决时间：</span></th><td width = 40%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">影响时长：</span></th><td width = 90%><span>
 					<?php if($event_info['base']['solvetime']){echo $event_info['base']['affecttime']."分钟";}else{echo "至今";} ?>
-				</span></td><td></td><td></td></tr>
-<tr><th class = "detail_event"><span class="dt">关闭时间：</span></th><td><span><?php if($event_info['base']['islock']==1){?><?php echo date('Y-m-d H:i:s',$event_info['base']['closetime']);?><?php } ?></span></td><td></td><td></td></tr>
-<tr><th class = "detail_event"><span class="dt">事件影响：</span></th><td><span><?php echo $event_info['base']['affect']; ?></span></td><td></td><td></td></tr>
-<tr><th class = "detail_event"><span class="dt">事件等级：</span></th><td><span>P<?php echo $event_info['base']['level']; ?></span><a href="levelinfo.php" target="_blank">[等级说明]</a></td><th class = "detail_event"><span class="dt">事件类型：</span></th><td><span><?php echo $cfg['etype'][$event_info['base']['etypeid']]; ?></span></td></tr>
-<tr><th class = "detail_event"><span class="dt">报告者：</span></th><td><span><?php echo $event_info['base']['fuser']; ?></span></td><td></td><td></td></tr>
-<tr><th class = "detail_event"><span class="dt">责任部门：</span></th><td><span><?php echo $cfg['division'][$event_info['base']['division']]; ?></span></td><th class = "detail_event"><span class="dt">责任人：</span></th><td><span><?php echo $event_info['base']['who']; ?></span></td></tr>
-<tr><th class = "detail_event"><span class="dt">状态：</span></th><td><span>
+				</span></td></tr>
+</tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">关闭时间：</span></th><td width = 90%><span><?php if($event_info['base']['islock']==1){?><?php echo date('Y-m-d H:i:s',$event_info['base']['closetime']);?><?php } ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">事件影响：</span></th><td width = 90%><span><?php echo $event_info['base']['affect']; ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">事件等级：</span></th><td width = 40%><span>P<?php echo $event_info['base']['level']; ?></span><a href="levelinfo.php" target="_blank">[等级说明]</a></td><th class = "detail_event" width = 10%><span class="dt">事件类型：</span></th><td width = 40%><span><?php echo $cfg['etype'][$event_info['base']['etypeid']]; ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">报告者：</span></th><td width = 90%><span><?php echo $event_info['base']['fuser']; ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">责任部门：</span></th><td width = 40%><span><?php echo $cfg['division'][$event_info['base']['division']]; ?></span></td><th class = "detail_event" width = 10%><span class="dt">责任人：</span></th><td width = 40%><span><?php echo $event_info['base']['who']; ?></span></td></tr></tbody></table></td></tr>
+
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">状态：</span></th><td width = 90%><span>
                                 <?php if($event_info['base']['islock']==0){echo "进行中";}else{echo "已关闭";} ?>
-                            </span></td><td></td><td></td></tr>
-<tr><th class = "detail_event"><span class="dt">通知到：</span></th><td><div style="word-wrap:break-word; width:75%">
+                            </span></td></tr></tbody></table></td></tr>
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">通知到：</span></th><td width = 90%><span>
                                     <?php
 										$mail = explode(",",$event_info['base']['tomail']);
                                                                                 $name = file_get_contents("data.txt");
@@ -64,9 +74,27 @@
 										}
 										echo substr($text, 0, -1);
 									?>
-                                </div></td></tr>
+                                </span></td></tr></tbody></table></td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </tbody>
                         </table>
+<br>
 
                         <div class="commondiv mb60">
                             <div class="commondiv_title">事件概述</div>
@@ -77,7 +105,7 @@
 
                         <table class="table mb60">
                             <tr class="caption"><td colspan="4">事件处理经过</td></tr>
-                            <tr class="thead" ><td width=5%>序号</td><td width = 20%>处理时间</td><td width = 60%>处理信息</td><td width = 10% style="white-space:nowrap;">处理人</td></tr>
+                            <tr class="thead" ><td width=5%>序号</td><td width = 20%>处理时间</td><td width = 65%>处理信息</td><td width = 10% style="white-space:nowrap;">处理人</td></tr>
                             <?php if(!empty($event_info['schedule'])){foreach($event_info['schedule'] as $key=>$v){ ?>
                             <tr><td><?php echo $key+1; ?></td><td><?php echo date('Y-m-d H:i:s',$v['s_time']); ?></td><td style="text-align:left;"><?php echo $v['s_subject']; ?></td><td style="white-space:nowrap;"><?php echo $v['s_user']; ?></td></tr>
                             <?php } } ?>
