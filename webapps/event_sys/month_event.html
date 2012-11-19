@@ -20,7 +20,7 @@
                         <li><a href="index.php?op=add">添加事件</a></li>
 		</ul>
 		<table class="table mt15">
-                    <tr class="thead"><td width=5%>编号</td><td width=19%>事件名称</td><td width=9%>事件类型</td><td width=7%>事件等级</td><td width=12%>发现时间</td><td width=12%>解决时间</td><td width=12%>影响时长(分钟)</td><td width=9%>责任部门</td><td width=6%>责任人</td><td width=7%>事件状态</td></tr>
+                    <tr class="thead"><td width=5%>编号</td><td width=21%>事件名称</td><td width=9%>事件类型</td><td width=7%>事件等级</td><td width=12%>发现时间</td><td width=12%>解决时间</td><td width=12%>影响时长(分钟)</td><td width=9%>责任部门</td><td width=6%>责任人</td><td width=7%>事件状态</td></tr>
                     <?php if(!empty($event_month)){foreach($event_month as $key=>$v){ ?>
                     <tr><td><?php echo $v['eid']; ?></td><td style="text-align:left;word-wrap: break-word;"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td><td><a href="list.php?op=searchlist&etypeid=<?php echo $v['etypeid']; ?>"><?php echo $cfg['etype'][$v['etypeid']]; ?></a></td><td><a href="list.php?op=searchlist&level=<?php echo $v['level']; ?>">P<?php echo $v['level']; ?></a></td><td><?php echo date('m-d H:i:s',$v['createtime']); ?></td><td><?php if($v['islock']==1 && $v['solvetime'] != 0) echo date('m-d H:i:s',$v['solvetime']); ?></td><td><?php echo $v['affecttime']; ?></td><td><a href="list.php?op=searchlist&division=<?php echo $v['division']; ?>"><?php echo $cfg['division'][$v['division']]; ?></a></td><td><?php echo $v['who'];?></td><td><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></td></tr>
                     <?php } } ?>
