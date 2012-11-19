@@ -37,7 +37,7 @@
                     -->
 <tr>
 <td><?php echo $v['eid']; ?></td>
-<td style="text-align:left;word-wrap: break-word;"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td>
+<td style="text-align:left;word-wrap: break-word;word-break:break-all;"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td>
 <td><a href="list.php?op=searchlist&etypeid=<?php echo $v['etypeid']; ?>"><?php echo $cfg['etype'][$v['etypeid']]; ?></a></td>
 <td><a href="list.php?op=searchlist&level=<?php echo $v['level']; ?>">P<?php echo $v['level']; ?></a></td>
 <td><?php echo date('m-d H:i:s',$v['createtime']); ?></td>
