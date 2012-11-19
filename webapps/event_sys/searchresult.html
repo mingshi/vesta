@@ -44,7 +44,7 @@
 <td><?php if($v['solvetime']) echo date('m-d H:i:s',$v['solvetime']); ?></td>
 <td><?php if($v['affecttime']) echo $v['affecttime']; ?></td>
 <td><a href="list.php?op=searchlist&division=<?php echo $v['division']; ?>"><?php echo $cfg['division'][$v['division']]; ?></a></td>
-<td style="text-align:left;word-wrap: break-word;"><?php echo $v['who'];?></td>
+<td style="word-break:break-all; word-wrap:break-all;"><?php echo $v['who'];?></td>
 <td><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></td>
 </tr>
                     <?php } } ?>
