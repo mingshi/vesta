@@ -89,6 +89,7 @@
                                     <option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option>
                                     <?php } }?>
                                 </select>
+                                <input type="hidden" name="lock_state" value="<?php echo $event_info['base']['islock']; ?>"
                             </span><br />
                             </li>
 <br>

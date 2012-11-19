@@ -346,6 +346,8 @@ case 'do_add':
         $event['who'] = trim($params['who']);
         $event['summary'] = trim($params['summary']);
         $event['islock'] = intval($params['islock']);
+        $lock_state = intval($params['lock_state']);
+
         if($params['select3']){
            foreach($params['select3'] as $v){
                      $to .= $v.",";
@@ -361,7 +363,7 @@ case 'do_add':
                  $to = trim($to,',');
                  update_event_to($pdo,$event['eid'],$to); 
         } 
-        if($event['islock']==1){
+        if (($lock_state==0) && ($event['islock']==1)){
             if($event['createtime']>$event['solvetime']){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'关闭时间不能小于创建时间');
             }
