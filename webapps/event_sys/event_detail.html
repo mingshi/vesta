@@ -34,11 +34,17 @@
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">事件描述：</span></th><td width = 90%><span><?php echo $event_info['base']['description']; ?></span></td></tr></tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">相关事件：</span></th><td width = 90%><span>
-							<?php foreach ($event_info['relate'] as $key){
+							<?php 
+$i = 0;
+foreach ($event_info['relate'] as $key){
 									if ($key['eid']==$event_info['base']['eid']) continue;
+                                    $i++; if ($i >=6) continue;
 							?>
 							<a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank">Id:<?php echo $key['eid'];?>, </a>
 							<?}?>
+<?php if ($i >=6){?>
+    <a href="index.php?op=relate&relate_name=<?php echo $event_info['base']['subject']; ?>" target="_blank">...查看全部</a>
+<?php }?>
 							</span></td></tr></tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">记录时间：</span></th><td width = 90%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['addtime']); ?></span></td></tr></tbody></table></td></tr>

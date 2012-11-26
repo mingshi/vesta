@@ -27,7 +27,7 @@
 <br>
                             <li><span class="dt">事件描述：</span><span><input type="text" name="description" value="<?php echo $event_info['base']['description']; ?>" size="40" /></span></li>
 <br>
-							<li><span class="dt">相关事件：</span>
+							<!--<li><span class="dt">相关事件：</span>
 							<span>
 							<?php foreach ($event_info['relate'] as $key){
 									if ($key['eid']==$event_info['base']['eid']) continue;
@@ -37,6 +37,7 @@
 							</span>
 							</li>
 <br>
+-->
                             <li><span class="dt">发生时间：</span><span><input type="text" id="createtime" name="createtime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?>" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></li>
 <br>
                             <li><span class="dt">解决时间：</span><span><input type="text" id="solvetime" name="solvetime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?>" onclick="javascript:NewCssCal('solvetime','yyyymmdd','arrow',true,24,false);" /></span></li>

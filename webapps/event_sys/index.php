@@ -194,6 +194,11 @@ case 'do_add':
 		$event_params = get_events_by_params ($pdo,array("params_name"=>$params_name,"params_value"=>$params_value,));
 		$template = 'event_params'; 
 		break;
+    case 'relate':
+        $relate_name = isset($params['relate_name'])?$params['relate_name']:"";
+        $event_params = get_relate_event ($pdo,$relate_name);
+        $template = 'event_params';
+        break;
     case 's_add':
        // $schedule['stypeid'] = intval($params['s_stypeid']);
         $schedule['s_subject'] = trim($params['s_subject']);

@@ -163,6 +163,10 @@ function get_event_info($pdo,$id){
     return $event_info;
 }
 
+function get_relate_event($pdo,$subject){
+    return pdo_fetch_all ($pdo,'select * from event where subject like "%'.$subject.'%"');
+}
+
 function get_email_arr($pdo,$eid){
     return pdo_fetch_all($pdo,'select a.uid,u.email from attention a left join user u on u.id=a.uid where a.eid=?',array($eid));
 }
