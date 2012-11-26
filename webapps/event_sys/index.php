@@ -121,6 +121,7 @@ case 'do_add':
             $event_attr['islock'] = intval($params['islock']);
             $event_attr['division'] = intval($params['division']);
             $event_attr['htmlData'] = $htmlData;
+            $event_attr['addtime'] = time();
             $isinsert = insert_event($pdo,$event_attr);
             if($isinsert){
                 if($params['select3'] || $params['mailgroup']){

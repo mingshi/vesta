@@ -37,7 +37,10 @@
                 </div>
             </div>
             <div class="datetime">
-                <?php echo date('Y-m-d H:i:s',$v['createtime']); ?>
+<?php
+if ($v['addtime']) echo $v['fuser']."  记录于  ".date('Y-m-d H:i:s',$v['addtime']);
+else echo $v['fuser']."  记录于  ".date('Y-m-d H:i:s',$v['createtime']);
+?>
             </div>
             <ul class="event_detail mb20">
 <?php

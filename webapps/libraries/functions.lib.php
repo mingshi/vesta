@@ -149,9 +149,9 @@ function get_event_unlock_now_att($pdo,$uid){
 }
 
 function insert_event($pdo,$params){
-    $sql = "insert into event set subject=?,content=?,description=?,affect=?,etypeid=?,level=?,createtime=?,fuser=?,islock=?,division=?,stypeid=?,summary=?";
+    $sql = "insert into event set subject=?,content=?,description=?,affect=?,etypeid=?,level=?,createtime=?,addtime=?,fuser=?,islock=?,division=?,stypeid=?,summary=?";
     $sth = $pdo->prepare($sql);
-    $sth ->execute(array($params['subject'],$params['htmlData'],$params['description'],$params['affect'],$params['etypeid'],$params['level'],$params['createtime'],$params['fuser'],$params['islock'],$params['division'],$params['stypeid'],$params['summary']));
+    $sth ->execute(array($params['subject'],$params['htmlData'],$params['description'],$params['affect'],$params['etypeid'],$params['level'],$params['createtime'],$params['addtime'],$params['fuser'],$params['islock'],$params['division'],$params['stypeid'],$params['summary']));
     return $pdo->lastInsertId();
 }
 
