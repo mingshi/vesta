@@ -45,8 +45,8 @@ else{
     $body .= "</td>
                     <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".date('H:i:s',$v['createtime'])."</td>
                     <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".$v['affecttime']."</td>
-                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".$v['affect']."</td>
-                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".$nowschedule['s_subject']."</td>
+                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>".$v['affect']."</td>
+                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>".$nowschedule['s_subject']."</td>
                 </tr>";
         }
     }
@@ -83,8 +83,8 @@ else{
     $body .= "</td>
                     <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".date('H:i:s',$v['createtime'])."</td>
                     <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".$v['affecttime']."</td>
-                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".$v['affect']."</td>
-                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>".$nowschedule['s_subject']."</td>
+                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>".$v['affect']."</td>
+                    <td style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>".$nowschedule['s_subject']."</td>
                 </tr>";
         }
     }
