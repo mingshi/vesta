@@ -62,7 +62,8 @@ else{
 
     if($todaydata['nostop']){        
         $body .= "</tbody></table><br /><br /><br />
-            2)未关闭事件当前进展：<br /><table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'><tbody>
+            2)未关闭事件当前进展：<br />
+<table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'><tbody>
             <tr style='background-color:#4F81BC;color:white;'>
                 <th width = 50px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
                 <th width = 190px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
@@ -98,7 +99,8 @@ $subject = "安居客事件管理日报";
 $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
 $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
 $email_arr = array(
-        '0' => 'yundu@anjuke.com',
+        //'0' => 'baijian@anjuke.com',
+        '1' => 'yundu@anjuke.com',
 );
 /*$email_arr = array(
         '0' => 'dl-tech-ops@anjuke.com',
@@ -113,7 +115,8 @@ $email_arr = array(
         '9' => 'wbsong@anjuke.com',
 );*/
 foreach($email_arr as $k=>$v){
-       $smtp->sendmail($v,'事件系统',$subject,$body,$cfg['smtp']['mailtype']);
+       $from = "Vesta";
+       $smtp->sendmail($v,$from,$subject,$body,$cfg['smtp']['mailtype']);
 }
 
 
