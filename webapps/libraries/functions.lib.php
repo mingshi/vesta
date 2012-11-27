@@ -366,12 +366,12 @@ function get_time_affect($affecttime){
 }
 
 function get_today_schedule($pdo,$eid,$rangea,$rangeb){
-    return pdo_fetch($pdo,"select s_subject from schedule where eid=? AND s_time<=".$rangea." OR s_time>=".$rangeb." order by sid desc limit 1",array($eid));
+    return pdo_fetch($pdo,"select s_subject from schedule where eid=? AND s_time>=".$rangea." AND s_time<=".$rangeb." order by sid desc limit 1",array($eid));
 }
 
 function get_today_data($pdo,$rangea,$rangeb){
     $critical = pdo_fetch_all($pdo,"select * from event where createtime>=".$rangea." AND createtime<=".$rangeb." AND level>=3");
-    $nostop = pdo_fetch_all($pdo,"select * from event where islock=0");
+    $nostop = pdo_fetch_all($pdo,"select * from event where createtime<=".$rangea." OR createtime>=".$rangeb." AND islock=0");
     $todaynostop = array();
     foreach($nostop as $key=>$v){
         $nowschedule = get_today_schedule($pdo,$v['eid'],$rangea,$rangeb);
