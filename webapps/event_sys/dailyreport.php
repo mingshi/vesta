@@ -28,8 +28,8 @@ else{
                     <th width = 100px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
                     <th width = 80px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
                     <th width = 120px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
-                    <th width = 150px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件影响</th>
-                    <th width = 250px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>进展</th>
+                    <th width = 170px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>事件影响</th>
+                    <th width = 270px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>进展</th>
                 </tr>
             </thead><tbody>";
 
@@ -66,8 +66,8 @@ else{
                 <th width = 100px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
                 <th width = 80px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
                 <th width = 120px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
-                <th width = 150px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件影响</th>
-                <th width = 250px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>进展</th>
+                <th width = 170px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>事件影响</th>
+                <th width = 270px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>进展</th>
             </tr>
         </thead><tbody>";
 
@@ -110,9 +110,9 @@ $email_arr = array(
         '9' => 'lenyemeng@anjuke.com',
         '9' => 'wbsong@anjuke.com',
 );*/
-//foreach($email_arr as $k=>$v){
-//      $smtp->sendmail($v,'事件系统',$subject,$body,$cfg['smtp']['mailtype']);
-//}
+foreach($email_arr as $k=>$v){
+       $smtp->sendmail($v,'事件系统',$subject,$body,$cfg['smtp']['mailtype']);
+}
 
 
 echo $body;
