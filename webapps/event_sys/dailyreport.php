@@ -110,9 +110,9 @@ $email_arr = array(
         '9' => 'lenyemeng@anjuke.com',
         '9' => 'wbsong@anjuke.com',
 );*/
-foreach($email_arr as $k=>$v){
-       $smtp->sendmail($v,'事件系统',$subject,$body,$cfg['smtp']['mailtype']);
-}
+//foreach($email_arr as $k=>$v){
+//      $smtp->sendmail($v,'事件系统',$subject,$body,$cfg['smtp']['mailtype']);
+//}
 
 
 echo $body;
