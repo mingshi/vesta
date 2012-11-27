@@ -66,6 +66,8 @@ $sent = TRUE;
 
 $mail_from = $this->get_address($this->strip_comment($from));
 
+$from = "=?UTF-8?B?".base64_encode($from)."?=";
+
 $body = ereg_replace("(^|(\r\n))(\.)", "\1.\3", $body);
 
 $header .= "MIME-Version:1.0\r\n";
