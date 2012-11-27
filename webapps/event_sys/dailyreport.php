@@ -21,15 +21,15 @@ if (!$todaydata['critical'] && !$todaydata['nostop']){
 else{
     if($todaydata['critical']){
         $body = "<table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
-            <thead>1)今日发生重大事件(事件等级>=P3)：<br />
+            <thead>1)今日重大事件(事件等级>=P3)：<br />
                 <tr style='background-color:#4F81BC;color:white;'>
                     <th width = 50px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
                     <th width = 190px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
                     <th width = 100px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
                     <th width = 80px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
                     <th width = 120px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
-                    <th width = 170px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>事件影响</th>
-                    <th width = 270px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>进展</th>
+                    <th width = 170px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align:left;'>事件影响</th>
+                    <th width = 270px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align:left;'>进展</th>
                 </tr>
             </thead><tbody>";
 
@@ -66,8 +66,8 @@ else{
                 <th width = 100px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
                 <th width = 80px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
                 <th width = 120px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
-                <th width = 170px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>事件影响</th>
-                <th width = 270px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align: left;'>进展</th>
+                <th width = 170px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align:left;'>事件影响</th>
+                <th width = 270px style='border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;text-align:left;'>进展</th>
             </tr>
         </thead><tbody>";
 
