@@ -2,130 +2,102 @@
 require_once '/var/www/html/shijian/webapps/libraries/common.lib.php';
 require_once '/var/www/html/shijian/webapps/event_sys/smtp.class.php';
 
-$todaydata = get_today_data($pdo);
+
+$now =  time();
+$hour = date('H',$now);
+$minute = date('i',$now);
+$second = date('s',$now);
+
+$today = $now - $hour*60*60 - $minute*60 - $second;
+$rangea = $today-23400;
+$rangeb = $today+63000;
+
+
+$todaydata = get_today_data($pdo,$rangea,$rangeb);
+
 if($todaydata['critical']){
-$body = "
-<table>
-    <thead>
-    1)当天重大事件(>=P3):<br />
-        <tr style='background-color:#0099CC;'>
-            <th>编号</th>
-            <th>名称</th>
-            <th>发生时间</th>
-            <th>影响时长(分钟)</th>
-            <th>事件影响</th>
-            <th>事故类型</th>
-            <th>时间等级</th>
-            <th>当前进展</th>
-           
-        </tr>
-    </thead>
-    <tbody>";
-}
-    if($todaydata['critical']){ foreach($todaydata['critical'] as $key=>$v){
+    $body = "<table style='word-break:break-all;word-wrap:break-all;border-collapse: collapse;clear: both;text-align: center;font-size: 14px;table-layout: fixed;border-top:2px solid #FFFFFF;border-bottom:2px solid #FFFFFF;border-left:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>
+        <thead>1)今日发生的重大事件(事件等级>=P3)：<br />
+            <tr style='background-color:#4F81BC;color:white;'>
+                <th width = 40px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>编号</th>
+                <th width = 250px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>名称</th>
+                <th width = 70px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>事件等级</th>
+                <th width = 152px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>发生时间</th>
+                <th width = 130px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>影响时长(分钟)</th>
+                <th width = 250px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>事件影响</th>
+                <th width = 250px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>当前进展</th>
+            </tr>
+        </thead><tbody>";
+
+    foreach($todaydata['critical'] as $key=>$v){
         $nowschedule = get_now_schedule($pdo,$v['eid']);
         $body .= "
-        <tr>
-            <td>".$v['eid']."</td>
-            <td><a href='http://".$cfg['hostname']."/index.php?op=detail&eid=".$v['eid']."'>".$v['subject']."</a></td>
-            <td>".date('Y-m-d H:i:s',$v['createtime'])."</td>
-            <td>".$v['affecttime']."</td>
-            <td>".$v['affect']."</td>
-            <td>".$cfg['etype'][$v['etypeid']]."</td>
-            <td>".$cfg['level'][$v['level']]."</td>
-            <td>".$nowschedule['s_subject']."</td>
-        </tr>";
-    }}else{ $body .= '当日没有重大事故<br />'; }
-if($todaydata['common']){        
-$body .= "
-    </tbody>
-</table>
-<br />
-<br />
-<br />
-
-<table>
-    <thead>
-    2)当天其他事件(<3):<br />
-        <tr style='background-color:#0099CC;'>
-            <th>编号</th>
-            <th>名称</th>
-            <th>发生时间</th>
-            <th>影响时长(分钟)</th>
-            <th>事件影响</th>
-            <th>事故类型</th>
-            <th>时间等级</th>
-            <th>当前进展</th>
-            
-
-        </tr>
-    </thead>
-    <tbody>";
+            <tr style='background-color:#EAEDF6;color:#7B7B7B;'>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'><a href='http://".$cfg['hostname']."/index.php?op=detail&eid=".$v['eid']."'>".$v['eid']."</a></td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$v['subject']."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>";
+for($a=0;$a<$v['level'];$a++){$body.= "<img border='0' height='15px' src='http://ops-event.yundu.dev.anjuke.com/images/level/reds.png'>";}
+for($a=0;$a<(6-$v['level']);$a++){$body.= "<img border='0' height='15px' src='http://ops-event.yundu.dev.anjuke.com/images/level/grays.png'>";}
+$body .= "</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".date('m-d H:i:s',$v['createtime'])."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$v['affecttime']."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$v['affect']."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$nowschedule['s_subject']."</td>
+            </tr>";
+    }
 }
-    if($todaydata['common']){ foreach($todaydata['common'] as $key=>$v){
-        $nowschedule = get_now_schedule($pdo,$v['eid']);
-        $body .= "
-        <tr>
-            <td>".$v['eid']."</td>
-            <td><a href='http://".$cfg['hostname']."/index.php?op=detail&eid=".$v['eid']."'>".$v['subject']."</a></td>
-            <td>".date('Y-m-d H:i:s',$v['createtime'])."</td>
-            <td>".$v['affecttime']."</td>
-            <td>".$v['affect']."</td> 
-            <td>".$cfg['etype'][$v['etypeid']]."</td>
-            <td>".$cfg['level'][$v['level']]."</td>
-            <td>".$nowschedule['s_subject']."</td>
-        </tr>";   
-    }}else{ $body .= '当日没有其他事故<br />'; }
+else{
+    $body = "<table><thead>1)今日没有重大事件发生。<br /></thead><tbody>";
+}
+
+
+
 if($todaydata['nostop']){        
-$body .= "
-    </tbody>
-</table>
-
-<br />
-<br />
-<br />
-
-<table>
-    <thead>
-    3)未结束事件进展:<br />
-        <tr style='background-color:#0099CC;'>
-            <th>编号</th>
-            <th>名称</th>
-            <th>发生时间</th>
-            <th>影响时长(分钟)</th>
-            <th>事件影响</th>
-            <th>事故类型</th>
-            <th>时间等级</th>
-            <th>当前进展</th>
-
-
+    $body .= "</tbody></table><br /><br /><br />
+        <table style='word-break:break-all;word-wrap:break-all;border-collapse: collapse;clear: both;text-align: center;font-size: 14px;table-layout: fixed;border-top:2px solid #FFFFFF;border-bottom:2px solid #FFFFFF;border-left:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>
+    <thead>2)今日未关闭事件进展：<br />
+        <tr style='background-color:#4F81BC;color:white;'>
+            <th width = 40px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>编号</th>
+            <th width = 250px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>名称</th>
+            <th width = 70px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>事件等级</th>
+            <th width = 152px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>发生时间</th>
+            <th width = 130px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>影响时长(分钟)</th>
+            <th width = 250px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>事件影响</th>
+            <th width = 250px style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>当前进展</th>
         </tr>
-    </thead>
-    <tbody>";
-}
-    if($todaydata['nostop']){ foreach($todaydata['nostop'] as $key=>$v){
+    </thead><tbody>";
+
+    foreach($todaydata['nostop'] as $key=>$v){
         $nowschedule = get_now_schedule($pdo,$v['eid']);
         $body .= "
-        <tr>
-            <td>".$v['eid']."</td>
-            <td><a href='http://".$cfg['hostname']."/index.php?op=detail&eid=".$v['eid']."'>".$v['subject']."</a></td>
-            <td>".date('Y-m-d H:i:s',$v['createtime'])."</td>
-            <td>".$v['affecttime']."</td>
-            <td>".$v['affect']."</td>
-            <td>".$cfg['etype'][$v['etypeid']]."</td>
-            <td>".$cfg['level'][$v['level']]."</td>
-            <td>".$nowschedule['s_subject']."</td>
-        </tr>";
-    }}else{ $body .= '当日没有未关闭事故<br />'; }
-$body .= "
-    </tbody>
-</table>
-";
+            <tr style='background-color:#EAEDF6;color:#7B7B7B;'>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'><a href='http://".$cfg['hostname']."/index.php?op=detail&eid=".$v['eid']."'>".$v['eid']."</a></td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$v['subject']."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>";
+for($a=0;$a<$v['level'];$a++){$body.= "<img border='0' height='15px' src='http://ops-event.yundu.dev.anjuke.com/images/level/reds.png'>";}
+for($a=0;$a<(6-$v['level']);$a++){$body.= "<img border='0' height='15px' src='http://ops-event.yundu.dev.anjuke.com/images/level/grays.png'>";}
+$body .= "</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".date('m-d H:i:s',$v['createtime'])."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$v['affecttime']."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$v['affect']."</td>
+                <td style='border-bottom:2px solid #FFFFFF;border-right:2px solid #FFFFFF;'>".$nowschedule['s_subject']."</td>
+            </tr>";
+    }
+}
+else{
+    $body .= "</tbody></table><br /><br /><br /><table><thead>2)今日未关闭事件没有新的进展。<br /></thead><tbody>";
+}
 
-$subject = "当天事件基本情况";
+
+$body .= "</tbody></table>";
+
+$subject = "安居客事件管理日报";
 $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
 $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
 $email_arr = array(
+        '0' => 'yundu@anjuke.com',
+);
+/*$email_arr = array(
         '0' => 'dl-tech-ops@anjuke.com',
         '1' => 'justin@anjukeinc.com',
         '2' => 'kevinkuang@anjukeinc.com',
@@ -133,11 +105,13 @@ $email_arr = array(
         '4' => 'sarahdu@anjuke.com',
         '5' => 'zmhu@anjuke.com',
         '6' => 'fzhou@anjuke.com',
-        '7' => 'peterchen@anjuke.com',
-        '8' => 'enzhang@anjuke.com',
+        '7' => 'enzhang@anjuke.com',
         '9' => 'lenyemeng@anjuke.com',
-        '10' => 'wbsong@anjuke.com',
-);
+        '9' => 'wbsong@anjuke.com',
+);*/
 foreach($email_arr as $k=>$v){
         $smtp->sendmail($v,'事件系统',$subject,$body,$cfg['smtp']['mailtype']);
 }
+
+
+echo $body;

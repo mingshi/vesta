@@ -365,13 +365,20 @@ function get_time_affect($affecttime){
     return $day.":".$hour.":".$minute.":".$second;
 }
 
-function get_today_data($pdo){
-    $critical = pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m-%d')=curdate() AND level>=3");
-    $common = pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m-%d')=curdate() AND level<3");
+function get_today_schedule($pdo,$eid,$rangea,$rangeb){
+    return pdo_fetch($pdo,"select s_subject from schedule where eid=? AND s_time>=".$rangea." AND s_time<=".$rangeb." order by sid desc limit 1",array($eid));
+}
+
+function get_today_data($pdo,$rangea,$rangeb){
+    $critical = pdo_fetch_all($pdo,"select * from event where createtime>=".$rangea." AND createtime<=".$rangeb." AND level>=3");
     $nostop = pdo_fetch_all($pdo,"select * from event where islock=0");
+    $todaynostop = array();
+    foreach($nostop as $key=>$v){
+        $nowschedule = get_today_schedule($pdo,$v['eid'],$rangea,$rangeb);
+        if ($nowschedule['s_subject'] != "") $todaynostop[]=$v;
+    }
     $data['critical'] = $critical;
-    $data['common'] = $common;
-    $data['nostop'] = $nostop;
+    $data['nostop'] = $todaynostop;
     return $data;
 }
 
