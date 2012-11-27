@@ -314,6 +314,13 @@ function del_att($pdo,$uid,$eid){
 	return $sth->rowCount();
 }
 
+function del_event($pdo,$eid){
+	$sql = "delete from event where eid=?";
+	$sth = $pdo->prepare($sql);
+	$sth ->execute(array($eid));
+	return $sth->rowCount();
+}
+
 function delete_my_mailgroup($pdo,$id){
     $sql = "delete from mailgroup where id=?";
     $sth = $pdo->prepare($sql);
