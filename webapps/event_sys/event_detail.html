@@ -60,7 +60,8 @@ foreach ($event_info['relate'] as $key){
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">事件影响：</span></th><td width = 90%><span><?php echo $event_info['base']['affect']; ?></span></td></tr></tbody></table></td></tr>
 
-<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">事件等级：</span></th><td width = 40%><span><?php for($a=0;$a<$event_info['base']['level'];$a++){echo "<a href='/levelinfo.php'><img border='0' height='15px' src='http://vesta.corp.anjuke.com/images/level/reds.png'></a>";}?></span></td><th class = "detail_event" width = 10%><span class="dt">事件类型：</span></th><td width = 40%><span><?php echo $cfg['etype'][$event_info['base']['etypeid']]; ?></span></td></tr></tbody></table></td></tr>
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">事件等级：</span></th><td width = 40%><span><?php for($a=0;$a<$event_info['base']['level'];$a++){echo "<a href='/levelinfo.php'><img border='0' height='15px' src='http://vesta.corp.anjuke.com/images/level/reds.png'></a>";}
+for($a=0;$a<6-$event_info['base']['level'];$a++){echo "<a href='/levelinfo.php'><img border='0' height='15px' src='http://vesta.corp.anjuke.com/images/level/grays.png'></a>";}?></span></td><th class = "detail_event" width = 10%><span class="dt">事件类型：</span></th><td width = 40%><span><?php echo $cfg['etype'][$event_info['base']['etypeid']]; ?></span></td></tr></tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">报告者：</span></th><td width = 90%><span><?php echo $event_info['base']['fuser']; ?></span></td></tr></tbody></table></td></tr>
 
