@@ -509,7 +509,7 @@ jQuery(function($) {
 
 
 
-                    if ((event.keyCode == 59) && checkFocusOn()) {
+                    if ((event.keyCode == 32) && checkFocusOn()) {
                         var option = focuson;
 						var txt = document.getElementById("select3_mailinput").value;
                         addItem(txt, txt, 0, 0, 1);
@@ -519,7 +519,7 @@ jQuery(function($) {
                         return false;
                     }
 
-                    if ((event.keyCode == 59) && !checkFocusOn()) {
+                    if ((event.keyCode == 32) && !checkFocusOn()) {
                         if (options.newel) {
                             var value = xssPrevent($(this).val());
 							var txt = document.getElementById("select3_mailinput").value;
