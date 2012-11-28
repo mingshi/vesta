@@ -73,7 +73,7 @@ for($a=0;$a<6-$event_info['base']['level'];$a++){echo "<a href='/levelinfo.php'>
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">通知到：</span></th><td width = 90%><span>
                                     <?php
 										$mail = explode(",",$event_info['base']['tomail']);
-                                                                                $name = file_get_contents("data.txt");
+                                        $name = file_get_contents("data.txt");
 										$array = json_decode($name);
 										$text = '';
 										foreach ($mail as $key1){
@@ -91,19 +91,6 @@ for($a=0;$a<6-$event_info['base']['level'];$a++){echo "<a href='/levelinfo.php'>
 										echo substr($text, 0, -1);
 									?>
                                 </span></td></tr></tbody></table></td></tr>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -43,6 +43,7 @@ case 'm_add':
 case 'm_edit':
 	$eid = intval($params['m_eid_edit']);
 	$content = $params['content_m'];
+    $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
     $measure['eid'] = intval($params['m_eid_edit']);
     $measure['mid'] = intval($params['mid']);
     $measure['measure'] = trim($params['c_measure']);
@@ -93,6 +94,7 @@ case 'do_add':
      */
         $htmlData = '';
         $content = $params['content'];
+        $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
         if (!empty($content)) {
                 if (get_magic_quotes_gpc()) {
                         $htmlData = stripslashes($content);
@@ -314,6 +316,7 @@ case 'do_add':
         $htmlData = '';
         $eid = intval($params['c_eid']);
         $content = $params['content'];
+        $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
         if (!empty($content)) {
                 if (get_magic_quotes_gpc()) {
                         $htmlData = stripslashes($content);
@@ -449,6 +452,7 @@ case 'do_add':
     case 's_edit':
 		$eid = intval($params['s_eid_edit']);
 		$content = $params['content_s'];
+        $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
         $schedule['sid'] = intval($params['s_sid']);
         //$schedule['stypeid'] = intval($params['edit_stypeid']);
         $schedule['s_subject'] = trim($params['edit_subject']);

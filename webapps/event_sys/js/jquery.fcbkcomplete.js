@@ -479,6 +479,38 @@ jQuery(function($) {
 
                     if ((event.keyCode == 13 || event.keyCode == 9) && checkFocusOn()) {
                         var option = focuson;
+                        addItem(option.text(), option.attr("rel"), 0, 0, 1);
+                        complete.hide();
+                        event.preventDefault();
+                        focuson = null;
+                        return false;
+                    }
+
+                    if ((event.keyCode == 13 || event.keyCode == 9) && !checkFocusOn()) {
+                        if (options.newel) {
+                            var value = xssPrevent($(this).val());
+                            addItem(value, value, 0, 0, 1);
+                            complete.hide();
+                            event.preventDefault();
+                            focuson = null;
+                            return false;
+                        }
+                        
+                        if (options.addontab) {
+                          focuson = feed.children("li:visible:first");
+                          var option = focuson;
+                          addItem(option.text(), option.attr("rel"), 0, 0, 1);
+                          complete.hide();
+                          event.preventDefault();
+                          focuson = null;
+                          return false;
+                        }                        
+                    }
+
+
+
+                    if ((event.keyCode == 59) && checkFocusOn()) {
+                        var option = focuson;
 						var txt = document.getElementById("select3_mailinput").value;
                         addItem(txt, txt, 0, 0, 1);
                         complete.hide();
@@ -487,7 +519,7 @@ jQuery(function($) {
                         return false;
                     }
 
-                    if ((event.keyCode == 13 || event.keyCode == 9) && !checkFocusOn()) {
+                    if ((event.keyCode == 59) && !checkFocusOn()) {
                         if (options.newel) {
                             var value = xssPrevent($(this).val());
 							var txt = document.getElementById("select3_mailinput").value;
@@ -509,6 +541,7 @@ jQuery(function($) {
                           return false;
                         }                        
                     }
+
 
                     if (event.keyCode == 40) {
                         removeFeedEvent();
