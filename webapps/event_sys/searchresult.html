@@ -28,7 +28,7 @@
                         <td><?php echo $v['eid']; ?></td>
                         <td><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td>
                         <td><?php echo $cfg['etype'][$v['etypeid']]; ?></td>
-                        <td>p<?php echo $v['level']; ?></td>
+                        <td>L<?php echo $v['level']; ?></td>
                         <td><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></td>
                         <td><?php if(!empty($v['closetime']) || $v['islock']==1 )echo date('Y-m-d H:i:s',$v['closetime']); ?></td>
                         <td><?php echo $cfg['division'][$v['division']]; ?></td>
@@ -39,7 +39,7 @@
 <td><?php echo $v['eid']; ?></td>
 <td style="text-align:left;word-wrap: break-word;word-break:break-all;"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td>
 <td><a href="list.php?op=searchlist&etypeid=<?php echo $v['etypeid']; ?>"><?php echo $cfg['etype'][$v['etypeid']]; ?></a></td>
-<td><a href="list.php?op=searchlist&level=<?php echo $v['level']; ?>">P<?php echo $v['level']; ?></a></td>
+<td><a href="list.php?op=searchlist&level=<?php echo $v['level']; ?>">L<?php echo $v['level']; ?></a></td>
 <td><?php echo date('m-d H:i:s',$v['createtime']); ?></td>
 <td><?php if($v['solvetime']) echo date('m-d H:i:s',$v['solvetime']); ?></td>
 <td><?php if($v['affecttime']) echo $v['affecttime']; ?></td>

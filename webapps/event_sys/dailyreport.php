@@ -23,7 +23,7 @@ if (!$todaydata['critical'] && !$todaydata['nostop']){
 }
 else{
     if($todaydata['critical']){
-        $body .= "1)今日重大事件(事件等级>=P3)：<br /><table style='width:980px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
+        $body .= "1)今日重大事件(事件等级<=P4)：<br /><table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
                 <tr style='background-color:#4F81BC;color:white;'>
                     <td width = 50px style='width:50px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
                     <td width = 190px style='width:190px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
@@ -60,7 +60,7 @@ else{
     if($todaydata['nostop']){        
         $body .= "</table><br /><br /><br />
             2)未关闭事件当前进展：<br />
-<table style='width:980px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
+<table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
             <tr style='background-color:#4F81BC;color:white;'>
                 <td width = 50px style='width:50px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
                 <td width = 190px style='width:190px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
