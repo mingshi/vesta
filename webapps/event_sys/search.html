@@ -20,33 +20,70 @@
                         <li><a href="index.php?op=add">添加事件</a></li>
 		</ul>
 		<form name="searchform" class="searchform" action="list.php" method="post">
-			<div class="row"><label>关键字：</label> <input type="text" name="keyword" value="" /></div>
-                        <div class="row"><span>类别：</span> 
-                            <select name="status"><option value="2">所有</option><option value="0">开启</option><option value="1">已关闭</option></select>
-                            <select name="level"><option value="0">所有</option>
-                                <option value="1">P1</option>
-                                <option value="2">P2</option>
 
-                                <option value="3">P3</option>
-                                <option value="4">P4</option>
+            <table>
 
-                                <option value="5">P5</option>
-                                <option value="6">P6</option>
+                <tr style="height:50px;"><td><span>事件主题：</span></td><td><input type="text" name="keyword" value="" /></td></tr>
 
-                                <option value="7">P7</option>
-                            </select>
-                            <select name="etype"><option value="0">所有</option>
-                                <option value="1">运营商故障</option>
-                                <option value="2">网络故障</option>
-                                <option value="3">硬件故障</option>
-                                <option value="4">人为故障</option>
-                                <option value="5">程序bug</option>
-                                <option value="6">安全事故</option>
-                                <option value="7">配置问题</option>
-                            </select>
-			</div>
-			<div class="row"><span>时段:</span>从：<input type="text" name="start" id="datepk1" /> 到：<input type="text" name="stop" id="datepk2"/></div>
-                        <div class="button"><input type="hidden" name="op" value="search" /><input type="submit" class="submit" value="搜索" /></div>
+                <tr style="height:50px;"><td><span>责任人：</span></td><td><input type="text" name="who" value="" /></td></tr>
+                <tr style="height:50px;"><td><span>责任部门：</span></td><td>
+                    <select name="division">
+                        <option value="0">所有</option>
+                        <option value="1">二手房</option>
+                        <option value="2">好租</option>
+                        <option value="3">新房</option>
+                        <option value="4">金铺</option>
+                        <option value="5">总部运维</option>
+                        <option value="6">第三方</option>
+                        <option value="7">DW</option>
+                        <option value="8">IT</option>
+                        <option value="9">总部开发</option>
+                    </select>
+                </td></tr>
+
+
+
+                <tr style="height:50px;"><td><span>事件类型：</span></td><td>
+                    <select name="etype">
+                        <option value="0">所有</option>
+                        <option value="1">运营商故障</option>
+                        <option value="2">网络故障</option>
+                        <option value="3">硬件故障</option>
+                        <option value="4">人为故障</option>
+                        <option value="5">程序bug</option>
+                        <option value="6">安全事故</option>
+                        <option value="7">配置问题</option>
+                    </select>
+               </td></tr>
+
+               <tr style="height:50px;"><td><span>事件等级：</span></td><td>
+                    <select name="level">
+                        <option value="0">所有</option>
+                        <option value="1">P1</option>
+                        <option value="2">P2</option>
+                        <option value="3">P3</option>
+                        <option value="4">P4</option>
+                        <option value="5">P5</option>
+                        <option value="6">P6</option>
+                    </select>
+                </td></tr>
+
+                <tr style="height:50px;"><td><span>事件状态：</span></td><td>
+                    <select name="status">
+                        <option value="2">所有</option>
+                        <option value="0">开启</option>
+                        <option value="1">已关闭</option>
+                    </select>
+                </td></tr>
+
+                <tr style="height:50px;"><td>
+                    <span>发现时间:</span></td><td><input type="text" name="start" id="datepk1" /> — <input type="text" name="stop" id="datepk2"/>
+                </td></tr>
+            </table>
+
+            <div class="button">
+                <input type="hidden" name="op" value="search" /><input type="submit" class="submit" value="搜索" />
+            </div>
 		</form>
 	</div>
 	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>

@@ -4,7 +4,9 @@ error_reporting(0);
 $op = isset($params['op'])?$params['op']:"";
 if($op=="search"){
     $keyword = trim($params['keyword']);
+    $who = trim($params['who']);
     $islock = intval($params['status']);
+    $division = intval($params['division']);
     $level = intval($params['level']);
     $etype = intval($params['etype']);
     $start = intval(strtotime($params['start']));
@@ -13,7 +15,9 @@ if($op=="search"){
     !empty($start) ? $where = $where." and createtime>=".$start : $where = $where." and 1";
     !empty($end) ? $where = $where." and createtime<=".$end : $where = $where." and 1";
     !empty($keyword) ? $where = $where." and subject like '%".$keyword."%'" : $where = $where." and 1";
+    !empty($who) ? $where = $where." and who like '%".$who."%'" : $where = $where." and 1";
     !empty($level) ? $where = $where." and level=".$level : $where = $where." and 1";
+    !empty($division) ? $where = $where." and division=".$division : $where = $where." and 1";
     !empty($etype) ? $where = $where." and etypeid=".$etype : $where = $where." and 1";
 }elseif($params['stypeid']){
     $where = "stypeid=".$params['stypeid'];
