@@ -93,6 +93,7 @@ $cfg['authority'] = array(
 
 $cfg['close'] = array(
     'kevinkuang' => '1',
+    'daoyuanwang' => '1',
     'yundu' => '1',
 );
 
