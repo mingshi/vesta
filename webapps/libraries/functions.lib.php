@@ -377,7 +377,7 @@ function get_today_schedule($pdo,$eid,$rangea,$rangeb){
 }
 
 function get_today_data($pdo,$rangea,$rangeb){
-    $critical = pdo_fetch_all($pdo,"select * from event where createtime>=".$rangea." AND createtime<=".$rangeb." AND level>=3");
+    $critical = pdo_fetch_all($pdo,"select * from event where createtime>=".$rangea." AND createtime<=".$rangeb." AND level<=4");
     $nostop = pdo_fetch_all($pdo,"select * from event where createtime<=".$rangea." OR createtime>=".$rangeb." AND islock=0");
     $todaynostop = array();
     foreach($nostop as $key=>$v){
@@ -416,7 +416,7 @@ function get_every_month_event($pdo,$i){
 }
 
 function get_every_month_affect_time($pdo,$i){
-    return pdo_fetch($pdo,"select sum(affecttime) as total from event where date_format(FROM_UNIXTIME(createtime),'%Y%m')=?",array($i));
+    return pdo_fetch($pdo,"select sum(affecttime) as total from event where level <= 4 AND date_format(FROM_UNIXTIME(createtime),'%Y%m')=?",array($i));
 }
 
 function get_month_type_event($pdo,$i,$k){
