@@ -18,82 +18,26 @@
                 </ul>
 
                    <?php if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['authority'][$username]==1){  ?>
+
+
+
 <div class="event mt15">
                     <form name="form1" action="" method="post">
-
-<br>
                         <ul class="event_detail mb20">
-                            <li><span class="dt">事件标题：</span><span><input type="text" name="subject" value="<?php echo $event_info['base']['subject']; ?>" size="40" /></span></li>
-<br>
-                            <li><span class="dt">事件描述：</span><span><input type="text" name="description" value="<?php echo $event_info['base']['description']; ?>" size="40" /></span></li>
-<br>
-							<!--<li><span class="dt">相关事件：</span>
-							<span>
-							<?php foreach ($event_info['relate'] as $key){
-									if ($key['eid']==$event_info['base']['eid']) continue;
-							?>
-							<a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank"><?php echo $key['subject'];?></a>
-							<?}?>
-							</span>
-							</li>
-<br>
--->
-                            <li><span class="dt">发生时间：</span><span><input type="text" id="createtime" name="createtime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?>" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></li>
-<br>
-                            <li><span class="dt">解决时间：</span><span><input type="text" id="solvetime" name="solvetime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?>" onclick="javascript:NewCssCal('solvetime','yyyymmdd','arrow',true,24,false);" /></span></li>
-<br>
-                            <li><span class="dt">事件影响：</span><span><input type="text" name="affect" value="<?php echo $event_info['base']['affect']; ?>" size="40" /></span></li>
-<br>
-                            <li><span class="dt">事件等级：</span>
-                            <span class="level">
-                                <select name="level">
-                                    <?php if(!empty($cfg['level'])){foreach($cfg['level'] as $k=>$v){ ?>
-                                    <option value="<?php echo $k;?>"<?php if($k==$event_info['base']['level'])echo selected; ?>><?php echo $v; ?></option>
-                            <?php } } ?>
-                        </select>
-                    </span>
-                    <a href="levelinfo.php" target="_blank">[等级说明]</a>
-                            </li>
-<br>
-                            <li><span class="dt">事件类型：</span>
-                            <span class="etype">
-                                <select name="etypeid">
-                                    <?php if(!empty($cfg['etype'])){foreach($cfg['etype'] as $k=>$v){ ?>
-                                        <option value="<?php echo $k; ?>"<?php if($k==$event_info['base']['etypeid'])echo selected; ?>><?php echo $v; ?></option>
-                                    <?php }} ?>
-                                </select>
-                            </span>
-                            </li>
-<br>
-                            <li><span class="dt">报告者：</span>
-                                <span class="fuser">
-                                    <input type="text" value="<?php echo $event_info['base']['fuser']; ?>" readonly />
-                                </span>    
-                            </li>
-<br>
-                            <li><span class="dt">责任部门：</span><span>
-                                <select name="division">
-                                    <?php if(!empty($cfg['division'])){foreach($cfg['division'] as $k=>$v){ ?>
-                                    <option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['division'])echo selected; ?>><?php echo $v; ?></option>
-                                    <?php } } ?>
-                                </select>
-                            </span>
-                            </li>
-<br>
-                            <li><span class="dt">责任人：</span><span>
-                                <input type="text" name="who" value="<?php echo $event_info['base']['who']; ?>" />
-                            </li>
-<br>
-                            <li><span class="dt">状态：</span><span>
-                                <select name="islock">
-                                    <?php if(!empty($cfg['islock'])){foreach($cfg['islock'] as $k=>$v){ ?>
-                                    <option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option>
-                                    <?php } }?>
-                                </select>
-                                <input type="hidden" name="lock_state" value="<?php echo $event_info['base']['islock']; ?>"
-                            </span><br />
-                            </li>
-<br>
+<table>
+<tr><td><li><span class="dt">事件标题：</span></li></td><td><span><input type="text" name="subject" value="<?php echo $event_info['base']['subject']; ?>" size="40" /></span></td></tr>
+<tr><td><li><span class="dt">事件描述：</span></li></td><td><span><input type="text" name="description" value="<?php echo $event_info['base']['description']; ?>" size="40" /></span></td></tr>
+<tr><td><li><span class="dt">发生时间：</span></li></td><td><span><input type="text" id="createtime" name="createtime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?>" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></td></tr>
+<tr><td><li><span class="dt">解决时间：</span></li></td><td><span><input type="text" id="solvetime" name="solvetime" value="<?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?>" onclick="javascript:NewCssCal('solvetime','yyyymmdd','arrow',true,24,false);" /></span></td></tr>
+<tr><td><li><span class="dt">事件影响：</span></li></td><td><span><input type="text" name="affect" value="<?php echo $event_info['base']['affect']; ?>" size="40" /></span></td></tr>
+<tr><td><li><span class="dt">事件等级：</span></li></td><td><span class="level"><select name="level"><?php if(!empty($cfg['level'])){foreach($cfg['level'] as $k=>$v){ ?><option value="<?php echo $k;?>"<?php if($k==$event_info['base']['level'])echo selected; ?>><?php echo $v; ?></option><?php } } ?></select></span><a href="levelinfo.php" target="_blank">[等级说明]</a></td></tr>
+<tr><td><li><span class="dt">事件类型：</span></li></td><td><span class="etype"><select name="etypeid"><?php if(!empty($cfg['etype'])){foreach($cfg['etype'] as $k=>$v){ ?><option value="<?php echo $k; ?>"<?php if($k==$event_info['base']['etypeid'])echo selected; ?>><?php echo $v; ?></option><?php }} ?></select></span></td></tr>
+<tr><td><li><span class="dt">报告者：</span></li></td><td><span class="fuser"><input type="text" value="<?php echo $event_info['base']['fuser']; ?>" readonly /></span></td></tr>
+<tr><td><li><span class="dt">责任部门：</span></li></td><td><span><select name="division"><?php if(!empty($cfg['division'])){foreach($cfg['division'] as $k=>$v){ ?><option value="<?php echo $k; ?>"<?php if($k==$event_info['base']['division'])echo selected; ?>><?php echo $v; ?></option><?php } } ?></select></span></td></tr>
+<tr><td><li><span class="dt">责任人：</span></li></td><td><span><input type="text" name="who" value="<?php echo $event_info['base']['who']; ?>" /></span></td></tr>
+<tr><td><li><span class="dt">状态：</span></li></td><td><span><select name="islock"><?php if(!empty($cfg['islock'])){foreach($cfg['islock'] as $k=>$v){ ?><option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option><?php } }?></select><input type="hidden" name="lock_state" value="<?php echo $event_info['base']['islock']; ?>"</span></td></tr>
+
+</table>
                             <li>
                                 <link rel="stylesheet" href="css/autocomplate.css" type="text/css" media="screen" charset="utf-8" />
                                 <span class="dt">通知到：</span>
@@ -122,21 +66,15 @@
 									?>
                                 </div>
                                 </span>
-                                </li>
-<br>
-<li>
-<span class = "dt">事件概述：</span>
-<br>
-<span>
-<textarea class="e_summary" name="summary"><?php echo $event_info['base']['summary']; ?></textarea>
-</span>
-</li>
+                                </li><br>
+                            <li><span class = "dt">事件概述：</span><br><span><textarea class="e_summary" name="summary"><?php echo $event_info['base']['summary']; ?></textarea></span></li>
 
 
                              
                             <div><input type="hidden" name="op" value="e_edit" />
                                 <input type="hidden" name="eid" value="<?php echo $event_info['base']['eid']; ?>" />
-                                <input type="submit" value="保存" />
+                                <input type="hidden" name="content_c" id="content_c">
+                                <input type="submit" value="保存" onclick="return content_submit_c()"/>
                             </div>
                         </ul>
                         </form>
@@ -281,5 +219,12 @@ function content_submit_m(){
 	document.getElementById("content_m").value = editor.text();
 	return true;
 }
+
+function content_submit_c(){
+	document.getElementById("content_c").value = editor.text();
+	return true;
+}
+
+
 </script>
     </body></html>

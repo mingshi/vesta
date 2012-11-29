@@ -53,7 +53,7 @@ case 'm_edit':
     if(!$measure['measure'] || !$measure['muser'] || !$measure['mtime']){
         msg_redirect('index.php?op=edit&eid='.$measure['eid'],'填写完整再提交！');
     }else{
-        if(update_measure($pdo,$measure) || update_content($pdo,$content,$eid)){
+        if(update_measure($pdo,$measure) && update_content($pdo,$content,$eid)){
             msg_redirect('index.php?op=edit&eid='.$measure['eid'],'更新成功');
             $email_arr = get_email_arr($pdo,$measure['eid']);
             $esub = get_event_info($pdo,$measure['eid']);
@@ -341,6 +341,8 @@ case 'do_add':
         } 
         break;
     case 'e_edit':
+        $content = $params['content_c'];
+        $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
         $event['eid'] = intval($params['eid']);
         $event['subject'] = trim($params['subject']);
         $event['description'] = trim($params['description']);
@@ -392,7 +394,7 @@ case 'do_add':
         }
         
             $event['affecttime'] = ceil(($event['solvetime']-$event['createtime'])/60);
-            if(update_event($pdo,$event)){
+            if(update_event($pdo,$event) && update_content($pdo,$content,$event['eid'])){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event success');
             }else{
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event failed');
@@ -460,7 +462,7 @@ case 'do_add':
         //$schedule['s_division'] = intval($params['edit_division']);
         $schedule['s_time'] = strtotime($params['edit_stime_'.$schedule['sid']]);
         if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']) msg_redirect('index.php?op=detail&eid='.$params['eid'],'empty any option!');
-        if(update_schedule($pdo,$schedule) || update_content($pdo,$content,$eid)){
+        if(update_schedule($pdo,$schedule) && update_content($pdo,$content,$eid)){
             msg_redirect('index.php?op=edit&eid='.$params['eid'],'Oh Yeah! success!!'); 
         }else{
             msg_redirect('index.php?op=edit&eid='.$params['eid'],'edit schedule failed');
