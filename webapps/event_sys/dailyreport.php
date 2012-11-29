@@ -23,15 +23,15 @@ if (!$todaydata['critical'] && !$todaydata['nostop']){
 }
 else{
     if($todaydata['critical']){
-        $body .= "1)今日重大事件(事件等级<=P4)：<br /><table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
+        $body .= "1)今日重大事件(事件等级<=P4)：<br /><table style='width:1050px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
                 <tr style='background-color:#4F81BC;color:white;'>
-                    <td width = 50px style='width:50px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
-                    <td width = 190px style='width:190px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
-                    <td width = 100px style='width:100px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
-                    <td width = 80px style='width:80px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
-                    <td width = 120px style='width:120px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
-                    <td width = 170px style='width:170px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件影响</th>
-                    <td width = 270px style='width:270px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>进展</th>
+                    <td style='width:50px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
+                    <td style='width:190px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
+                    <td style='width:100px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
+                    <td style='width:80px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
+                    <td style='width:120px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
+                    <td style='width:170px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件影响</th>
+                    <td style='width:270px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>进展</th>
                 </tr>";
 
         foreach($todaydata['critical'] as $key=>$v){
@@ -60,15 +60,15 @@ else{
     if($todaydata['nostop']){        
         $body .= "</table><br /><br /><br />
             2)未关闭事件当前进展：<br />
-<table style='width:1000px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
+<table style='width:1050px;word-break:break-all;text-align: center;font-size: 15px;table-layout: fixed;border-top:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>
             <tr style='background-color:#4F81BC;color:white;'>
-                <td width = 50px style='width:50px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
-                <td width = 190px style='width:190px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
-                <td width = 100px style='width:100px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
-                <td width = 80px style='width:80px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
-                <td width = 120px style='width:120px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
-                <td width = 170px style='width:170px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件影响</th>
-                <td width = 270px style='width:270px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>进展</th>
+                <td style='width:50px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>编号</th>
+                <td style='width:190px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件名称</th>
+                <td style='width:100px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件等级</th>
+                <td style='width:80px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>发生时间</th>
+                <td style='width:120px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>影响时长(分钟)</th>
+                <td style='width:170px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>事件影响</th>
+                <td style='width:270px;border-bottom:1px solid #FFFFFF;border-right:1px solid #FFFFFF;'>进展</th>
             </tr>";
 
         foreach($todaydata['nostop'] as $key=>$v){

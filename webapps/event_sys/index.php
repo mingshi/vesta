@@ -190,6 +190,10 @@ case 'do_add':
         $event_month = get_month_event($pdo);
         $template = 'month_event'; 
         break;
+    case 'lastmonth':
+        $event_month = get_last_month($pdo);
+        $template = 'last_month';
+        break;
 	case 'params':
 		$params_name = isset($params['params_name'])?$params['params_name']:"";
 		$params_value = isset($params['params_value'])?$params['params_value']:"";

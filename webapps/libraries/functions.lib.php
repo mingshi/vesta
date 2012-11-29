@@ -406,6 +406,10 @@ function get_month_event($pdo){
     return pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
 }
 
+function get_last_month($pdo){
+    return pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(DATE_SUB(curdate(),INTERVAL 1 MONTH),'%Y-%m') order by createtime desc");
+}
+
 function get_events_by_params($pdo,$params){
     $diff_time = time() - 3600 * 24 * 30;
 	return pdo_fetch_all($pdo,"select * from event where ".$params['params_name']." = '".$params['params_value']."' and createtime >= ".$diff_time." order by createtime desc");
