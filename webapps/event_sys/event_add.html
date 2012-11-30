@@ -8,65 +8,66 @@
         <div class="pagewrap">
             <div class="homemaincontent">
                 <ul id="pageTabes" class="pagetabs">
-                    <li class="selected"><a href="index.php">首页</a></li>
+                    <li><a href="index.php">首页</a></li>
                     <li><a href="index.php?op=lastweek">上周所有事件</a></li>
                     <li><a href="index.php?op=week">本周所有事件</a></li>
                     <li><a href="index.php?op=lastmonth">上月所有事件</a></li>
                     <li><a href="index.php?op=month">本月所有事件</a></li>
                     <li><a href="index.php?op=report">数据统计</a></li>
                     <li><a href="search.html">搜索</a></li>
-                    <li><a href="index.php?op=add">添加事件</a></li>
+                    <li class="selected"><a href="index.php?op=add">添加事件</a></li>
                 </ul>
                 <div id="pageTabs-1">
                     <div class="event mt15">
                         <form id="form" action="" method="post">
                         <ul class="event_detail mb20">
-                            <li><span class="dt">事件标题：</span><span><input type="text" name="subject" id="subject" size="40" /></span></li><br />
-                            <li><span class="dt">事件描述：</span><span><input type="text" name="description" id="description" size="40" /></span></li><br />
-                            <li><span class="dt">发生时间：</span><span><input type="text" name="createtime" id="createtime" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></li><br />
-                            <li><span class="dt">事件影响：</span><span><input type="text" name="affect" id="affect" size="40" /></span></li><br />
-                            <li><span class="dt">事件等级：</span><span class="level">
+                            <table>
+                                <tr><td><li><span class="dt">事件标题：</span></li></td><td><span><input type="text" name="subject" id="subject" size="40" /></span></td></tr>
+                                <tr><td><li><span class="dt">事件描述：</span></li></td><td><span><input type="text" name="description" id="description" size="40" /></span></td></tr>
+                                <tr><td><li><span class="dt">发生时间：</span></li></td><td><span><input type="text" name="createtime" id="createtime" onclick="javascript:NewCssCal('createtime','yyyymmdd','arrow',true,24,false);" /></span></td></tr>
+                                <tr><td><li><span class="dt">事件影响：</span></li></td><td><span><input type="text" name="affect" id="affect" size="40" /></span></td></tr>
+                                <tr><td><li><span class="dt">事件等级：</span></li></td><td><span class="level">
                                 <select name="level" id="level">
                                     <?php if($cfg['level']){ ?>
                                     <?php foreach($cfg['level'] as $k=>$v){ ?>
                                     <option value="<?php echo $k; ?>">L<?php echo $k; ?></option>
                                         <?php } } ?>
                                 </select>
-                            </span></li><br />
-                            <li><span class="dt">事件类别：</span><span class="etype">
+                            </span></td></tr>
+                                <tr><td><li><span class="dt">事件类别：</span></li></td><td><span class="etype">
                                 <select name="etype" id="etype">
                                     <?php if($cfg['etype']){ ?>
                                     <?php foreach($cfg['etype'] as $k=>$v){ ?>
                                     <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
                                         <?php } } ?>
                                 </select>
-                            </span></li><br />
-                            <li><span class="dt">事件进度：</span><span class="stype">
+                            </span></td></tr>
+                                <tr><td><li><span class="dt">事件进度：</span></li></td><td><span class="stype">
                                 <select name="stype" id="stype">
                                     <?php if($cfg['stype']){ ?>
                                     <?php foreach($cfg['stype'] as $k=>$v){ ?>
                                     <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
                                         <?php } } ?>
                                 </select>
-                            </span></li><br />
-                            <li><span class="dt">事业部：</span>
-                            <span>
-                                <select name="division" id="division" style="width:100px;margin-bottom:5px;">
+                            </span></td></tr>
+                                <tr><td><li><span class="dt">事业部：</span></li></td><td><span>
+                                <select name="division" id="division">
                 <?php foreach($cfg['division'] as $k=>$v){ ?>
                     <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
                 <?php } ?>
             </select>
-                                </span>
-                            </li><br />
-                            <li><span class="dt">报告者：</span><span><input type="text" name="user" id="user" size="40" value="<?php if(!session_id()) session_start();echo $_SESSION['name'] ?>" readonly /></span></li><br />
-                            <li><span class="dt">状态：</span><span>
-                                <select name="islock" id="islock" style="margin-bottom:5px;">
+                                </span></td></tr>
+                                <tr><td><li><span class="dt">报告者：</span></li></td><td><span><input type="text" name="user" id="user" size="5" value="<?php if(!session_id()) session_start();echo $_SESSION['name'] ?>" readonly /></span></td></tr>
+                                <tr><td><li><span class="dt">状态：</span></li></td><td><span>
+                                <select name="islock" id="islock">
                                     <?php foreach($cfg['islock'] as $k=>$v){ ?>
                                         <option value="<?php echo $k;?>"><?php echo $v; ?></option>
                                     <?php } ?>
                                 </select>
-                                </span>
-                                </li><br />
+                                </span></td></tr>
+                            </table>
+                              
+
                                 <li>
                                 <link rel="stylesheet" href="css/autocomplate.css" type="text/css" media="screen" charset="utf-8" />
                                 <span class="dt">通知到(使用邮件列表)：</span>
@@ -74,7 +75,8 @@
                                         <select id="select3" name="select3">
                                         </select>
                                 </span>
-                                </li><br />
+                                </li>
+
                                 <li>
                                 <span class="dt">通知到(使用邮件群组)：</span><br />
                                     <span>

@@ -40,36 +40,6 @@ case 'm_add':
         }
     }
     break;
-case 'm_edit':
-	$eid = intval($params['m_eid_edit']);
-	$content = $params['content_m'];
-    $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
-    $measure['eid'] = intval($params['m_eid_edit']);
-    $measure['mid'] = intval($params['mid']);
-    $measure['measure'] = trim($params['c_measure']);
-    $measure['muser'] = trim($params['c_user']);
-    $measure['mtime'] = strtotime($params['c_time_'.$measure['mid']]);
-    $measure['status'] = intval($params['mstatus']);
-    if(!$measure['measure'] || !$measure['muser'] || !$measure['mtime']){
-        msg_redirect('index.php?op=edit&eid='.$measure['eid'],'填写完整再提交！');
-    }else{
-        if(update_measure($pdo,$measure) || update_content($pdo,$content,$eid)){
-            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'更新成功');
-            $email_arr = get_email_arr($pdo,$measure['eid']);
-            $esub = get_event_info($pdo,$measure['eid']);
-            $subject = "您关注的事件：".$esub['base']['subject']."有更新";
-            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = "详情点击："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$measure['eid']."'>这里查看</a>";
-            $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-            $smtp->debug = false;
-            foreach($email_arr as $k=>$v){
-                $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
-            }
-        }else{
-            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'更新失败');
-        }
-    }
-    break;
 case 'm_del':
     $mid = intval($params['mid']);
     $eid = intval($params['eid']);
@@ -316,9 +286,60 @@ case 'do_add':
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         break;
-    case 'c_edit':
+    case 'e_edit':
+        $eid = intval($params['eid']);
+
+        $s_sid = trim($params['s_sid']);
+        $s_sid = substr($s_sid,0,-1); 
+        $sids = array();
+        $sids = (explode(',',$s_sid));
+        foreach ($sids as $sid){
+            $schedule['sid'] = intval($sid);
+            $schedule['s_subject'] = trim($params['edit_subject_'.$schedule['sid']]);
+            $schedule['s_user'] = trim($params['edit_suser_'.$schedule['sid']]);
+            $schedule['s_time'] = strtotime($params['edit_stime_'.$schedule['sid']]);
+            if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']) msg_redirect('index.php?op=detail&edit='.$eid,'empty any option!');
+            else update_schedule($pdo,$schedule);
+        }
+
+
+
+        $m_mid = trim($params['m_mid']);
+        $m_mid = substr($m_mid,0,-1);
+        $mids = array();
+        $mids = (explode(',',$m_mid));
+        foreach ($mids as $mid){
+            $measure['mid'] = intval($mid);
+            $measure['measure'] = trim($params['c_measure_'.$measure['mid']]);
+            $measure['muser'] = trim($params['c_user_'.$measure['mid']]);
+            $measure['mtime'] = strtotime($params['c_time_'.$measure['mid']]);
+            $measure['status'] = intval($params['mstatus_'.$measure['mid']]);
+            if(!$measure['measure'] || !$measure['muser'] || !$measure['mtime']){
+                msg_redirect('index.php?op=edit&eid='.$eid,'填写完整再提交！');
+            }else{
+                if(update_measure($pdo,$measure)){
+                    $email_arr = get_email_arr($pdo,$eid);
+                    $esub = get_event_info($pdo,$eid);
+                    $subject = "您关注的事件：".$esub['base']['subject']."有更新";
+                    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+                    $body = "详情点击："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$eid."'>这里查看</a>";
+                    $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
+                    $smtp->debug = false;
+                    foreach($email_arr as $k=>$v){
+                        $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
         $htmlData = '';
-        $eid = intval($params['c_eid']);
         $content = $params['content'];
         $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
         if (!empty($content)) {
@@ -329,7 +350,6 @@ case 'do_add':
                 }
         }
         if(update_content($pdo,$content,$eid)){
-            msg_redirect('index.php?op=edit&eid='.$eid,'modify content success!');
             $email_arr = get_email_arr($pdo,$eid);
             $esub = get_event_info($pdo,$eid);
             $subject = "您关注的事件：".$esub['base']['subject']."有更新";
@@ -340,13 +360,9 @@ case 'do_add':
             foreach($email_arr as $k=>$v){
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
-        }else{
-            msg_redirect('index.php?op=edit&eid='.$eid,'failed!');
-        } 
-        break;
-    case 'e_edit':
-        $content = $params['content_c'];
-        $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
+        }
+
+
         $event['eid'] = intval($params['eid']);
         $event['subject'] = trim($params['subject']);
         $event['description'] = trim($params['description']);
@@ -398,10 +414,8 @@ case 'do_add':
         }
         
             $event['affecttime'] = ceil(($event['solvetime']-$event['createtime'])/60);
-            if(update_event($pdo,$event) || update_content($pdo,$content,$event['eid'])){
+            if(update_event($pdo,$event)){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event success');
-            }else{
-                msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event failed');
             }
        // }
             break;
@@ -455,24 +469,6 @@ case 'do_add':
             }
         }
         break;
-    case 's_edit':
-		$eid = intval($params['s_eid_edit']);
-		$content = $params['content_s'];
-        $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
-        $schedule['sid'] = intval($params['s_sid']);
-        //$schedule['stypeid'] = intval($params['edit_stypeid']);
-        $schedule['s_subject'] = trim($params['edit_subject']);
-        $schedule['s_user'] = trim($params['edit_suser']);
-        //$schedule['s_division'] = intval($params['edit_division']);
-        $schedule['s_time'] = strtotime($params['edit_stime_'.$schedule['sid']]);
-        if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']) msg_redirect('index.php?op=detail&eid='.$params['eid'],'empty any option!');
-        if(update_schedule($pdo,$schedule) || update_content($pdo,$content,$eid)){
-            msg_redirect('index.php?op=edit&eid='.$params['eid'],'Oh Yeah! success!!'); 
-        }else{
-            msg_redirect('index.php?op=edit&eid='.$params['eid'],'edit schedule failed');
-        }
-        break;
-		
 	case 's_del':
 		$sid = intval($params['sid']);
 		$eid = intval($params['eid']);
