@@ -14,7 +14,7 @@
 			<li><a href="index.php">首页</a></li>
                         <li><a href="index.php?op=lastweek">上周所有事件</a></li>
                         <li><a href="index.php?op=week">本周所有事件</a></li>
-            <li><a href="index.php?op=lastmonth">上月所有事件</a></li>
+                        <li><a href="index.php?op=lastmonth">上月所有事件</a></li>
 			<li><a href="index.php?op=month">本月所有事件</a></li>
 			<li><a href="index.php?op=report">数据统计</a></li>
                         <li class="selected"><a href="search.html">搜索</a></li>
@@ -45,7 +45,7 @@
 
 
                 <tr style="height:50px;"><td><span>事件类型：</span></td><td>
-                    <select name="etype">
+                    <select name="etype" id="etype" onchange="tt(this.id)">
                         <option value="0">所有</option>
                         <option value="1">运营商故障</option>
                         <option value="2">网络故障</option>
@@ -58,7 +58,7 @@
                </td></tr>
 
                <tr style="height:50px;"><td><span>事件等级：</span></td><td>
-                    <select name="level">
+                    <select name="level" id="level">
                         <option value="0">所有</option>
                         <option value="1">L1</option>
                         <option value="2">L2</option>
@@ -93,5 +93,16 @@
 <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 <script type="text/javascript" src="js/search.js"></script>
+    <script>
+
+        function tt(id) {
+            var aa = document.getElementById(id);
+            var level = document.getElementById("level");
+            if ((aa.value)==6) {
+                level.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option>'
+            }
+            else level.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6">L6</option>'
+        }
+    </script>
 </body>
 </html>
