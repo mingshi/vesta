@@ -293,14 +293,15 @@ case 'do_add':
         $s_sid = substr($s_sid,0,-1); 
         $sids = array();
         $sids = (explode(',',$s_sid));
+        if ($sids[0]){
         foreach ($sids as $sid){
             $schedule['sid'] = intval($sid);
             $schedule['s_subject'] = trim($params['edit_subject_'.$schedule['sid']]);
             $schedule['s_user'] = trim($params['edit_suser_'.$schedule['sid']]);
             $schedule['s_time'] = strtotime($params['edit_stime_'.$schedule['sid']]);
-            if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']) msg_redirect('index.php?op=detail&edit='.$eid,'empty any option!');
+            if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']) msg_redirect('index.php?op=edit&eid='.$eid,'填写完整事件处理过程再提交!');
             else update_schedule($pdo,$schedule);
-        }
+        }}
 
 
 
@@ -308,6 +309,7 @@ case 'do_add':
         $m_mid = substr($m_mid,0,-1);
         $mids = array();
         $mids = (explode(',',$m_mid));
+        if ($mids[0]){
         foreach ($mids as $mid){
             $measure['mid'] = intval($mid);
             $measure['measure'] = trim($params['c_measure_'.$measure['mid']]);
@@ -315,7 +317,7 @@ case 'do_add':
             $measure['mtime'] = strtotime($params['c_time_'.$measure['mid']]);
             $measure['status'] = intval($params['mstatus_'.$measure['mid']]);
             if(!$measure['measure'] || !$measure['muser'] || !$measure['mtime']){
-                msg_redirect('index.php?op=edit&eid='.$eid,'填写完整再提交！');
+                msg_redirect('index.php?op=edit&eid='.$eid,'填写完整改进措施再提交！');
             }else{
                 if(update_measure($pdo,$measure)){
                     $email_arr = get_email_arr($pdo,$eid);
@@ -330,7 +332,7 @@ case 'do_add':
                     }
                 }
             }
-        }
+        }}
 
 
 
