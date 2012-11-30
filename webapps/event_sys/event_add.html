@@ -35,7 +35,7 @@
                                 </select>
                             </span></td></tr>
                                 <tr><td><li><span class="dt">事件类别：</span></li></td><td><span class="etype">
-                                <select name="etype" id="etype">
+                                <select name="etype" id="etype" onchange="tt(this.id)">
                                     <?php if($cfg['etype']){ ?>
                                     <?php foreach($cfg['etype'] as $k=>$v){ ?>
                                     <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
@@ -120,8 +120,9 @@
             </div>
         </div>
         <div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div></div>
-<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script><script type="text/javascript" src="js/main.js"></script>
-
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js">
 <script type="text/javascript">
        $(function(){
               //动画速度
@@ -160,5 +161,14 @@
            KindEditor.ready(function(K) {
            editor = K.create('#editor_id');
        });
+
+        function tt(id) {
+            var aa = document.getElementById(id);
+            var level = document.getElementById("level");
+            if ((aa.value)==6) {
+                level.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option>'
+            }
+            else level.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6">L6</option>'
+        }
     </script>
         </body></html>
