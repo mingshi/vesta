@@ -66,7 +66,20 @@ else{
                             <li><span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></span></li>
                             <li><span class="dt">影响时长：</span><span><?php echo $v['affecttime']."分钟";?></span></li>
                             <li><span class="dt">事件影响：</span><span><?php echo $v['affect']; ?></span></li>
-                            <li><span class="dt">事件等级：</span><span>L<?php echo $v['level']; ?></span><a href="levelinfo.php" target="_blank">[等级说明]</a></li>
+                            <li><span class="dt">事件等级：</span><span>
+<?php
+if ($event_info['base']['etypeid'] =="6"){
+?>
+<a href='/levelinfo.php'><img border='0' height='15px' src="http://vesta.corp.anjuke.com/images/level/ls<?php echo (4-$v['level']);?>.png"></a>
+<?
+}
+else {
+?>
+<a href='/levelinfo.php'><img border='0' height='15px' src="http://vesta.corp.anjuke.com/images/level/lv<?php echo (7-$v['level']);?>.png"></a>
+<?php
+}
+?>
+L<?php echo $v['level'];?></span></li>
 <?
 }
 ?>
