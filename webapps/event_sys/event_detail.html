@@ -79,7 +79,8 @@ L<?php echo $event_info['base']['level'];?></span></td><th class = "detail_event
 											$id = 0;
 											foreach ($array as $key2){
 												if ($key1==$key2->value){
-													$text = $text.$key2->key.',';
+                                                    $ch_name = preg_replace('/[\x00-\x7F]/', '',$key2->key);
+													$text = $text.$ch_name.',';
 													$id = 1;
 												}
 											}
