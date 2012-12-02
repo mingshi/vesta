@@ -19,15 +19,18 @@
                 <li><a href="search.html">搜索</a></li>
                 <li><a href="index.php?op=add">添加事件</a></li>
             </ul>
-
+            <div id="pageTabs-1">
+                <div class="topinfo">
+                    <div class="welcome">欢迎[<a href="#" class="currentloginer"><?php echo $user; ?></a>] <a href="index.php?op=myatt">我的关注</a>&nbsp;<a href="mailgroup.php">邮件群组</a><?php if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){ ?> <a href="logout.php">注销</a><?php } ?> <?php if(!isset($_SESSION['user']) && $_SESSION['user'] != true && !isset($_SESSION['name'])){ ?><a href="oauthlogin.php">登录</a> <?php } ?></div>
+				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="list.php" method="post"><input class="searchinput" id="keywds" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton" onclick="javascript:document.getElementById('keywds').value='';"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
+			</div>
 
 <br>
             
 
 
         <?php if(!empty($event_page)){foreach($event_page as $key=>$v){ ?>
-        <div
-        <?php echo "class='event highlight'" ?>>
+        <div <?php if($v['islock']==0){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
             <div class="event_title">
                 <div class="title">
                     <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a>
@@ -100,10 +103,10 @@ L<?php echo $v['level'];?></span></li>
 </ul>
                     
                     <div class="page mt10">
-                        <a href="<?php if($page>1){ ?>index.php?op=all&page=<?php echo $page-1;} ?>">上一页</a>
+                        <a href="<?php if($page>1){ ?>index.php?page=<?php echo $page-1;} ?>">上一页</a>
                         <span>|</span>
                         <span><?php echo $page; ?>/<?php echo $allpage; ?></span><span>|</span>
-                        <a href="<?php if($page<$allpage){ ?>index.php?op=all&page=<?php echo $page+1;} ?>">下一页</a>
+                        <a href="<?php if($page<$allpage){ ?>index.php?page=<?php echo $page+1;} ?>">下一页</a>
                     </div>
                     
 </div>		

@@ -58,14 +58,20 @@
                </td></tr>
 
                <tr style="height:50px;"><td><span>事件等级：</span></td><td>
-                    <select name="level" id="level">
-                        <option value="0">所有</option>
-                        <option value="1">L1</option>
+                    <select name="levels" id="levels">
+                        <option value="1" selected>L1</option>
                         <option value="2">L2</option>
                         <option value="3">L3</option>
                         <option value="4">L4</option>
                         <option value="5">L5</option>
                         <option value="6">L6</option>
+                    </select> — <select name="levele" id="levele">
+                        <option value="1">L1</option>
+                        <option value="2">L2</option>
+                        <option value="3">L3</option>
+                        <option value="4">L4</option>
+                        <option value="5">L5</option>
+                        <option value="6" selected>L6</option>
                     </select>
                 </td></tr>
 
@@ -97,11 +103,16 @@
 
         function tt(id) {
             var aa = document.getElementById(id);
-            var level = document.getElementById("level");
+            var levels = document.getElementById("levels");
+            var levele = document.getElementById("levele");
             if ((aa.value)==6) {
-                level.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option>'
+                levels.innerHTML = '<option value="1" selected>L1</option><option value="2">L2</option><option value="3">L3</option>'
+                levele.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3" selected>L3</option>'
             }
-            else level.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6">L6</option>'
+            else {
+                levels.innerHTML = '<option value="1" selected>L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6">L6</option>'
+                levele.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6" selected>L6</option>'
+            }
         }
     </script>
 </body>

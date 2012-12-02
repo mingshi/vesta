@@ -25,7 +25,7 @@
 <?php }?>
 <?php if( ($cfg['close'][$username]==1) && ($event_info['base']['islock']==0)){
 ?>
-<input type="button" value="关闭事件" onclick="location.href='index.php?op=checkclose&eid=<?php echo $event_info['base']['eid'];?>&ok=1'">
+<input type="button" value="关闭事件" onclick="location.href='index.php?op=checkclose&eid=<?php echo $event_info['base']['eid'];?>&who=<?php echo $event_info['base']['who'];?>&ok=1'">
 
 <?php }?></div>
 
@@ -34,27 +34,13 @@
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">事件描述：</span></th><td width = 90%><span><?php echo $event_info['base']['description']; ?></span></td></tr></tbody></table></td></tr>
 
-<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">相关事件：</span></th><td width = 90%><span>
-							<?php 
-$i = 0;
-foreach ($event_info['relate'] as $key){
-									if ($key['eid']==$event_info['base']['eid']) continue;
-                                    $i++; if ($i >=6) continue;
-							?>
-							<a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank">Id:<?php echo $key['eid'];?>, </a>
-							<?}?>
-<?php if ($i >=6){?>
-    <a href="index.php?op=relate&relate_name=<?php echo $event_info['base']['subject']; ?>" target="_blank">...查看全部</a>
-<?php }?>
-							</span></td></tr></tbody></table></td></tr>
-
-<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">记录时间：</span></th><td width = 90%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['addtime']); ?></span></td></tr></tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">发生时间：</span></th><td width = 40%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['createtime']); ?></span></td><th class = "detail_event" width = 10%><span class="dt">解决时间：</span></th><td width = 40%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['solvetime']); ?></span></td></tr></tbody></table></td></tr>
 
-<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">影响时长：</span></th><td width = 90%><span>
+<tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class ="detail_event" width = 10%><span class="dt">记录时间：</span></th><td width = 40%><span><?php echo date('Y-m-d H:i:s',$event_info['base']['addtime']); ?></span></td><th class = "detail_event" width = 10%><span class="dt">影响时长：</span></th><td width = 40%><span>
 					<?php if($event_info['base']['solvetime']){echo $event_info['base']['affecttime']."分钟";}else{echo "至今";} ?>
-				</span></td></tr>
+				</span></td>
+</tr>
 </tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">关闭时间：</span></th><td width = 90%><span><?php if($event_info['base']['islock']==1){?><?php echo date('Y-m-d H:i:s',$event_info['base']['closetime']);?><?php } ?></span></td></tr></tbody></table></td></tr>
@@ -144,10 +130,25 @@ L<?php echo $event_info['base']['level'];?></span></td><th class = "detail_event
                                 <?php } } ?>
                         </table></div>
                    
+                        <table class="table mb60">
+                            <tr class="caption"><td colspan="6">相关事件</td></tr>
+                            <tr class="thead" ><td style="width:10%">事件ID</td><td style="width:90%;">事件名称</td></tr>
 
- 
-                        
-<br>
+
+							<?php 
+
+foreach ($event_info['relate'] as $key){
+									if ($key['eid']==$event_info['base']['eid']) continue;
+                                    else{
+							?>
+							
+<tr><td><a href="index.php?op=detail&eid=<?php echo $key['eid']; ?>" target="_blank"><?php echo $key['eid'];?></a></td><td style="text-align:left;"><?php echo $key['subject'];?></td></tr>
+							<?}}?>
+
+
+</table>
+
+
 <div class ="comment">
 <?php if(!empty($comment)){foreach($comment as $key=>$v){ ?>
 

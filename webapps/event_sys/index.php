@@ -335,15 +335,10 @@ case 'do_add':
         }}
 
 
-
-
-
-
-
-
         $htmlData = '';
         $content = $params['content'];
         $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
+        $content = preg_replace ("/"."white-space"."([\s\S]*)".";"."/iU", "", $content);
         if (!empty($content)) {
                 if (get_magic_quotes_gpc()) {
                         $htmlData = stripslashes($content);
@@ -402,6 +397,9 @@ case 'do_add':
             }
            // $measure = get_event_measure($pdo,$event['eid']);
             // if(!$measure) msg_redirect('index.php?op=edit&eid='.$event['eid'],'必须填写改进措施之后才能关闭');
+            if(!$event['who']){
+                msg_redirect('index.php?op=edit&eid='.$event['eid'],'未填写责任人的事件无法关闭');
+            }
             $event['islock'] = 0;
             $subject = $event['subject']."即将关闭";
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
@@ -424,6 +422,10 @@ case 'do_add':
     case 'checkclose':
         if(!session_id())session_start();
         $eid = intval($params['eid']);
+        $who = trim($params['who']);
+        if(!$who){
+            msg_redirect('index.php?op=detail&eid='.$eid,'未填写责任人的事件无法关闭');
+        }
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])) $username = $_SESSION['name'];
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['close'][$username]==1){
             $ok = intval($params['ok']);
@@ -681,25 +683,9 @@ case 'do_add':
         }
 
         break;
-    case 'all':
-        $page = $params['page'];
-        if(!$page)$page = 1;
-        $total = get_event_count($pdo);
-        $offset = 10;
-        $allpage = ceil($total['total']/$offset);
-            if($page){
-                $limit = (($page-1) * $offset).', '.$offset;
-                    $event_page = get_all_event_page($pdo,$limit);
-            }
-        $template = 'event_all';
-        break;
-
-
-
-
     default:
 
-        if(!session_id()) session_start();
+       /* if(!session_id()) session_start();
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
             $user = $_SESSION['name'];
             $uid = $_SESSION['uid'];
@@ -725,7 +711,25 @@ case 'do_add':
                 }
             }
         }
-        $template = 'home';
+        $template = 'home';*/
+        if(!session_id()) session_start();
+        if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
+            $user = $_SESSION['name'];
+            $uid = $_SESSION['uid'];
+        }else{
+            $user = "guest";
+        }
+        $page = $params['page'];
+        if(!$page)$page = 1;
+        $total = get_event_count($pdo);
+        $offset = 10;
+        $allpage = ceil($total['total']/$offset);
+            if($page){
+                $limit = (($page-1) * $offset).', '.$offset;
+                    $event_page = get_all_event_page($pdo,$limit);
+            }
+        $template = 'event_all';
+        break;
 }
 
 $current_nav='index';

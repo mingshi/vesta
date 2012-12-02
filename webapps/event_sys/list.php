@@ -7,7 +7,13 @@ if($op=="search"){
     $who = trim($params['who']);
     $islock = intval($params['status']);
     $division = intval($params['division']);
-    $level = intval($params['level']);
+    $levels = intval($params['levels']);
+    $levele = intval($params['levele']);
+    if ($levels > $levele){
+        $level = $levele;
+        $levele = $levels;
+        $levels = $level;
+    }
     $etype = intval($params['etype']);
     $start = intval(strtotime($params['start']));
     $end = intval(strtotime($params['stop']));
@@ -16,7 +22,8 @@ if($op=="search"){
     !empty($end) ? $where = $where." and createtime<=".$end : $where = $where." and 1";
     !empty($keyword) ? $where = $where." and subject like '%".$keyword."%'" : $where = $where." and 1";
     !empty($who) ? $where = $where." and who like '%".$who."%'" : $where = $where." and 1";
-    !empty($level) ? $where = $where." and level=".$level : $where = $where." and 1";
+    !empty($levels) ? $where = $where." and level>=".$levels : $where = $where." and 1";
+    !empty($levele) ? $where = $where." and level<=".$levele : $where = $where." and 1";
     !empty($division) ? $where = $where." and division=".$division : $where = $where." and 1";
     !empty($etype) ? $where = $where." and etypeid=".$etype : $where = $where." and 1";
 }elseif($params['stypeid']){
