@@ -3,7 +3,7 @@
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 </head>
-<body>
+<body style = "margin:0px;padding:0px;">
 <?php
 require_once '../libraries/common.lib.php';
         $nowyear = date('Y',time());
