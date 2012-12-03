@@ -459,8 +459,18 @@ case 'do_add':
             if(!$uid){
                 msg_redirect('index.php','参数错误');
             }else{
-                $userinfo = get_user_info($pdo,$user);
-                $my_who_event = get_who ($pdo,$userinfo['realname']);
+                $name = file_get_contents("data.txt");
+                $array = json_decode($name);
+                foreach ($array as $key){
+                    $en_name = preg_replace('/([\x80-\xff]*)/i','',$key->key);
+                    if ($en_name == $user) {
+                        $ch_name = preg_replace('/[\x00-\x7F]/', '',$key->key);
+                        break;
+                    }
+                }
+                //$userinfo = get_user_info($pdo,$user);
+                //$my_who_event = get_who($pdo,$userinfo['realname']);
+                $my_who_event = get_who($pdo,$ch_name);
                 $my_att_event = get_my_att($pdo,$uid);
                 $page = $params['page'];
                 if(!$page)$page = 1;

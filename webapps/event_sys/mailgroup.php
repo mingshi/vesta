@@ -17,6 +17,7 @@ if(!isset($_SESSION['user']) || $_SESSION['user'] != true || !isset($_SESSION['n
             $template = 'mailgroup';
             break;
         case 'add':
+            $mail_arr = "";
             $mail = $params['select3'];
             $groupname = trim($params['groupname']);
             if(!$mail) msg_redirect('mailgroup.php','没有选择用户');

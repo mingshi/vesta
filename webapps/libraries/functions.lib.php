@@ -310,6 +310,12 @@ function check_attention($pdo,$att){
     else return 1;
 }
 
+function check_open_date($pdo,$eid,$time){
+    $array =  pdo_fetch_all($pdo,'select * from measure where eid='.$eid.' and mtime>'.$time);
+    if (empty($array)){return 0;}
+    else return 1;
+}
+
 function insert_attention($pdo,$att){
     $sql = "insert into attention set eid=?,uid=?,time=?";
     $sth = $pdo->prepare($sql);
