@@ -499,11 +499,11 @@ case 'do_add':
             $affect_time = get_every_month_affect_time($pdo,$param);
             $the_month_time = $daysnum * 24 * 60;
             $the_month_useable = floor((($the_month_time-$affect_time['total'])/$the_month_time)*100);
-            //$the_month_useable = number_format((($the_month_time-$affect_time['total'])/$the_month_time)*100,2);
+            $the_month_useable = number_format((($the_month_time-$affect_time['total'])/$the_month_time)*100,2);
             $event_graph_month[$p]['date'] = "new Date($nowyear$p,0)";
             $event_graph_month[$p]['value'] = $thecount['total'];
             $event_graph_useable[$p]['date'] = "new Date($nowyear$p,0)";
-            if ($the_month_useable=="100.00"){$event_graph_useable[$p]['value'] = 100;}
+            if ($the_month_useable>="100.00"){$event_graph_useable[$p]['value'] = 100;}
             else $event_graph_useable[$p]['value'] = $the_month_useable;
         }
         foreach($event_graph_month as $k=>$v){
