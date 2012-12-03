@@ -503,7 +503,8 @@ case 'do_add':
             $event_graph_month[$p]['date'] = "new Date($nowyear$p,0)";
             $event_graph_month[$p]['value'] = $thecount['total'];
             $event_graph_useable[$p]['date'] = "new Date($nowyear$p,0)";
-            $event_graph_useable[$p]['value'] = $the_month_useable;
+            if ($the_month_useable=="100.00"){$event_graph_useable[$p]['value'] = 100;}
+            else $event_graph_useable[$p]['value'] = $the_month_useable;
         }
         foreach($event_graph_month as $k=>$v){
             $total = $total+$v['value'];
