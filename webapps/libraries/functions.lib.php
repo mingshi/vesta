@@ -223,6 +223,10 @@ function get_cost_month($pdo,$key,$k,$i){
     return pdo_fetch_all($pdo,"select * from cost where ftype=? and stype=? and month(FROM_UNIXTIME(time))=?",array($key,$k,$i));
 }
 
+function get_who ($pdo,$realname){
+    return pdo_fetch_all($pdo,'select * from event where who=?',array($realname));
+}
+
 function insert_schedule($pdo,$params){
     $sql = "insert into schedule set eid=?,s_subject=?,s_user=?,s_time=?";
     $sth = $pdo->prepare($sql);
@@ -298,6 +302,12 @@ function update_event_report($pdo,$params){
     $sth = $pdo->prepare($sql);
     $sth ->execute(array($params['r_user'],$params['r_division'],$params['content'],$params['measure'],$params['r_time'],$params['eid']));
     return $sth->rowCount();
+}
+
+function check_attention($pdo,$att){
+    $array =  pdo_fetch_all($pdo,'select * from attention where uid='.$att['uid'].' and eid='.$att['eid']);
+    if (empty($array)){return 0;}
+    else return 1;
 }
 
 function insert_attention($pdo,$att){

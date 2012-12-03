@@ -231,11 +231,14 @@ case 'do_add':
             if(!$att['uid'] || !$att['eid']){
                 msg_redirect('index.php','参数有问题');
             }else{
-                if(insert_attention($pdo,$att)){
-                    msg_redirect('index.php','添加关注成功');
-                }else{
-                    msg_redirect('index.php','添加关注失败');
+                if(!check_attention($pdo,$att)){
+                    if(insert_attention($pdo,$att)){
+                        msg_redirect('index.php?op=myatt','添加关注成功');
+                    }else{
+                        msg_redirect('index.php?op=myatt','添加关注失败');
+                    }
                 }
+                else msg_redirect('index.php','已经关注该事件');
             }
         }
         break;
@@ -250,9 +253,9 @@ case 'do_add':
                 	msg_redirect('index.php','参数有问题');
             	}else{
 			if(del_att($pdo,$att['uid'],$att['eid'])){
-				msg_redirect('index.php','取消关注成功');
+				msg_redirect('index.php?op=myatt','取消关注成功');
 			}else{
-				msg_redirect('index.php','取消关注失败');
+				msg_redirect('index.php?op=myatt','取消关注失败');
 			}
 		}
 	}
@@ -456,18 +459,17 @@ case 'do_add':
             if(!$uid){
                 msg_redirect('index.php','参数错误');
             }else{
+                $userinfo = get_user_info($pdo,$user);
+                $my_who_event = get_who ($pdo,$userinfo['realname']);
                 $my_att_event = get_my_att($pdo,$uid);
                 $page = $params['page'];
                 if(!$page)$page = 1;
                 $total = count($my_att_event);
                 $offset = 5;
                 $allpage = ceil($total/$offset);
-                if(!$tt) $tt="oo";
-                if($tt=="oo"){
                 if($page){
                 $limit = (($page-1) * $offset).', '.$offset;
                 $my_event_page = get_my_att_page($pdo,$limit,$uid);
-                }
             }
                 $template = 'myevent';
             }
