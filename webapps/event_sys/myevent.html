@@ -10,8 +10,8 @@
     <div class="pagewrap">
         <div class="homemaincontent">
             <ul id="pageTabs" class="pagetabs">
-                <li class="selected"><a href="index.php">首页</a></li>
-                <li><a href="index.php?op=lastweek">上周所有事件</a></li>
+                <li><a href="index.php">首页</a></li>
+                <li class="selected"><a href="index.php?op=myatt">我的事件</a></li>
                 <li><a href="index.php?op=week">本周所有事件</a></li>
                 <li><a href="index.php?op=lastmonth">上月所有事件</a></li>
                 <li><a href="index.php?op=month">本月所有事件</a></li>
@@ -21,23 +21,82 @@
             </ul>
             <div id="pageTabs-1">
                 <div class="topinfo">
-                    <div class="welcome">欢迎[<a href="#" class="currentloginer"><?php echo $user; ?></a>] <a href="index.php?op=myatt">我的关注</a> <a href="logout.php">注销</a> </div>
-				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="li    st.php" method="post"><input class="searchinput" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
+                    <div class="welcome">欢迎[<a href="#" class="currentloginer"><?php echo $user; ?></a>] &nbsp;<a href="mailgroup.php">邮件群组</a><?php if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){ ?> <a href="logout.php">注销</a><?php } ?> <?php if(!isset($_SESSION['user']) && $_SESSION['user'] != true && !isset($_SESSION['name'])){ ?><a href="oauthlogin.php">登录</a> <?php } ?></div>
+				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="list.php" method="post"><input class="searchinput" id="keywds" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton" onclick="javascript:document.getElementById('keywds').value='';"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
 			</div>
-                    <?php if(!empty($my_event_page)){foreach($my_event_page as $key=>$v){ ?>
-                    <div class="event">
-                        <div class="event_title"><div class="title"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></div><div class="tright"><div class="datetime"><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></div><div <?php if($v['islock']==0){echo "class='status running'";}else{echo "class='status'";} ?>><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></div></div></div>
-                        <ul class="event_detail mb20">
+<br>
+        <?php if(!empty($my_event_page)){foreach($my_event_page as $key=>$v){ ?>
+        <div <?php if($v['islock']==0){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
+            <div class="event_title">
+                <div class="title">
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a>
+                </div>
+                <div class="tright">
+                    <div <?php if($v['islock']==0){ echo "class='status running'";}else{echo "class='status running'";} ?>><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?>
+                    </div>
+                </div>
+            </div>
+            <div class="datetime">
+<?php
+if ($v['addtime']) echo $v['fuser']."  记录于  ".date('Y-m-d H:i:s',$v['addtime']);
+else echo $v['fuser']."  记录于  ".date('Y-m-d H:i:s',$v['createtime']);
+?>
+            </div>
+            <ul class="event_detail mb20">
+<?php
+    if ($v['summary']){
+?>
+                <li>
+<a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid'];?>">
+<img border="0" align="right" height=100px alt="事件类型<?php echo $v['etypeid'];?>" src="/images/type_icons/<?php echo $v['etypeid'];?>.png">
+</a>
+<span class="dt"><?php echo $v['summary']?></span>
+
+</li>
+
+<?php
+}
+else{
+?>
+<a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid'];?>">
+<img border="0" align="right" height=100px alt="事件类型<?php echo $v['etypeid'];?>" src="/images/type_icons/<?php echo $v['etypeid'];?>.png">
+</a>
                             <li><span class="dt">事件描述：</span><span><?php echo $v['description']; ?></span></li>
                             <li><span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></span></li>
+                            <li><span class="dt">影响时长：</span><span><?php echo $v['affecttime']."分钟";?></span></li>
                             <li><span class="dt">事件影响：</span><span><?php echo $v['affect']; ?></span></li>
-                            <li><span class="dt">事件等级：</span><span>L<?php echo $v['level']; ?></span></li>
-                        </ul>
-                        <div class="event_footer"><div class="footer"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail">查看事件详情</a> |<a href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a></div></div>
-                        </div>
-                        </li>
-                        <?php } } ?>
-                    </ul>
+                            <li><span class="dt">事件等级：</span><span>
+<?php
+if ($event_info['base']['etypeid'] =="6"){
+?>
+<a href='/levelinfo.php'><img border='0' height='15px' src="http://vesta.corp.anjuke.com/images/level/ls<?php echo (4-$v['level']);?>.png"></a>
+<?
+}
+else {
+?>
+<a href='/levelinfo.php'><img border='0' height='15px' src="http://vesta.corp.anjuke.com/images/level/lv<?php echo (7-$v['level']);?>.png"></a>
+<?php
+}
+?>
+L<?php echo $v['level'];?></span></li>
+<?
+}
+?>
+
+            </ul>
+            <div class="event_footer">
+                <div class="footer">
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
+                    <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
+                    <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
+<?php if(empty($v['att'])){ ?>
+                    <a href="index.php?op=attention&eid=<?php echo $v['eid']; ?>" class="focus" >加入关注</a><?php }else{ ?><a href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
+<?php } ?>
+                </div>
+            </div>
+        </div>
+<?php } } ?>
+</ul>
                     
                     <div class="page mt10">
                         <a href="<?php if($page>1){ ?>index.php?op=myatt&tt=oo&page=<?php echo $page-1;} ?>">上一页</a>
