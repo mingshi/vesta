@@ -25,12 +25,7 @@ require_once '../libraries/common.lib.php';
 
 
     <div style="width:440px;height:220px;">
-        <div style="float:left;font-size:15px;">事件系统</div>
-        <div style="float:right;"><a href="http://vesta.corp.anjuke.com" style="color:#46A3FF;font-size:14px;text-decoration:none;">更多 >>></a></div>
-        </br>
-<hr color="#ddd" width="440px" size="2" style="filter:progid:DXImageTransform.Microsoft.Glow(color=#5151A2,strength=10)">
-        <div id="chartdiv" style="height: 165px;width:430px;padding-left:10px;"></div>
-
+        <div id="chartdiv" style="height: 195px;width:430px;padding-left:10px;"></div>
         <div style="text-align:center;font-size:15px;">月度事件走势图</div>
     </div>
 
