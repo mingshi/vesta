@@ -71,7 +71,7 @@ foreach ($result as $key){
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$v['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$v['level'].'</span></p>
 </td>
 </tr>
 

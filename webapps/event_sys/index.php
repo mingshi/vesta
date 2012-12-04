@@ -68,7 +68,7 @@ case 'm_add':
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
 </td>
 </tr>
 
@@ -207,7 +207,7 @@ case 'do_add':
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event_attr['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$event_attr['level'].'</span></p>
 </td>
 </tr>
 
@@ -351,7 +351,7 @@ case 'do_add':
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
 </td>
 </tr>
 
@@ -550,7 +550,7 @@ case 'do_add':
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
 </td>
 </tr>
 
@@ -637,7 +637,7 @@ case 'do_add':
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
 </td>
 </tr>
 
@@ -727,7 +727,7 @@ $subject = "[新事件]  ".$event['subject'];
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$event['level'].'</span></p>
 </td>
 </tr>
 
@@ -809,7 +809,7 @@ $subject = "[新事件]  ".$event['subject'];
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$event['level'].'</span></p>
 </td>
 </tr>
 
@@ -902,7 +902,7 @@ $subject = "[新事件]  ".$event['subject'];
 <p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
 </td>
 <td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['level'].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
 </td>
 </tr>
 
