@@ -25,7 +25,7 @@
 				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="list.php" method="post"><input class="searchinput" id="keywds" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton" onclick="javascript:document.getElementById('keywds').value='';"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
 			</div>
 
-<br>
+
             
 
 
@@ -93,9 +93,20 @@ L<?php echo $v['level'];?></span></li>
                     <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
                     <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
                     <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
-<?php if(empty($v['att'])){ ?>
-                    <a href="index.php?op=attention&eid=<?php echo $v['eid']; ?>" class="focus" >加入关注</a><?php }else{ ?><a href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
-<?php } ?>
+<?php
+if ($_SESSION['uid']){
+$att['eid'] = $v['eid'];
+$att['uid'] = $_SESSION['uid'];
+if(!check_attention($pdo,$att)){ 
+?>
+                    <a class="focus" href="index.php?op=attention&eid=<?php echo $v['eid']; ?>">加入关注</a>
+<?php
+}else{
+?>
+                    <a class="focus" href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
+<?php
+}}
+?>
                 </div>
             </div>
         </div>

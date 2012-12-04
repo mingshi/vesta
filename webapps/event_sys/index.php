@@ -252,11 +252,14 @@ case 'do_add':
 		if(!$att['uid'] || !$att['eid']){
                 	msg_redirect('index.php','参数有问题');
             	}else{
-			if(del_att($pdo,$att['uid'],$att['eid'])){
-				msg_redirect('index.php?op=myatt','取消关注成功');
-			}else{
-				msg_redirect('index.php?op=myatt','取消关注失败');
-			}
+            if(check_attention($pdo,$att)){
+			    if(del_att($pdo,$att['uid'],$att['eid'])){
+				    msg_redirect('index.php?op=myatt','取消关注成功');
+			    }else{
+				    msg_redirect('index.php?op=myatt','取消关注失败');
+			    }
+            }
+            else msg_redirect('index.php?op=myatt','尚未关注该事件');
 		}
 	}
 	break;

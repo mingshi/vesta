@@ -24,13 +24,16 @@
                     <div class="welcome">欢迎[<a href="#" class="currentloginer"><?php echo $user; ?></a>] &nbsp;<a href="mailgroup.php">邮件群组</a><?php if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){ ?> <a href="logout.php">注销</a><?php } ?> <?php if(!isset($_SESSION['user']) && $_SESSION['user'] != true && !isset($_SESSION['name'])){ ?><a href="oauthlogin.php">登录</a> <?php } ?></div>
 				<div class="search"><div class="searchwrap"><div class="searchicon"></div><form action="list.php" method="post"><input class="searchinput" id="keywds" name="keywds" type="text" /><input type="hidden" name="op" value="keys" /></form><div class="searchbutton" onclick="javascript:document.getElementById('keywds').value='';"></div> </div><a href="search.html" class="moresearch">高级搜索</a></div>
 			</div>
+<STYLE type=text/css>
+#d1 {display: block}
+#d2 {display: none}
+</STYLE>
+            <ul id="pageTabs" class="pagetabs">
+                <li class="selected" style="width:102px;"><a href="#" target=_self onclick="changecss('d1','d2')" style="font-size: 11px;">我负责的事件</font></a></li>
+                <li style="width:102px;"><a href="#" target=_self onclick="changecss('d2','d1')" style="font-size: 11px;">我关注的事件</a></li>
+            </ul>              
 
-
-
-
-
-
-<div style="margin-bottom:7px;"><span style="font-size: 20px;">我负责的事件</span></div>
+<div id=d1>
         <?php if(!empty($my_who_event)){foreach($my_who_event as $key=>$v){ ?>
         <div <?php if($v['islock']==0){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
             <div class="event_title">
@@ -87,11 +90,24 @@ L<?php echo $v['level'];?></span></li>
                     <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
                     <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
                     <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
+<?php 
+$att['eid'] = $v['eid'];
+$att['uid'] = $_SESSION['uid'];
+if(!check_attention($pdo,$att)){ 
+?>
+                    <a class="focus" href="index.php?op=attention&eid=<?php echo $v['eid']; ?>">加入关注</a>
+<?php
+}else{
+?>
                     <a class="focus" href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
+<?php
+}
+?>
                 </div>
             </div>
         </div>
 <?php } } ?>
+</div>
 
 
 
@@ -104,9 +120,7 @@ L<?php echo $v['level'];?></span></li>
 
 
 
-
-
-<div style="margin-bottom:7px;"><span style="font-size: 20px;">我关注的事件</span></div>
+<div id=d2>
         <?php if(!empty($my_event_page)){foreach($my_event_page as $key=>$v){ ?>
         <div <?php if($v['islock']==0){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
             <div class="event_title">
@@ -163,7 +177,19 @@ L<?php echo $v['level'];?></span></li>
                     <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
                     <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
                     <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
+<?php 
+$att['eid'] = $v['eid'];
+$att['uid'] = $_SESSION['uid'];
+if(!check_attention($pdo,$att)){ 
+?>
+                    <a class="focus" href="index.php?op=attention&eid=<?php echo $v['eid']; ?>">加入关注</a>
+<?php
+}else{
+?>
                     <a class="focus" href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
+<?php
+}
+?>
                 </div>
             </div>
         </div>
@@ -175,7 +201,7 @@ L<?php echo $v['level'];?></span></li>
                 <a href="<?php if($page<$allpage){ ?>index.php?op=myatt&page=<?php echo $page+1;} ?>">下一页</a>
             </div>
         </div>		
-
+</div>
 
 
 <div id="pageTabs-2" class="hide"></div><div id="pageTabs-3" class="hide"></div><div id="pageTabs-4" class="hide"></div>
@@ -183,7 +209,12 @@ L<?php echo $v['level'];?></span></li>
 </div>
 <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
-
+<script language="javascript">
+function changecss(A,B) {
+document.getElementById(A).style.display= "block";
+document.getElementById(B).style.display= "none";
+}
+</script>
 
 </body>
 </html>
