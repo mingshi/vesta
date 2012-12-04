@@ -35,8 +35,7 @@ foreach ($result as $key){
 <tbody>
 
 <tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="center" style="text-align:center"><b><span lang="EN-US" style="font-size:10.5pt;color:white">[#'.$v['eid'].']'.$v['subject'].'</span></b></p>
+<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$v['eid'].']'.$v['subject'].'</span></a></b></p>
 </td>
 </tr>
 

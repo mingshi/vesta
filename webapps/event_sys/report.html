@@ -42,6 +42,7 @@
                     text-align: center;
                 }
             </style>
+<br />
             <div style="height:230px;">
                 <div style="color:#4F81BC;font-size:14px;font-weight:bold;overflow:hidden;">最近一个月TOP排名</div>
                 <div class="tj">
@@ -103,17 +104,37 @@
                         </table>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
+        <div style="height:200px;">
+            <div style="color:#4F81BC;font-size:14px;font-weight:bold;overflow:hidden;">当月事件积分排名</div>
+                <div class="tj">
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>责任人</th>
+                                <th>事件积分</th>
+                            </tr>
+                            <?php foreach($who as $k=>$v){ ?>
+                            <tr class="tb_td">
+                                <td><?php echo $k; ?></a></td>
+                                <td><?php echo $v; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                </div>          
+                <div class="tj">
+                        <table class="tb_tj" style="margin:10px 0 0 0;">
+                            <tr class="tb_tr">
+                                <th>责任部门</th>
+                                <th>事件积分</th>
+                            </tr>
+                            <?php foreach($division as $k=>$v){ ?>
+                            <tr class="tb_td">
+                                <td><?php echo $cfg['division'][$k]; ?></td>
+                                <td><?php echo $v; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                </div>       
+        </div>
 
 
 
