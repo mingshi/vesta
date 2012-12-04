@@ -117,12 +117,12 @@
                                 <th>责任人</th>
                                 <th>事件积分</th>
                             </tr>
-                            <?php foreach($who as $k=>$v){ ?>
+                            <?php $i=0;foreach($who as $k=>$v){ ?>
                             <tr class="tb_td">
                                 <td><?php echo $k; ?></a></td>
                                 <td><?php echo $v; ?></td>
                             </tr>
-                            <?php } ?>
+                            <?php $i++;if ($i==10) break;} ?>
                         </table>
                 </div>          
                 <div class="tj">

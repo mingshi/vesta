@@ -429,7 +429,7 @@ function get_month_event_point($pdo,$start,$end){
     else{
         $diff_time = time() - 3600 * 24 * 30;
         //return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
-        return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= '.$diff_time.' order by createtime desc");
+        return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= ".$diff_time." order by createtime desc");
     }
 }
 
