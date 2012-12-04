@@ -981,7 +981,17 @@ $subject = "[新事件]  ".$event['subject'];
     break;	
 		
     case 'report':
-        $month_event = get_month_event_point($pdo);
+        $start = intval(strtotime($params['start']));
+        $end = intval(strtotime($params['stop']));
+        if (($start&&!$end)||(!$start&&$end)) msg_redirect('index.php?op=report','日期参数不全');
+        else {
+            if ($start>$end){
+                $p = $start;
+                $start = $end;
+                $end = $p;
+            }
+            $month_event = get_month_event_point($pdo,$start,$end);
+        }
         $division = array();
         $who = array();
         foreach ($month_event as $k) {

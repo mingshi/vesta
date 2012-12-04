@@ -422,8 +422,15 @@ function get_month_event($pdo){
     return pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
 }
 
-function get_month_event_point($pdo){
-    return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
+function get_month_event_point($pdo,$start,$end){
+    if ($start!=0 && $end!=0) {
+        return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= ".$start." and createtime <= ".$end." order by createtime desc");
+    }
+    else{
+        $diff_time = time() - 3600 * 24 * 30;
+        //return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
+        return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= '.$diff_time.' order by createtime desc");
+    }
 }
 
 function get_last_month($pdo){
