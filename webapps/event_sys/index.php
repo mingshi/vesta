@@ -985,10 +985,12 @@ $subject = "[新事件]  ".$event['subject'];
         $division = array();
         $who = array();
         foreach ($month_event as $k) {
-            $division[$k['division']]+=round($k['affecttime']*((7-$k['level'])/6),2);
+            if ($k['affecttime']) $division[$k['division']]+=round($k['affecttime']*((7-$k['level'])/6),2);
+            else continue;
         }
         foreach ($month_event as $k) {
-            $who[$k['who']]+=round($k['affecttime']*((7-$k['level'])/6),2);
+            if ($k['affecttime']) $who[$k['who']]+=round($k['affecttime']*((7-$k['level'])/6),2);
+            else continue;
         }
         arsort($division);
         arsort($who);
