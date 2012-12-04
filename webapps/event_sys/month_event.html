@@ -12,7 +12,7 @@
 	<div class="homemaincontent">
 		<ul id="pageTabes" class="pagetabs">
 			<li><a href="index.php">首页</a></li>
-                        <li><a href="index.php?op=week">本周所有事件</a></li>
+                        <li><a href="index.php?op=lastweek">上周所有事件</a></li>
                         <li><a href="index.php?op=lastmonth">上月所有事件</a></li>
 			<li class="selected"><a href="index.php?op=month">本月所有事件</a></li>
 			<li><a href="index.php?op=report">数据统计</a></li>
@@ -23,7 +23,7 @@
 		<table class="table mt15">
                     <tr class="thead"><td width=43px>编号</td><td>事件名称</td><td width=77px>事件类型</td><td width=60px>事件等级</td><td width=109px>发现时间</td><td width=109px>解决时间</td><td width=102px>影响时长(分钟)</td><td width=77px>责任部门</td><td width=51px>责任人</td><td width=60px>事件状态</td></tr>
                     <?php if(!empty($event_month)){foreach($event_month as $key=>$v){ ?>
-                    <tr><td><?php echo $v['eid']; ?></td><td style="text-align:left;word-wrap: break-word;word-break:break-all;"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td><td><a href="list.php?op=searchlist&etypeid=<?php echo $v['etypeid']; ?>"><?php echo $cfg['etype'][$v['etypeid']]; ?></a></td><td><a href="list.php?op=searchlist&level=<?php echo $v['level']; ?>">L<?php echo $v['level']; ?></a></td><td><?php echo date('m-d H:i:s',$v['createtime']); ?></td><td><?php if($v['islock']==1 && $v['solvetime'] != 0) echo date('m-d H:i:s',$v['solvetime']); ?></td><td><?php echo $v['affecttime']; ?></td><td><a href="list.php?op=searchlist&division=<?php echo $v['division']; ?>"><?php echo $cfg['division'][$v['division']]; ?></a></td><td style="word-break:break-all; word-wrap:break-all;"><?php echo $v['who'];?></td><td><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></td></tr>
+                    <tr><td><?php echo $v['eid']; ?></td><td style="text-align:left;word-wrap: break-word;word-break:break-all;"><a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a></td><td><a href="list.php?op=searchlist&etypeid=<?php echo $v['etypeid']; ?>"><?php echo $cfg['etype'][$v['etypeid']]; ?></a></td><td><a href="list.php?op=searchlist&level=<?php echo $v['level']; ?>">L<?php echo $v['level']; ?></a></td><td><?php echo date('m-d H:i:s',$v['createtime']); ?></td><td><?php if($v['solvetime']) echo date('m-d H:i:s',$v['solvetime']); ?></td><td><?php if($v['affecttime']) echo $v['affecttime']; ?></td><td><a href="list.php?op=searchlist&division=<?php echo $v['division']; ?>"><?php echo $cfg['division'][$v['division']]; ?></a></td><td style="word-break:break-all; word-wrap:break-all;"><?php echo $v['who'];?></td><td><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></td></tr>
                     <?php } } ?>
 		</table>
 	</div>
