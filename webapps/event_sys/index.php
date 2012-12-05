@@ -505,11 +505,11 @@ case 'do_add':
         $division = array();
         $who = array();
         foreach ($month_event as $k) {
-            if ($k['affecttime']) $division[$k['division']]+=round($k['affecttime']*((7-$k['level'])/6),2);
+            if ($k['affecttime']) $division[$k['division']]+=ceil($k['affecttime']*((7-$k['level'])/6));
             else continue;
         }
         foreach ($month_event as $k) {
-            if ($k['affecttime']) $who[$k['who']]+=round($k['affecttime']*((7-$k['level'])/6),2);
+            if ($k['affecttime']) $who[$k['who']]+=ceil($k['affecttime']*((7-$k['level'])/6));
             else continue;
         }
         arsort($division);
