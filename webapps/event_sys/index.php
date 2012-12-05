@@ -28,73 +28,13 @@ case 'm_add':
             $esub = get_event_info($pdo,$measure['eid']);
             $subject = "[事件更新]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$esub['base']['eid'].']'.$esub['base']['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$esub['base']['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$esub['base']['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$esub['base']['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
             $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
-            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'增加成功');
+            msg_redirect('index.php?op=edit&eid='.$measure['eid'],'');
 
         }else{
             msg_redirect('index.php?op=edit&eid='.$measure['eid'],'增加失败');
@@ -126,6 +66,7 @@ case 'do_add':
         $htmlData = '';
         $content = $params['content'];
         $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
+        $content = preg_replace ("/"."white-space"."([\s\S]*)".";"."/iU", "", $content);
         if (!empty($content)) {
                 if (get_magic_quotes_gpc()) {
                         $htmlData = stripslashes($content);
@@ -167,67 +108,7 @@ case 'do_add':
                     $to .= $v.","; 
                     $subject = "[新事件]  ".$event_attr['subject'];
                     $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$isinsert.'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$isinsert.']'.$event_attr['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event_attr['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event_attr['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$event_attr['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$event_attr['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$event_attr['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$isinsert.'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+                    $body = get_mail_body($isinsert,$event_attr['subject'],$event_attr['description'],$event_attr['affect'],$event_attr['etypeid'],$event_attr['level'],$event_attr['division'],$cfg);
                     $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
                     $smtp->debug = false;
                     $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']); 
@@ -297,10 +178,8 @@ case 'do_add':
         $template = 'event_params';
         break;
     case 's_add':
-       // $schedule['stypeid'] = intval($params['s_stypeid']);
         $schedule['s_subject'] = trim($params['s_subject']);
         $schedule['s_user'] = trim($params['s_user']);
-       // $schedule['s_division'] = intval($params['s_division']);
         $schedule['s_time'] = strtotime($params['s_start']);
         $schedule['eid'] = intval($params['s_eid']);
         if(!$schedule['s_subject'] || !$schedule['s_user'] || !$schedule['s_time']){
@@ -309,78 +188,15 @@ case 'do_add':
         if(insert_schedule($pdo,$schedule)){
             $email_arr = get_email_arr($pdo,$schedule['eid']);
             $esub = get_event_info($pdo,$schedule['eid']);
-                        $subject = "[事件更新]  ".$esub['base']['subject'];
+            $subject = "[事件更新]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$esub['base']['eid'].']'.$esub['base']['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$esub['base']['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$esub['base']['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$esub['base']['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
             $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
-            msg_redirect('index.php?op=edit&eid='.$schedule['eid'],'add schedule success');
-            //}else{
-              //  msg_redirect('index.php?op=detail&eid='.$schedule['eid'],'will not update event stypeid');
-           // }
+            msg_redirect('index.php?op=edit&eid='.$schedule['eid'],'');
         }else{
             msg_redirect('index.php?op=edit&eid='.$schedule['eid'],'add schedule failed');
         }
@@ -508,69 +324,9 @@ case 'do_add':
                 if(update_measure($pdo,$measure)){
                     $email_arr = get_email_arr($pdo,$eid);
                     $esub = get_event_info($pdo,$eid);
-            $subject = "[事件更新]  ".$esub['base']['subject'];
-            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$esub['base']['eid'].']'.$esub['base']['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$esub['base']['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$esub['base']['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$esub['base']['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+                    $subject = "[事件更新]  ".$esub['base']['subject'];
+                    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+                    $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
                     $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
                     $smtp->debug = false;
                     foreach($email_arr as $k=>$v){
@@ -597,67 +353,7 @@ case 'do_add':
             $esub = get_event_info($pdo,$eid);
             $subject = "[事件更新]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$esub['base']['eid'].']'.$esub['base']['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$esub['base']['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$esub['base']['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$esub['base']['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
             $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
@@ -675,7 +371,6 @@ case 'do_add':
         $event['level'] = intval($params['level']);
         $event['createtime'] = strtotime($params['createtime']);
         $event['closetime'] = time();
-        //$event['fuser'] = trim($params['fuser']);
         $event['division'] = intval($params['division']);
         $event['who'] = trim($params['who']);
         $event['summary'] = trim($params['summary']);
@@ -684,70 +379,10 @@ case 'do_add':
 
         if($params['select3']){
            foreach($params['select3'] as $v){
-                     $to .= $v.",";
-$subject = "[新事件]  ".$event['subject'];
+                    $to .= $v.",";
+                    $subject = "[新事件]  ".$event['subject'];
                     $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$event['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$event['eid'].']'.$event['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$event['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$event['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$event['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$event['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+                    $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
                      $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
                      $smtp->debug = false;
                      $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
@@ -761,77 +396,13 @@ $subject = "[新事件]  ".$event['subject'];
             if($event['createtime']>$event['solvetime']){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'关闭时间不能小于创建时间');
             }
-           // $measure = get_event_measure($pdo,$event['eid']);
-            // if(!$measure) msg_redirect('index.php?op=edit&eid='.$event['eid'],'必须填写改进措施之后才能关闭');
             if(!$event['who']){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'未填写责任人的事件无法关闭');
             }
             $event['islock'] = 0;
             $subject = "[请求关闭]  ".$event['subject'];
-                    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$event['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$event['eid'].']'.$event['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$event['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$event['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$event['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$event['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$event['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
-
-//".<br><a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=checkclose&eid=".$event['eid']."&ok=1'>关闭</a>";
+            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+            $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach ($cfg['checkermail'] as $v){
@@ -845,7 +416,6 @@ $subject = "[新事件]  ".$event['subject'];
             if(update_event($pdo,$event)){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'edit event success');
             }
-       // }
             break;
     case 'checkclose':
         if(!session_id())session_start();
@@ -861,68 +431,8 @@ $subject = "[新事件]  ".$event['subject'];
             $esub = get_event_info($pdo,$eid);
             $email_arr = get_email_arr($pdo,$eid);
             $subject = "[已经关闭]  ".$esub['base']['subject'];
-                    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = '<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$esub['base']['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$esub['base']['eid'].']'.$esub['base']['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$esub['base']['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$esub['base']['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$esub['base']['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$esub['base']['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$esub['base']['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table>';
+            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){

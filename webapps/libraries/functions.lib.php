@@ -2,6 +2,7 @@
 /***************************************************
  * 数据库操作
  **************************************************/
+
 class SolrDb {
     private function SolrDb() {}
     private static $link = array();
@@ -43,6 +44,77 @@ function pdo_fetch_all($pdo, $sql, $params=array()) {
 /***************************************************
  * db host
  **************************************************/
+function get_mail_body($eid,$subject,$description,$affect,$etypeid,$level,$division,$cfg){
+    return '<table  border="1" cellspacing="0" cellpadding="0">
+<tbody>
+
+<tr>
+<td colspan="2" style="width:374.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;">
+<p align="center" style="text-align:center"><b>
+<a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$eid.'" style="font-size:10.5pt;color:#262626;text-decoration:none;">
+<span style="font-size:10.5pt;color:white">[#'.$eid.']'.$subject.'</span>
+</a>
+</b></p>
+</td>
+</tr>
+
+<tr>
+<td style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><b><span style="font-size:10.5pt;color:#595959;">事件描述</span></b></p>
+</td>
+<td style="width:311.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><span style="font-size:10.5pt;color:#595959">'.$description.'</span></p>
+</td>
+</tr>
+
+<tr>
+<td style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><b><span style="font-size:10.5pt;color:#595959;">事件影响</span></b></p>
+</td>
+<td style="width:311.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><span style="font-size:10.5pt;color:#595959">'.$affect.'</span></p>
+</td>
+</tr>
+
+<tr>
+<td style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><b><span style="font-size:10.5pt;color:#595959;">事件类型</span></b></p>
+</td>
+<td style="width:311.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$etypeid].'</span></p>
+</td>
+</tr>
+
+<tr>
+<td style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><b><span style="font-size:10.5pt;color:#595959;">事件等级</span></b></p>
+</td>
+<td style="width:311.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><span style="font-size:10.5pt;color:#595959">L'.$level.'</span></p>
+</td>
+</tr>
+
+<tr>
+<td style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><b><span style="font-size:10.5pt;color:#595959;">责任部门</span></b></p>
+</td>
+<td style="width:311.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
+<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$division].'</span></p>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" style="width:374.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;">
+<p align="right" style="text-align:right"><b><u>
+<span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$eid.'" style="font-size:10.5pt;color:#262626">查看详情</a></span>
+</u></b></p>
+</td>
+</tr>
+
+</tbody>
+</table><br />';
+}
+
 function update_view_count ($pdo,$eid){
     $count_old = pdo_fetch($pdo,'select view_count from event where eid='.$eid);
     $count = $count_old['view_count'];
@@ -430,6 +502,7 @@ function get_month_event_point($pdo,$start,$end){
         $diff_time = time() - 3600 * 24 * 30;
         //return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
         return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= ".$diff_time." order by createtime desc");
+
     }
 }
 

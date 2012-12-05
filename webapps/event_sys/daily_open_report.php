@@ -31,67 +31,7 @@ foreach ($result as $key){
     if ($who_mail){
         $body = '<span>'.$who.'，您所负责尚未关闭的事件如下：</span><br />';
         foreach($key as $v){
-            $body.='<table border="1" cellspacing="0" cellpadding="0" width="500">
-<tbody>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;background:gray;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt"><p align="center" style="text-align:center"><b><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626;text-decoration:none;"><span style="font-size:10.5pt;color:white">[#'.$v['eid'].']'.$v['subject'].'</span></a></b></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件描述</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$v['description'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件影响</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$v['affect'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件类型</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['etype'][$v['etypeid']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">事件等级</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">L'.$v['level'].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="85" valign="top" style="width:63.4pt;border:solid gray 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><b><span style="font-size:10.5pt;color:#595959">责任部门</span></b></p>
-</td>
-<td width="548" valign="top" style="width:411.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$v['division']].'</span></p>
-</td>
-</tr>
-
-<tr style="height:12.95pt">
-<td width="633" colspan="2" valign="top" style="width:474.5pt;border:solid gray 1.0pt;border-top:none;background:#A6A6A6;padding:0cm 5.4pt 0cm 5.4pt;height:12.95pt">
-<p align="right" style="text-align:right"><b><u><span><a href="http://'.$cfg['hostname'].'/index.php?op=detail&eid='.$v['eid'].'" style="font-size:10.5pt;color:#262626">查看详情</a></span></u></b></p>
-</td>
-</tr>
-
-</tbody>
-</table><br />';
+            $body.= get_mail_body($v['eid'],$v['subject'],$v['description'],$v['affect'],$v['etypeid'],$v['level'],$v['division'],$cfg);
         }
         $subject = "安居客未关闭事件日报";
         $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
@@ -99,6 +39,7 @@ foreach ($result as $key){
         $email_arr = array(
             //'0' => $who_mail,
             '1' => 'yundu@anjuke.com',
+            //'0' => 'cimena1989@163.com',
         );
         foreach($email_arr as $k=>$v){
             $smtp->sendmail($v,"",$subject,$body,$cfg['smtp']['mailtype']);
