@@ -405,7 +405,7 @@ case 'do_add':
             $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
-            foreach ($cfg['checkermail'] as $v){
+            foreach ($cfg['checkermail'][$event['level']] as $v){
                 $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         }
@@ -421,11 +421,13 @@ case 'do_add':
         if(!session_id())session_start();
         $eid = intval($params['eid']);
         $who = trim($params['who']);
+        $info = get_event_info($pdo,$eid);
+        $level = $info['base']['level'];
         if(!$who){
             msg_redirect('index.php?op=detail&eid='.$eid,'未填写责任人的事件无法关闭');
         }
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])) $username = $_SESSION['name'];
-        if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['close'][$username]==1){
+        if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['close'][$level][$username]==1){
             $ok = intval($params['ok']);
             if($ok === 1) checkclose($pdo,$eid);
             $esub = get_event_info($pdo,$eid);
