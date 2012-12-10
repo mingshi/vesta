@@ -9,12 +9,15 @@ $cfg['database']['dbname']='vesta';
 $cfg['ldapurl'] = "http://10.11.6.164/ldap/2.1/ldap_anjuke_login.php";
 $cfg['hostname'] = "vesta.corp.anjuke.com";
 
-
 $cfg['checkermail'] = array(
-    '1' => 'mingshi@anjuke.com',
-    '2' => 'fzhou@anjuke.com',
-    '3' => 'kevinkuang@anjukeinc.com',
+      '1' => array('justinni@anjukeinc.com'),
+      '2' => array('enzhang@anjuke.com'),
+      '3' => array('kevinkuang@anjukeinc.com'),
+      '4' => array('kevinkuang@anjukeinc.com','daoyuanwang@anjuke.com'),
+      '5' => array('kevinkuang@anjukeinc.com','daoyuanwang@anjuke.com'),
+      '6' => array('kevinkuang@anjukeinc.com','daoyuanwang@anjuke.com'),
 );
+
 $cfg['smtp'] = array(
     'server' => 'smtp.anjuke.com',
     'port' => '25',
@@ -26,12 +29,12 @@ $cfg['smtp'] = array(
 
 $cfg['etype'] = array(
     '1' => '运营商故障',
-    '2' => '网络故障',
+    //'2' => '网络故障',
     '3' => '硬件故障',
     '4' => '人为故障',
     '5' => '程序bug',
     '6' => '安全事故',
-    '7' => '配置问题',
+    //'7' => '配置问题',
 );
 $cfg['stype'] = array(
     '1' => '监控发现',
@@ -74,7 +77,6 @@ $cfg['user'] = array(
     '11' => 'kevinkuang',
     '12' => 'wellerkong',
     '13' => 'canzhang',
-	'14' => 'yundu,'
 );
 $cfg['authority'] = array(
     'mingshi' => '1',
@@ -88,13 +90,17 @@ $cfg['authority'] = array(
     'tomleng' => '1',
     'Keithlan' => '1',
     'huashengliao' => '1',
-	'yundu' => '1',
+    'kaicai' => '1',
+    'yundu' => '1',
 );
 
 $cfg['close'] = array(
-    'kevinkuang' => '1',
-    'daoyuanwang' => '1',
-    'yundu' => '1',
+    '1'=> array('justinni'=>'1',),
+    '2'=> array('enzhang'=>'1',),
+    '3'=> array('kevinkuang'=>'1',),
+    '4'=> array('kevinkuang'=>'1','daoyuanwang'=>'1',),
+    '5'=> array('kevinkuang'=>'1','daoyuanwang'=>'1',),
+    '6'=> array('kevinkuang'=>'1','daoyuanwang'=>'1',),
 );
 
 $cfg['color'] = array(
