@@ -105,15 +105,15 @@ case 'do_add':
                 $params['select3'] = trim($params['select3'],',');
                 $params['select3'] = explode(',',$params['select3']);
                 foreach($params['select3'] as $v){
-                    $to .= $v.","; 
-                    $subject = "[新事件]  ".$event_attr['subject'];
-                    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-                    $body = get_mail_body($isinsert,$event_attr['subject'],$event_attr['description'],$event_attr['affect'],$event_attr['etypeid'],$event_attr['level'],$event_attr['division'],$cfg);
-                    $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-                    $smtp->debug = false;
-                    $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']); 
+                    $to .= $v.",";   
                 }
                 $to = trim($to,',');
+                $subject = "[新事件]  ".$event_attr['subject'];
+                $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+                $body = get_mail_body($isinsert,$event_attr['subject'],$event_attr['description'],$event_attr['affect'],$event_attr['etypeid'],$event_attr['level'],$event_attr['division'],$cfg);
+                $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
+                $smtp->debug = false;
+                $smtp->sendmail($to,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
                 update_event_to($pdo,$isinsert,$to); 
             }
                 msg_redirect('index.php','add event success!');
@@ -378,19 +378,19 @@ case 'do_add':
         $lock_state = intval($params['lock_state']);
 
         if($params['select3']){
-           foreach($params['select3'] as $v){
-                    $to .= $v.",";
-                    $subject = "[新事件]  ".$event['subject'];
-                    $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-                    $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
-                     $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-                     $smtp->debug = false;
-                     $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
-                 }
-                 $toyet = get_event_to($pdo,$event['eid']);
-                 $to .= $toyet['tomail'].",";
-                 $to = trim($to,',');
-                 update_event_to($pdo,$event['eid'],$to); 
+            foreach($params['select3'] as $v){
+                $to .= $v.",";
+            }
+                $toyet = get_event_to($pdo,$event['eid']);
+                $to .= $toyet['tomail'].",";
+                $to = trim($to,',');
+                $subject = "[事件更新]  ".$event['subject'];
+                $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
+                $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
+                $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
+                $smtp->debug = false;
+                $smtp->sendmail($to,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
+                update_event_to($pdo,$event['eid'],$to); 
         } 
         if (($lock_state==0) && ($event['islock']==1)){
             if($event['createtime']>$event['solvetime']){
@@ -400,7 +400,7 @@ case 'do_add':
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'未填写责任人的事件无法关闭');
             }
             $event['islock'] = 0;
-            $subject = "[请求关闭]  ".$event['subject'];
+            $subject = "[事件关闭]  ".$event['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
             $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
@@ -432,7 +432,7 @@ case 'do_add':
             if($ok === 1) checkclose($pdo,$eid);
             $esub = get_event_info($pdo,$eid);
             $email_arr = get_email_arr($pdo,$eid);
-            $subject = "[已经关闭]  ".$esub['base']['subject'];
+            $subject = "[事件关闭]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
             $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);

@@ -45,7 +45,7 @@ function pdo_fetch_all($pdo, $sql, $params=array()) {
  * db host
  **************************************************/
 function get_mail_body($eid,$subject,$description,$affect,$etypeid,$level,$division,$cfg){
-    return '<table  border="1" cellspacing="0" cellpadding="0">
+    return '<table  border="1" cellspacing="0" cellpadding="0" style="width:377.5pt;">
 <tbody>
 
 <tr>
