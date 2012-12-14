@@ -31,14 +31,17 @@ foreach ($result as $key){
     if ($who_mail){
         $body = '<span>'.$who.'，您所负责尚未关闭的事件如下：</span><br />';
         foreach($key as $v){
-            $body.= get_mail_body($v['eid'],$v['subject'],$v['description'],$v['affect'],$v['etypeid'],$v['level'],$v['division'],$cfg);
+            $division = '';
+            foreach ($v['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
+            $body.= get_mail_body($v['eid'],$v['subject'],$v['description'],$v['affect'],$v['etypeid'],$v['level'],$division,$cfg);
         }
         $subject = "安居客未关闭事件日报";
         $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
         $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
         $email_arr = array(
             //'0' => $who_mail,
-            '1' => 'yundu@anjuke.com',
+            //'1' => 'yundu@anjuke.com',
             //'0' => 'cimena1989@163.com',
         );
         foreach($email_arr as $k=>$v){
