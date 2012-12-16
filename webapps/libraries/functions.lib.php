@@ -99,7 +99,7 @@ function get_mail_body($eid,$subject,$description,$affect,$etypeid,$level,$divis
 <p><b><span style="font-size:10.5pt;color:#595959;">责任部门</span></b></p>
 </td>
 <td style="width:311.1pt;border-top:none;border-left:none;border-bottom:solid gray 1.0pt;border-right:solid gray 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;white-space: nowrap;">
-<p><span style="font-size:10.5pt;color:#595959">'.$cfg['division'][$division].'</span></p>
+<p><span style="font-size:10.5pt;color:#595959">'.$division.'</span></p>
 </td>
 </tr>
 
@@ -124,13 +124,82 @@ function update_view_count ($pdo,$eid){
     $sth ->execute(array($count,$eid));
 }
 
+function get_division($pdo,$eid){
+    return pdo_fetch_all($pdo, 'select division from division where eid = '.$eid);
+}
+
+function get_search_division($pdo,$division){
+    $result = pdo_fetch_all($pdo, 'select eid from division where division = '.$division);
+    $array = array();
+    foreach ($result as $m) $array[]=$m['eid'];
+    $event = array();
+    foreach ($array as $k){
+        $event[] =pdo_fetch($pdo,'select * from event where eid=?',array($k));
+    }
+    foreach ($event as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $event[$k]['division'] = $divisionx;
+    }
+    return $event;
+}
+
+function search_division($pdo,$eid,$division){
+    return pdo_fetch_all($pdo, 'select * from division where eid = '.$eid.' and division = '.$division);
+}
+
+function insert_division($pdo,$eid,$division){
+    $sql = "insert into division set eid=?,division=?";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($eid,$division));
+    return $pdo->lastInsertId();
+}
+
+function delete_division($pdo,$eid){
+    $sql = "delete from division where eid=?";
+	$sth = $pdo->prepare($sql);
+	$sth ->execute(array($eid));
+	return $sth->rowCount();
+}
+
 function get_event_unlock($pdo){
-    return pdo_fetch_all($pdo, 'select * from event where islock=0 order by createtime desc');
+    $result = pdo_fetch_all($pdo, 'select * from event where islock=0 order by createtime desc');
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_by_division($pdo){
     $diff_time = time() - 3600 * 24 * 30;
-    return pdo_fetch_all($pdo, 'select division,count(1) as total from event where createtime >= '.$diff_time.' group by division order by total desc limit 10');
+    $result = pdo_fetch_all($pdo, 'select eid from event where createtime >= '.$diff_time);
+    foreach($result as $k) $eid[]=$k['eid'];
+    foreach($eid as $m){
+        $division = pdo_fetch_all($pdo, 'select division from division where eid = '.$m);
+        $divisionx = array();
+        foreach ($division as $n){
+            $divisionx[] = $n['division'];
+        }
+        $array[]=$divisionx;
+    }
+    foreach ($array as $o){
+        foreach ($o as $p=>$q){
+            $divisiony[$q] += 1;
+        }
+    }
+    arsort($divisiony);
+    foreach ($divisiony as $r=>$s){
+        $divisionz[]=array('division'=>$r,'total'=>$s);
+    }
+    return $divisionz;
 }
 
 function get_by_type($pdo){
@@ -155,7 +224,7 @@ function get_event_count($pdo){
 function get_event_page_att($pdo,$limit,$uid){
     $nowid = pdo_fetch($pdo,'select eid from event where islock=0 order by createtime desc limit 1');
     if(!empty($nowid)){
-        $event_page = pdo_fetch_all($pdo,'select * from event where eid <> '.$nowid[eid].' AND islock=0 order by createtime desc limit '.$limit);
+        $event_page = pdo_fetch_all($pdo,'select * from event where eid <> '.$nowid['eid'].' AND islock=0 order by createtime desc limit '.$limit);
         foreach($event_page as $k=>$v){
             $event_page[$k]['att'] = pdo_fetch_all($pdo,'select * from attention where uid='.$uid.' and eid='.$v['eid']);
             $event_page[$k]['comment_count'] = pdo_fetch($pdo,'select count(*) from comment where eid='.$v['eid']);
@@ -221,9 +290,9 @@ function get_event_unlock_now_att($pdo,$uid){
 }
 
 function insert_event($pdo,$params){
-    $sql = "insert into event set subject=?,content=?,description=?,affect=?,etypeid=?,level=?,createtime=?,addtime=?,fuser=?,islock=?,division=?,stypeid=?,summary=?";
+    $sql = "insert into event set subject=?,content=?,description=?,affect=?,etypeid=?,level=?,createtime=?,addtime=?,fuser=?,islock=?,stypeid=?,summary=?";
     $sth = $pdo->prepare($sql);
-    $sth ->execute(array($params['subject'],$params['htmlData'],$params['description'],$params['affect'],$params['etypeid'],$params['level'],$params['createtime'],$params['addtime'],$params['fuser'],$params['islock'],$params['division'],$params['stypeid'],$params['summary']));
+    $sth ->execute(array($params['subject'],$params['htmlData'],$params['description'],$params['affect'],$params['etypeid'],$params['level'],$params['createtime'],$params['addtime'],$params['fuser'],$params['islock'],$params['stypeid'],$params['summary']));
     return $pdo->lastInsertId();
 }
 
@@ -232,6 +301,8 @@ function get_event_info($pdo,$id){
 	$event_info['relate'] = pdo_fetch_all ($pdo,'select eid,subject from event where subject like "%'.$event_info['base']['subject'].'%"');
     $event_info['schedule'] = pdo_fetch_all($pdo,'select * from schedule where eid=? order by s_time asc',array($id));
     $event_info['report'] = pdo_fetch($pdo,'select * from report where eid=?',array($id));
+    $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($id));
+    foreach ($division as $key) $event_info['division'][] = $key['division'];
     return $event_info;
 }
 
@@ -248,7 +319,16 @@ function get_user_list($pdo){
 }
 
 function get_event_search($pdo,$where){
-    return pdo_fetch_all($pdo,'select * from event where '.$where.' order by createtime desc');
+    $result =  pdo_fetch_all($pdo,'select * from event where '.$where.' order by createtime desc');
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_event_search_page($pdo,$where,$limit){
@@ -284,11 +364,29 @@ function get_my_mailgroup($pdo,$uid){
 }
 
 function get_week_event($pdo){
-    return pdo_fetch_all($pdo,"select * from event where YEARWEEK(FROM_UNIXTIME(`createtime`,'%Y-%m-%d %H:%i:%s'),1)=YEARWEEK(now(),1) order by createtime desc");
+    $result = pdo_fetch_all($pdo,"select * from event where YEARWEEK(FROM_UNIXTIME(`createtime`,'%Y-%m-%d %H:%i:%s'),1)=YEARWEEK(now(),1) order by createtime desc");
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_last_week($pdo){
-    return pdo_fetch_all($pdo,"select * from event where YEARWEEK(FROM_UNIXTIME(`createtime`,'%Y-%m-%d %H:%i:%s'),1)=(YEARWEEK(now(),1)-1) order by createtime desc");
+    $result = pdo_fetch_all($pdo,"select * from event where YEARWEEK(FROM_UNIXTIME(`createtime`,'%Y-%m-%d %H:%i:%s'),1)=(YEARWEEK(now(),1)-1) order by createtime desc");
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_cost_month($pdo,$key,$k,$i){
@@ -439,9 +537,9 @@ function insert_event_report($pdo,$params){
 
 
 function update_event($pdo,$params){
-    $sql = "update event set subject=?,description=?,etypeid=?,affect=?,level=?,createtime=?,solvetime=?,affecttime=?,islock=?,closetime=?,division=?,who=?,summary=? where eid=?";
+    $sql = "update event set subject=?,description=?,etypeid=?,affect=?,level=?,createtime=?,solvetime=?,affecttime=?,islock=?,closetime=?,who=?,summary=? where eid=?";
     $sth = $pdo->prepare($sql);
-    $sth ->execute(array($params['subject'],$params['description'],$params['etypeid'],$params['affect'],$params['level'],$params['createtime'],$params['solvetime'],$params['affecttime'],$params['islock'],$params['closetime'],$params['division'],$params['who'],$params['summary'],$params['eid']));
+    $sth ->execute(array($params['subject'],$params['description'],$params['etypeid'],$params['affect'],$params['level'],$params['createtime'],$params['solvetime'],$params['affecttime'],$params['islock'],$params['closetime'],$params['who'],$params['summary'],$params['eid']));
     return $sth->rowCount();
 }
 
@@ -491,28 +589,72 @@ function get_thismonth_event($pdo,$type){
 }
 
 function get_month_event($pdo){
-    return pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
+    $result = pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_month_event_point($pdo,$start,$end){
     if ($start!=0 && $end!=0) {
-        return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= ".$start." and createtime <= ".$end." order by createtime desc");
+        $result = pdo_fetch_all($pdo, "select eid,who,level,affecttime from event where createtime >= ".$start." and createtime <= ".$end." order by createtime desc");
+        foreach ($result as $k=>$v){
+            $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+            $divisionx = array();
+            foreach ($division as $m){
+                $divisionx[] = $m['division'];
+            }
+            $result[$k]['division'] = $divisionx;
+        }
+        return $result;
     }
     else{
         $diff_time = time() - 3600 * 24 * 30;
         //return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(now(),'%Y-%m') order by createtime desc");
-        return pdo_fetch_all($pdo, "select who,division,level,affecttime from event where createtime >= ".$diff_time." order by createtime desc");
-
+        $result = pdo_fetch_all($pdo, "select eid,who,level,affecttime from event where createtime >= ".$diff_time." order by createtime desc");
+        foreach ($result as $k=>$v){
+            $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+            $divisionx = array();
+            foreach ($division as $m){
+                $divisionx[] = $m['division'];
+            }
+            $result[$k]['division'] = $divisionx;
+        }
+        return $result;
     }
 }
 
 function get_last_month($pdo){
-    return pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(DATE_SUB(curdate(),INTERVAL 1 MONTH),'%Y-%m') order by createtime desc");
+    $result = pdo_fetch_all($pdo,"select * from event where FROM_UNIXTIME(createtime,'%Y-%m')=date_format(DATE_SUB(curdate(),INTERVAL 1 MONTH),'%Y-%m') order by createtime desc");
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_events_by_params($pdo,$params){
     $diff_time = time() - 3600 * 24 * 30;
-	return pdo_fetch_all($pdo,"select * from event where ".$params['params_name']." = '".$params['params_value']."' and createtime >= ".$diff_time." order by createtime desc");
+	$result =  pdo_fetch_all($pdo,"select * from event where ".$params['params_name']." = '".$params['params_value']."' and createtime >= ".$diff_time." order by createtime desc");
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
 }
 
 function get_every_month_event($pdo,$i){
@@ -528,15 +670,82 @@ function get_month_type_event($pdo,$i,$k){
 }
 
 function get_month_division_event($pdo,$i,$k){
-    return pdo_fetch($pdo,"select count(*) as total from event where EXTRACT(YEAR_MONTH FROM FROM_UNIXTIME(createtime))=? and division=?",array($i,$k));
+    $result = pdo_fetch_all($pdo,"select eid from event where EXTRACT(YEAR_MONTH FROM FROM_UNIXTIME(createtime))=?",array($i));
+    foreach ($result as $l) $eid[] = $l['eid'];
+    foreach ($eid as $n=>$id){
+        $array = pdo_fetch_all($pdo, 'select * from division where eid = '.$id.' and division = '.$k);
+        if (empty($array))unset($eid[$n]);
+        else $eid[$n]=$array[0];
+    }
+    $count = count($eid);
+    return array('total'=>$count);
+    //return pdo_fetch($pdo,"select count(*) as total from event where EXTRACT(YEAR_MONTH FROM FROM_UNIXTIME(createtime))=? and division=?",array($i,$k));
 }
 
 function get_month_search_event_divison($pdo,$start,$stop){
-    return pdo_fetch_all($pdo,"SELECT EXTRACT(YEAR_MONTH FROM FROM_UNIXTIME(createtime)) m,division, count(*) total FROM event WHERE createtime>=? and createtime<=? GROUP BY 1,2",array($start,$stop));
+    //$array =  pdo_fetch_all($pdo,"SELECT EXTRACT(YEAR_MONTH FROM FROM_UNIXTIME(createtime)) m,division, count(*) total FROM event WHERE createtime>=? and createtime<=? GROUP BY 1,2",array($start,$stop));
+    $array =  pdo_fetch_all($pdo,"SELECT EXTRACT(YEAR_MONTH FROM FROM_UNIXTIME(createtime)) m,eid FROM event WHERE createtime>=? and createtime<=? GROUP BY 1,2",array($start,$stop));
+    foreach ($array as $k){
+        $month[$k['m']][] = $k['eid'];
+    }
+    foreach ($month as $l=>$n){
+        foreach ($n as $o=>$m){
+            $result = pdo_fetch_all($pdo, 'select division from division where eid = '.$m);
+            $division = array();
+            foreach ($result as $m){
+                $division[] = $m['division'];
+            }
+            $month[$l][$o] = $division;
+        }
+    }
+    foreach ($month as $p=>$q){
+        $count = array();
+        foreach ($q as $r){
+            foreach ($r as $s){
+                $count[$s] += 1;
+            }
+        }
+        $countx[$p] = $count;
+    }
+    foreach ($countx as $t=>$u){
+        foreach ($u as $v=>$w){
+            $return[]=array('m'=>$t,'division'=>$v,'total'=>$w);
+        }
+    }
+    return $return;
 }
 
 function get_week_search_event_division($pdo,$start,$stop){
-    return pdo_fetch_all($pdo,"select DATE_FORMAT(FROM_UNIXTIME(createtime),'%Y%u') w,division,count(*) t from event WHERE createtime>=? and createtime<=? group by 1,2",array($start,$stop)); 
+    //$arrayo =  pdo_fetch_all($pdo,"select DATE_FORMAT(FROM_UNIXTIME(createtime),'%Y%u') w,division,count(*) t from event WHERE createtime>=? and createtime<=? group by 1,2",array($start,$stop));
+    $array =  pdo_fetch_all($pdo,"SELECT DATE_FORMAT(FROM_UNIXTIME(createtime),'%Y%u') w,eid FROM event WHERE createtime>=? and createtime<=? GROUP BY 1,2",array($start,$stop));
+    foreach ($array as $k){
+        $month[$k['w']][] = $k['eid'];
+    }
+    foreach ($month as $l=>$n){
+        foreach ($n as $o=>$m){
+            $result = pdo_fetch_all($pdo, 'select division from division where eid = '.$m);
+            $division = array();
+            foreach ($result as $m){
+                $division[] = $m['division'];
+            }
+            $month[$l][$o] = $division;
+        }
+    }
+    foreach ($month as $p=>$q){
+        $count = array();
+        foreach ($q as $r){
+            foreach ($r as $s){
+                $count[$s] += 1;
+            }
+        }
+        $countx[$p] = $count;
+    }
+    foreach ($countx as $t=>$u){
+        foreach ($u as $v=>$w){
+            $return[]=array('w'=>$t,'division'=>$v,'t'=>$w);
+        }
+    }
+    return $return;
 }
 
 function get_month_search_event($pdo,$start,$stop){

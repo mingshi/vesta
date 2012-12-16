@@ -26,9 +26,12 @@ case 'm_add':
         if(insert_measure($pdo,$measure)){
             $email_arr = get_email_arr($pdo,$measure['eid']);
             $esub = get_event_info($pdo,$measure['eid']);
+            $division = '';
+            foreach ($esub['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
             $subject = "[事件更新]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$division,$cfg);
             $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
@@ -93,11 +96,18 @@ case 'do_add':
             }
             $event_attr['fuser'] = trim($params['user']);
             $event_attr['islock'] = intval($params['islock']);
-            $event_attr['division'] = intval($params['division']);
+            $division = '';
+            foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
             $event_attr['htmlData'] = $htmlData;
             $event_attr['addtime'] = time();
             $isinsert = insert_event($pdo,$event_attr);
             if($isinsert){
+                if (!empty($params['division'])){
+                    foreach ($params['division'] as $key){
+                        insert_division($pdo,$isinsert,$key);
+                    }
+                }
                 if($params['select3'] || $params['mailgroup']){
                 $params['select3'] = implode(',',$params['select3']);
                 $params['mailgroup'] = trim($params['mailgroup'],',');
@@ -110,7 +120,7 @@ case 'do_add':
                 $to = trim($to,',');
                 $subject = "[新事件]  ".$event_attr['subject'];
                 $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-                $body = get_mail_body($isinsert,$event_attr['subject'],$event_attr['description'],$event_attr['affect'],$event_attr['etypeid'],$event_attr['level'],$event_attr['division'],$cfg);
+                $body = get_mail_body($isinsert,$event_attr['subject'],$event_attr['description'],$event_attr['affect'],$event_attr['etypeid'],$event_attr['level'],$division,$cfg);
                 $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
                 $smtp->debug = false;
                 $smtp->sendmail($to,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
@@ -169,7 +179,10 @@ case 'do_add':
 	case 'params':
 		$params_name = isset($params['params_name'])?$params['params_name']:"";
 		$params_value = isset($params['params_value'])?$params['params_value']:"";
-		$event_params = get_events_by_params ($pdo,array("params_name"=>$params_name,"params_value"=>$params_value,));
+        if ($params_name == "division"){
+            $event_params = get_search_division($pdo,$params_value);
+        }
+		else $event_params = get_events_by_params($pdo,array("params_name"=>$params_name,"params_value"=>$params_value,));
 		$template = 'event_params'; 
 		break;
     case 'relate':
@@ -188,9 +201,12 @@ case 'do_add':
         if(insert_schedule($pdo,$schedule)){
             $email_arr = get_email_arr($pdo,$schedule['eid']);
             $esub = get_event_info($pdo,$schedule['eid']);
+            $division = '';
+            foreach ($esub['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
             $subject = "[事件更新]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$division,$cfg);
             $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
@@ -259,35 +275,6 @@ case 'do_add':
 		}
 	}
 	break;
-    case 'r_add':
-        $report['eid'] = intval($params['r_eid']);
-        $report['r_user'] = trim($params['r_user']);
-        $report['r_division'] = intval($params['r_division']);
-        $report['content'] = trim($params['report']);
-        $report['measure'] = trim($params['measure']);
-        if(!$params['r_time']){
-            $report['r_time'] = time();
-        }else{
-            $report['r_time'] = strtotime($params['r_time']);
-        }
-        if(get_event_report($pdo,$report['eid'])){
-            update_event_report($pdo,$report);
-            msg_redirect('index.php?op=detail&eid='.$report['eid'],'edit report success');
-        }else{
-            insert_event_report($pdo,$report);
-            msg_redirect('index.php?op=detail&eid='.$report['eid'],'add report success');
-        }
-        $email_arr = get_email_arr($pdo,$report['eid']);
-            $esub = get_event_info($pdo,$report['eid']);
-            $subject = "您关注的事件：".$esub['base']['subject']."有更新";
-            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = "详情点击："."<a href='http://".$_SERVER['HTTP_HOST']."/index.php?op=detail&eid=".$report['eid']."'>这里查看</a>";
-            $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-            $smtp->debug = false;
-            foreach($email_arr as $k=>$v){
-                $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
-            }
-        break;
     case 'e_edit':
         $eid = intval($params['eid']);
 
@@ -324,9 +311,12 @@ case 'do_add':
                 if(update_measure($pdo,$measure)){
                     $email_arr = get_email_arr($pdo,$eid);
                     $esub = get_event_info($pdo,$eid);
+                    $division = '';
+                    foreach ($esub['division'] as $key) {$division.= $cfg['division'][$key].',';}
+                    $division = rtrim($division, ',');
                     $subject = "[事件更新]  ".$esub['base']['subject'];
                     $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-                    $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
+                    $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$division,$cfg);
                     $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
                     $smtp->debug = false;
                     foreach($email_arr as $k=>$v){
@@ -351,9 +341,12 @@ case 'do_add':
         if(update_content($pdo,$content,$eid)){
             $email_arr = get_email_arr($pdo,$eid);
             $esub = get_event_info($pdo,$eid);
+            $division = '';
+            foreach ($esub['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
             $subject = "[事件更新]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$division,$cfg);
             $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
@@ -371,7 +364,15 @@ case 'do_add':
         $event['level'] = intval($params['level']);
         $event['createtime'] = strtotime($params['createtime']);
         $event['closetime'] = time();
-        $event['division'] = intval($params['division']);
+        if (!empty($params['division'])){
+            delete_division($pdo,$event['eid']);
+            foreach ($params['division'] as $key){
+                insert_division($pdo,$event['eid'],$key);
+            }
+        }
+        $division = '';
+        foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
+        $division = rtrim($division, ',');
         $event['who'] = trim($params['who']);
         $event['summary'] = trim($params['summary']);
         $event['islock'] = intval($params['islock']);
@@ -386,7 +387,7 @@ case 'do_add':
                 $to = trim($to,',');
                 $subject = "[事件更新]  ".$event['subject'];
                 $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-                $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
+                $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$division,$cfg);
                 $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
                 $smtp->debug = false;
                 $smtp->sendmail($to,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
@@ -402,7 +403,7 @@ case 'do_add':
             $event['islock'] = 0;
             $subject = "[事件关闭]  ".$event['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$event['division'],$cfg);
+            $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$division,$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach ($cfg['checkermail'][$event['level']] as $v){
@@ -431,10 +432,13 @@ case 'do_add':
             $ok = intval($params['ok']);
             if($ok === 1) checkclose($pdo,$eid);
             $esub = get_event_info($pdo,$eid);
+            $division = '';
+            foreach ($esub['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
             $email_arr = get_email_arr($pdo,$eid);
             $subject = "[事件关闭]  ".$esub['base']['subject'];
             $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$esub['base']['division'],$cfg);
+            $body = get_mail_body($esub['base']['eid'],$esub['base']['subject'],$esub['base']['description'],$esub['base']['affect'],$esub['base']['etypeid'],$esub['base']['level'],$division,$cfg);
             $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
             $smtp->debug = false;
             foreach($email_arr as $k=>$v){
@@ -507,7 +511,11 @@ case 'do_add':
         $division = array();
         $who = array();
         foreach ($month_event as $k) {
-            if ($k['affecttime']) $division[$k['division']]+=ceil($k['affecttime']*((7-$k['level'])/6));
+            if ($k['affecttime']) {
+                foreach ($k['division'] as $m){
+                    $division[$m]+=ceil($k['affecttime']*((7-$k['level'])/6));
+                }
+            }
             else continue;
         }
         foreach ($month_event as $k) {
@@ -576,7 +584,7 @@ case 'do_add':
             foreach($cfg['division'] as $k=>$v){
                 $month_division[$param][$v] = get_month_division_event($pdo,$param,$k);
             }   
-        }   
+        }
         foreach($month_division as $k=>$v){
             $month_division_graph .= "{month:".$k.",";
             foreach($v as $key=>$val){

@@ -120,7 +120,7 @@
                             </tr>
                             <?php $i=0;foreach($who as $k=>$v){ ?>
                             <tr class="tb_td">
-                                <td><?php echo $k; ?></a></td>
+                                <td><a href="index.php?op=params&params_name=who&params_value=<?php echo $k; ?>" target="_blank"><?php echo $k; ?></a></td>
                                 <td><?php echo $v; ?></td>
                             </tr>
                             <?php $i++;if ($i==10) break;} ?>
@@ -134,7 +134,7 @@
                             </tr>
                             <?php foreach($division as $k=>$v){ ?>
                             <tr class="tb_td">
-                                <td><?php echo $cfg['division'][$k]; ?></td>
+                                <td><a href="index.php?op=params&params_name=division&params_value=<?php echo $k; ?>" target="_blank"><?php echo $cfg['division'][$k]; ?></td>
                                 <td><?php echo $v; ?></td>
                             </tr>
                             <?php } ?>

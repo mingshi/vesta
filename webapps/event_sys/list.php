@@ -6,7 +6,8 @@ if($op=="search"){
     $keyword = trim($params['keyword']);
     $who = trim($params['who']);
     $islock = intval($params['status']);
-    $division = intval($params['division']);
+    $division = $params['division'];
+    if (empty($division)) $division = array('1','2','3','4','5','6','7','8','9');
     $levels = intval($params['levels']);
     $levele = intval($params['levele']);
     if ($levels > $levele){
@@ -24,7 +25,7 @@ if($op=="search"){
     !empty($who) ? $where = $where." and who like '%".$who."%'" : $where = $where." and 1";
     !empty($levels) ? $where = $where." and level>=".$levels : $where = $where." and 1";
     !empty($levele) ? $where = $where." and level<=".$levele : $where = $where." and 1";
-    !empty($division) ? $where = $where." and division=".$division : $where = $where." and 1";
+    //!empty($division) ? $where = $where." and division=".$division : $where = $where." and 1";
     !empty($etype) ? $where = $where." and etypeid=".$etype : $where = $where." and 1";
 }elseif($params['stypeid']){
     $where = "stypeid=".$params['stypeid'];
@@ -41,9 +42,17 @@ if($op=="search"){
 elseif($op=="searchlist"){
     if(intval($params['etypeid'])) $where = "etypeid=".intval($params['etypeid']);
     if(intval($params['level'])) $where = "level=".intval($params['level']);
-    if(intval($params['division'])) $where = "division=".intval($params['division']);
+    $division = array('1','2','3','4','5','6','7','8','9');
 }
 $event_list = get_event_search($pdo,$where);
+foreach ($event_list as $k=>$v){
+    $i = 0;
+    foreach ($division as $m){
+        $result = search_division($pdo,$v['eid'],$m);
+        if (!empty($result)) $i=1;
+    }
+    if ($i==0) unset($event_list[$k]);
+}
 if(!empty($event_list)){
         $total = count($event_list);
 }else{

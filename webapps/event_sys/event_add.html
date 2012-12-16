@@ -48,16 +48,16 @@
                                     <?php if($cfg['stype']){ ?>
                                     <?php foreach($cfg['stype'] as $k=>$v){ ?>
                                     <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                        <?php } } ?>
+                                    <?php } } ?>
                                 </select>
                             </span></td></tr>
-                                <tr><td><li><span class="dt">事业部：</span></li></td><td><span>
-                                <select name="division" id="division">
-                <?php foreach($cfg['division'] as $k=>$v){ ?>
-                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                <?php } ?>
-            </select>
-                                </span></td></tr>
+                                <tr><td><li><span class="dt">事业部：</span></li></td><td>
+                                <select name="division[]" id="division" multiple="multiple">
+                                    <?php foreach($cfg['division'] as $k=>$v){ ?>
+                                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                    <?php } ?>
+                                </select>
+                                </td></tr>
                                 <tr><td><li><span class="dt">报告者：</span></li></td><td><span><input type="text" name="user" id="user" size="5" value="<?php if(!session_id()) session_start();echo $_SESSION['name'] ?>" readonly /></span></td></tr>
                                 <tr><td><li><span class="dt">状态：</span></li></td><td><span>
                                 <select name="islock" id="islock">
