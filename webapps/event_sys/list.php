@@ -18,6 +18,7 @@ if($op=="search"){
     $etype = intval($params['etype']);
     $start = intval(strtotime($params['start']));
     $end = intval(strtotime($params['stop']));
+    if (!empty($end)) $end+=86400;
     $islock != 2 ? $where = $where." islock=".$islock : $where = $where." 1";
     !empty($start) ? $where = $where." and createtime>=".$start : $where = $where." and 1";
     !empty($end) ? $where = $where." and createtime<=".$end : $where = $where." and 1";
