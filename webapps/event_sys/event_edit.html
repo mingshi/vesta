@@ -40,7 +40,8 @@ else{if(!empty($cfg['level'])){foreach($cfg['level'] as $k=>$v){ ?><option value
                             <tr><td><li><span class="dt">报告者：</span></li></td><td><span class="fuser"><input type="text" value="<?php echo $event_info['base']['fuser']; ?>" readonly /></span></td></tr>
                             <tr><td><li><span class="dt">责任部门：</span></li></td><td>
 <div id=division>
-<input type="button" value="增加" onclick="add_input()"/>
+<input type="button" value="+" onclick="add_input()"/>
+<input type="button" value="-" onclick="remove_input()"/>
 <?php $i = 1;foreach ($event_info['division'] as $m){?>
 <select id=division<?php echo $i;?> name=division<?php echo $i;?>>
 <?php foreach($cfg['division'] as $n=>$o){ echo '<option value="'.$n.'"'; if ($n==$m) echo 'selected';  echo '>'.$o.'</option>';}?>
@@ -208,6 +209,13 @@ function add_input(){
     var i = document.getElementById('name_id').value
     $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select>")
     document.getElementById('name_id').value = parseInt(i)+1
+}
+
+function remove_input(){
+    var i = document.getElementById('name_id').value
+    var x = parseInt(i)-1
+    document.getElementById('division'+x).parentNode.removeChild(document.getElementById('division'+x));
+    document.getElementById('name_id').value = parseInt(i)-1
 }
 
 function tt(id,lvalue){

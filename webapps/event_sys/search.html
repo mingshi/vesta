@@ -31,7 +31,8 @@
                 <tr style="height:50px;"><td><span>责任部门：</span></td><td>
                     <div id=division>
                     <input id="name_id" value="1" type="hidden" />
-                    <input type="button" value="增加" onclick="add_input()"/>
+                    <input type="button" value="+" onclick="add_input()"/>
+                    <input type="button" value="-" onclick="remove_input()"/>
                     </div>
                 </td></tr>
 
@@ -113,6 +114,12 @@
                 var i = document.getElementById('name_id').value
 	            $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select>")
                 document.getElementById('name_id').value = parseInt(i)+1
+            }
+            function remove_input(){
+                var i = document.getElementById('name_id').value
+                var x = parseInt(i)-1
+                document.getElementById('division'+x).parentNode.removeChild(document.getElementById('division'+x));
+                document.getElementById('name_id').value = parseInt(i)-1
             }
     </script>
 </body>
