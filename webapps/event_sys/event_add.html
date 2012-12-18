@@ -52,11 +52,10 @@
                                 </select>
                             </span></td></tr>
                                 <tr><td><li><span class="dt">事业部：</span></li></td><td>
-                                <select name="division[]" id="division" multiple="multiple">
-                                    <?php foreach($cfg['division'] as $k=>$v){ ?>
-                                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                    <?php } ?>
-                                </select>
+<div id=division>
+<input id="name_id" value="1" type="hidden" />
+<input type="button" value="增加" onclick="add_input()"/>
+</div>
                                 </td></tr>
                                 <tr><td><li><span class="dt">报告者：</span></li></td><td><span><input type="text" name="user" id="user" size="5" value="<?php if(!session_id()) session_start();echo $_SESSION['name'] ?>" readonly /></span></td></tr>
                                 <tr><td><li><span class="dt">状态：</span></li></td><td><span>
@@ -156,6 +155,13 @@
                     height: 2                    
                 });
             });
+    </script>
+    <script>
+            function add_input(){
+                var i = document.getElementById('name_id').value
+	            $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select>")
+                document.getElementById('name_id').value = parseInt(i)+1
+            }
     </script>
     <script>
            var editor;

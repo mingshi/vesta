@@ -103,7 +103,10 @@ case 'do_add':
             $event_attr['addtime'] = time();
             $isinsert = insert_event($pdo,$event_attr);
             if($isinsert){
-                if (!empty($params['division'])){
+                if (!empty($params['division1'])){
+                    for($i=1;$i<=9;$i++){
+                        if ($params['division'.$i])$params['division'][] = $params['division'.$i];
+                    }
                     foreach ($params['division'] as $key){
                         insert_division($pdo,$isinsert,$key);
                     }
@@ -364,10 +367,14 @@ case 'do_add':
         $event['level'] = intval($params['level']);
         $event['createtime'] = strtotime($params['createtime']);
         $event['closetime'] = time();
-        if (!empty($params['division'])){
+
+        if (!empty($params['division1'])){
+            for($i=1;$i<=9;$i++){
+                if ($params['division'.$i]) $division[] = $params['division'.$i];
+            }
             delete_division($pdo,$event['eid']);
-            foreach ($params['division'] as $key){
-                insert_division($pdo,$event['eid'],$key);
+            foreach ($division as $key){
+            insert_division($pdo,$event['eid'],$key);
             }
         }
         $division = '';

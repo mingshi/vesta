@@ -29,17 +29,10 @@
 
                 <tr style="height:50px;"><td><span>责任人：</span></td><td><input type="text" name="who" value="" /></td></tr>
                 <tr style="height:50px;"><td><span>责任部门：</span></td><td>
-                    <select name="division[]" multiple="multiple">
-                        <option value="1">二手房</option>
-                        <option value="2">好租</option>
-                        <option value="3">新房</option>
-                        <option value="4">金铺</option>
-                        <option value="5">总部运维</option>
-                        <option value="6">第三方</option>
-                        <option value="7">DW</option>
-                        <option value="8">IT</option>
-                        <option value="9">总部开发</option>
-                    </select>
+                    <div id=division>
+                    <input id="name_id" value="1" type="hidden" />
+                    <input type="button" value="增加" onclick="add_input()"/>
+                    </div>
                 </td></tr>
 
 
@@ -114,6 +107,13 @@
                 levele.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6" selected>L6</option>'
             }
         }
+    </script>
+    <script>
+            function add_input(){
+                var i = document.getElementById('name_id').value
+	            $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select>")
+                document.getElementById('name_id').value = parseInt(i)+1
+            }
     </script>
 </body>
 </html>

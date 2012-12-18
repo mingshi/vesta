@@ -38,7 +38,18 @@ else{if(!empty($cfg['level'])){foreach($cfg['level'] as $k=>$v){ ?><option value
 </select></span><a href="levelinfo.php" target="_blank">[等级说明]</a></td></tr>
                             <tr><td><li><span class="dt">事件类型：</span></li></td><td><span class="etype"><select name="etypeid" id ="etypeid" onchange="tt(this.id,'<?php echo $event_info['base']['level'];?>')"><?php if(!empty($cfg['etype'])){foreach($cfg['etype'] as $k=>$v){ ?><option value="<?php echo $k; ?>"<?php if($k==$event_info['base']['etypeid'])echo selected; ?>><?php echo $v; ?></option><?php }} ?></select></span></td></tr>
                             <tr><td><li><span class="dt">报告者：</span></li></td><td><span class="fuser"><input type="text" value="<?php echo $event_info['base']['fuser']; ?>" readonly /></span></td></tr>
-                            <tr><td><li><span class="dt">责任部门：</span></li></td><td><select name="division[]" multiple="multiple"><?php foreach($cfg['division'] as $k=>$v){ ?><option value="<?php echo $k; ?>"<?php foreach ($event_info['division'] as $m){if($m==$k) echo "selected"; } ?>><?php echo $v; ?></option><?php } ?></select></td></tr>
+                            <tr><td><li><span class="dt">责任部门：</span></li></td><td>
+<div id=division>
+<input type="button" value="增加" onclick="add_input()"/>
+<?php $i = 1;foreach ($event_info['division'] as $m){?>
+<select id=division<?php echo $i;?> name=division<?php echo $i;?>>
+<?php foreach($cfg['division'] as $n=>$o){ echo '<option value="'.$n.'"'; if ($n==$m) echo 'selected';  echo '>'.$o.'</option>';}?>
+</select>
+<?php
+$i++;}
+?>
+<input id="name_id" value=<?php echo $i;?> type="hidden" /></div>
+</td></tr>
                             <tr><td><li><span class="dt">责任人：</span></li></td><td><span><input type="text" name="who" value="<?php echo $event_info['base']['who']; ?>" /></span></td></tr>
                             <tr><td><li><span class="dt">状态：</span></li></td><td><span><select name="islock"><?php if(!empty($cfg['islock'])){foreach($cfg['islock'] as $k=>$v){ ?><option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option><?php } }?></select><input type="hidden" name="lock_state" value="<?php echo $event_info['base']['islock']; ?>"</span></td></tr>
                             </table>
@@ -192,6 +203,12 @@ var editor;
 KindEditor.ready(function(K) {
         editor = K.create('#editor_id');
 });
+
+function add_input(){
+    var i = document.getElementById('name_id').value
+    $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select>")
+    document.getElementById('name_id').value = parseInt(i)+1
+}
 
 function tt(id,lvalue){
     var aa = document.getElementById(id);
