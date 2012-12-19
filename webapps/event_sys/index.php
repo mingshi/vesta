@@ -96,9 +96,6 @@ case 'do_add':
             }
             $event_attr['fuser'] = trim($params['user']);
             $event_attr['islock'] = intval($params['islock']);
-            $division = '';
-            foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
-            $division = rtrim($division, ',');
             $event_attr['htmlData'] = $htmlData;
             $event_attr['addtime'] = time();
             $isinsert = insert_event($pdo,$event_attr);
@@ -110,6 +107,10 @@ case 'do_add':
                 foreach ($params['division'] as $key){
                     insert_division($pdo,$isinsert,$key);
                 }
+
+            $division = '';
+            foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
+            $division = rtrim($division, ',');
                 if($params['select3'] || $params['mailgroup']){
                 $params['select3'] = implode(',',$params['select3']);
                 $params['mailgroup'] = trim($params['mailgroup'],',');
@@ -328,7 +329,6 @@ case 'do_add':
             }
         }}
 
-
         $htmlData = '';
         $content = $params['content'];
         $content = preg_replace ("/"."font-family"."([\s\S]*)".";"."/iU", "", $content);
@@ -355,8 +355,6 @@ case 'do_add':
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         }
-
-
         $event['eid'] = intval($params['eid']);
         $event['subject'] = trim($params['subject']);
         $event['description'] = trim($params['description']);
@@ -367,15 +365,15 @@ case 'do_add':
         $event['createtime'] = strtotime($params['createtime']);
         $event['closetime'] = time();
         for($i=1;$i<=20;$i++){
-            if ($params['division'.$i]) $division[] = $params['division'.$i];
-        };
-        $division = array_unique($division);
+            if ($params['division'.$i]) $divisionu[] = $params['division'.$i];
+        }
+        $divisionu = array_unique($divisionu);
         delete_division($pdo,$event['eid']);
-        foreach ($division as $key){
+        foreach ($divisionu as $key){
             insert_division($pdo,$event['eid'],$key);
         }
         $division = '';
-        foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
+        foreach ($divisionu as $key) {$division.= $cfg['division'][$key].',';}
         $division = rtrim($division, ',');
         $event['who'] = trim($params['who']);
         $event['summary'] = trim($params['summary']);
