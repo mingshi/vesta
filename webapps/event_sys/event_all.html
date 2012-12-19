@@ -31,13 +31,13 @@
 
 
         <?php if(!empty($event_page)){foreach($event_page as $key=>$v){ ?>
-        <div <?php if($v['islock']==0){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
+        <div <?php if($v['islock']==0||$v['islock']==2){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
             <div class="event_title">
                 <div class="title">
                     <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a>
                 </div>
                 <div class="tright">
-                    <div <?php if($v['islock']==0){ echo "class='status running'";}else{echo "class='status running'";} ?>><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?>
+                    <div <?php if($v['islock']==0||$v['islock']==2){ echo "class='status running'";}else{echo "class='status running'";} ?>><?php if($v['islock']==0){echo "进行中";}elseif($v['islock']==2){echo "审核中";}else{echo "已关闭";} ?>
                     </div>
                 </div>
             </div>

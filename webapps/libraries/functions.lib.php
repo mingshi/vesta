@@ -129,6 +129,7 @@ function get_division($pdo,$eid){
 }
 
 function get_search_division($pdo,$division){
+    $diff_time = time() - 3600 * 24 * 30;
     $result = pdo_fetch_all($pdo, 'select eid from division where division = '.$division);
     $array = array();
     foreach ($result as $m) $array[]=$m['eid'];
@@ -136,6 +137,10 @@ function get_search_division($pdo,$division){
     foreach ($array as $k){
         $event[] =pdo_fetch($pdo,'select * from event where eid=?',array($k));
     }
+    foreach ($event as $p=>$q){
+        if($q['createtime']<$diff_time) unset($event[$p]);
+    }
+    $event = array_reverse($event);
     foreach ($event as $k=>$v){
         $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
         $divisionx = array();
@@ -166,7 +171,7 @@ function delete_division($pdo,$eid){
 }
 
 function get_event_unlock($pdo){
-    $result = pdo_fetch_all($pdo, 'select * from event where islock=0 order by createtime desc');
+    $result = pdo_fetch_all($pdo, 'select * from event where islock=0 or islock=2 order by createtime desc');
     foreach ($result as $k=>$v){
         $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
         $divisionx = array();
@@ -564,7 +569,7 @@ function get_today_schedule($pdo,$eid,$rangea,$rangeb){
 
 function get_today_data($pdo,$rangea,$rangeb){
     $critical = pdo_fetch_all($pdo,"select * from event where createtime>=".$rangea." AND createtime<=".$rangeb." AND level<=4");
-    $nostop = pdo_fetch_all($pdo,"select * from event where createtime<=".$rangea." OR createtime>=".$rangeb." AND islock=0");
+    $nostop = pdo_fetch_all($pdo,"select * from event where createtime<=".$rangea." OR createtime>=".$rangeb);
     $todaynostop = array();
     foreach($nostop as $key=>$v){
         $nowschedule = get_today_schedule($pdo,$v['eid'],$rangea,$rangeb);

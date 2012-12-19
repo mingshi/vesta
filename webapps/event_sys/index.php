@@ -395,22 +395,14 @@ case 'do_add':
                 $smtp->sendmail($to,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
                 update_event_to($pdo,$event['eid'],$to); 
         } 
-        if (($lock_state==0) && ($event['islock']==1)){
+        if ((($lock_state==0)||($lock_state==2)) && (($event['islock']==1)||($event['islock']==2))){
             if($event['createtime']>$event['solvetime']){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'关闭时间不能小于创建时间');
             }
             if(!$event['who']){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'未填写责任人的事件无法关闭');
             }
-            $event['islock'] = 0;
-            $subject = "[事件关闭]  ".$event['subject'];
-            $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-            $body = get_mail_body($event['eid'],$event['subject'],$event['description'],$event['affect'],$event['etypeid'],$event['level'],$division,$cfg);
-            $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-            $smtp->debug = false;
-            foreach ($cfg['checkermail'][$event['level']] as $v){
-                $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
-            }
+            $event['islock'] = 2;
         }
             if ($event['solvetime']!=0){
                 $event['affecttime'] = ceil(($event['solvetime']-$event['createtime'])/60);

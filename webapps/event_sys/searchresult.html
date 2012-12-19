@@ -47,7 +47,7 @@
 <td><?php if($v['affecttime']) echo $v['affecttime']; ?></td>
 <td><?php $division=''; foreach ($v['division'] as $key) {$division.= $cfg['division'][$key].',';} echo rtrim($division, ','); ?></td>
 <td style="word-break:break-all; word-wrap:break-all;"><?php echo $v['who'];?></td>
-<td><?php if($v['islock']==0){echo "进行中";}else{echo "已关闭";} ?></td>
+<td><?php if($v['islock']==0){echo "进行中";}elseif($v['islock']==2){echo "审核中";}else{echo "已关闭";} ?></td>
 </tr>
                     <?php } } ?>
                 </table>

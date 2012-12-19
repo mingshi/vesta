@@ -25,7 +25,7 @@
 <input type="button" value="编辑事件" onclick="location.href='index.php?op=edit&eid=<?php echo $event_info['base']['eid'];?>'">
 <?php }?>
 <?php 
-if( ($cfg['close'][$event_info['base']['level']][$username]==1) && ($event_info['base']['islock']==0)){
+if( ($cfg['close'][$event_info['base']['level']][$username]==1) && ($event_info['base']['islock']==2)){
 ?>
 <input type="button" value="关闭事件" onclick="location.href='index.php?op=checkclose&eid=<?php echo $event_info['base']['eid'];?>&who=<?php echo $event_info['base']['who'];?>&ok=1'">
 
@@ -69,7 +69,7 @@ L<?php echo $event_info['base']['level'];?></span></td><th class = "detail_event
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">责任部门：</span></th><td width = 40%><span><?php $division=''; foreach ($event_info['division'] as $key) {$division.= $cfg['division'][$key].',';} echo rtrim($division, ','); ?></span></td><th class = "detail_event" width = 10%><span class="dt">责任人：</span></th><td width = 40%><span><?php echo $event_info['base']['who']; ?></span></td></tr></tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">状态：</span></th><td width = 90%><span>
-                                <?php if($event_info['base']['islock']==0){echo "进行中";}else{echo "已关闭";} ?>
+                                <?php if($event_info['base']['islock']==0){echo "进行中";}elseif($event_info['base']['islock']==2){echo "审核中";}else{echo "已关闭";} ?>
                             </span></td></tr></tbody></table></td></tr>
 
 <tr><td><table class="oioj" style="word-break:break-all;word-wrap:break-all;"><tbody><tr><th class = "detail_event" width = 10%><span class="dt">事件积分：</span></th><td width = 90%><span>
