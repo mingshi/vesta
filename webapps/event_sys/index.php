@@ -106,6 +106,7 @@ case 'do_add':
                 for($i=1;$i<=20;$i++){
                     if ($params['division'.$i])$params['division'][] = $params['division'.$i];
                 }
+                $params['division'] = array_unique($params['division']);
                 foreach ($params['division'] as $key){
                     insert_division($pdo,$isinsert,$key);
                 }
@@ -365,15 +366,14 @@ case 'do_add':
         $event['level'] = intval($params['level']);
         $event['createtime'] = strtotime($params['createtime']);
         $event['closetime'] = time();
-
-
-            for($i=1;$i<=20;$i++){
-                if ($params['division'.$i]) $division[] = $params['division'.$i];
-            }
-            delete_division($pdo,$event['eid']);
-            foreach ($division as $key){
+        for($i=1;$i<=20;$i++){
+            if ($params['division'.$i]) $division[] = $params['division'.$i];
+        };
+        $division = array_unique($division);
+        delete_division($pdo,$event['eid']);
+        foreach ($division as $key){
             insert_division($pdo,$event['eid'],$key);
-            }
+        }
         $division = '';
         foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
         $division = rtrim($division, ',');
