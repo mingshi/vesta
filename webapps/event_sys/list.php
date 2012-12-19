@@ -6,10 +6,8 @@ if($op=="search"){
     $keyword = trim($params['keyword']);
     $who = trim($params['who']);
     $islock = intval($params['status']);
-    if (!empty($params['division1'])){
-        for($i=1;$i<=9;$i++){
-            if ($params['division'.$i]) $division[] = $params['division'.$i];
-        }
+    for($i=1;$i<=9;$i++){
+        if ($params['division'.$i]) $division[] = $params['division'.$i];
     }
     if (empty($division)) $division = array('1','2','3','4','5','6','7','8','9');
     $levels = intval($params['levels']);

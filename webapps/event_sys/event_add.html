@@ -52,11 +52,10 @@
                                 </select>
                             </span></td></tr>
                                 <tr><td><li><span class="dt">事业部：</span></li></td><td>
-<div id=division>
+<div id=division style="float: left;">
 <input id="name_id" value="1" type="hidden" />
-<input type="button" value="+" onclick="add_input()"/>
-<input type="button" value="-" onclick="remove_input()"/>
 </div>
+<select id=divisionadd name=divisionadd><option value=0>选择</option><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select><input type="button" value="✚" onclick="add_input()"/>
                                 </td></tr>
                                 <tr><td><li><span class="dt">报告者：</span></li></td><td><span><input type="text" name="user" id="user" size="5" value="<?php if(!session_id()) session_start();echo $_SESSION['name'] ?>" readonly /></span></td></tr>
                                 <tr><td><li><span class="dt">状态：</span></li></td><td><span>
@@ -159,15 +158,27 @@
     </script>
     <script>
             function add_input(){
+                var objselect = document.getElementById('divisionadd');
+                var selectLen=objselect.length;
+                var n;
+                for(n=0;n<selectLen;n++){
+                    if(objselect.options[n].selected==true){
+                        var a = objselect.options[n].value;
+                        break;
+                    }
+                }
                 var i = document.getElementById('name_id').value
-	            $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select>")
+	            $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select><input id=remove"+ i +" type=button value='✖' onclick='remove_input("+ i +")'/>")
+                document.getElementById('division'+i).value= a
+                document.getElementById('divisionadd').value= 0
                 document.getElementById('name_id').value = parseInt(i)+1
             }
-            function remove_input(){
-                var i = document.getElementById('name_id').value
-                var x = parseInt(i)-1
-                document.getElementById('division'+x).parentNode.removeChild(document.getElementById('division'+x));
-                document.getElementById('name_id').value = parseInt(i)-1
+            function remove_input(p){
+                //var i = document.getElementById('name_id').value
+                //var x = parseInt(i)-1
+                document.getElementById('division'+p).parentNode.removeChild(document.getElementById('division'+p));
+                document.getElementById('remove'+p).parentNode.removeChild(document.getElementById('remove'+p));
+                //document.getElementById('name_id').value = parseInt(i)-1
             }
     </script>
     <script>

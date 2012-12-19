@@ -103,13 +103,11 @@ case 'do_add':
             $event_attr['addtime'] = time();
             $isinsert = insert_event($pdo,$event_attr);
             if($isinsert){
-                if (!empty($params['division1'])){
-                    for($i=1;$i<=9;$i++){
-                        if ($params['division'.$i])$params['division'][] = $params['division'.$i];
-                    }
-                    foreach ($params['division'] as $key){
-                        insert_division($pdo,$isinsert,$key);
-                    }
+                for($i=1;$i<=20;$i++){
+                    if ($params['division'.$i])$params['division'][] = $params['division'.$i];
+                }
+                foreach ($params['division'] as $key){
+                    insert_division($pdo,$isinsert,$key);
                 }
                 if($params['select3'] || $params['mailgroup']){
                 $params['select3'] = implode(',',$params['select3']);
@@ -368,15 +366,14 @@ case 'do_add':
         $event['createtime'] = strtotime($params['createtime']);
         $event['closetime'] = time();
 
-        if (!empty($params['division1'])){
-            for($i=1;$i<=9;$i++){
+
+            for($i=1;$i<=20;$i++){
                 if ($params['division'.$i]) $division[] = $params['division'.$i];
             }
             delete_division($pdo,$event['eid']);
             foreach ($division as $key){
             insert_division($pdo,$event['eid'],$key);
             }
-        }
         $division = '';
         foreach ($params['division'] as $key) {$division.= $cfg['division'][$key].',';}
         $division = rtrim($division, ',');
