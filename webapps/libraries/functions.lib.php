@@ -182,6 +182,19 @@ function get_event_unlock($pdo){
     return $result;
 }
 
+function get_checkclose($pdo){
+    $result = pdo_fetch_all($pdo, 'select * from event where islock=2 order by createtime desc');
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
+}
+
 function get_by_division($pdo){
     $diff_time = time() - 3600 * 24 * 30;
     $result = pdo_fetch_all($pdo, 'select eid from event where createtime >= '.$diff_time);
