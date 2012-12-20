@@ -130,7 +130,7 @@ function get_division($pdo,$eid){
 
 function get_search_division($pdo,$division){
     $diff_time = time() - 3600 * 24 * 30;
-    $result = pdo_fetch_all($pdo, 'select eid from division where division = '.$division);
+    $result = pdo_fetch_all($pdo, 'select eid from division where division = '.$division.' order by eid DESC');
     $array = array();
     foreach ($result as $m) $array[]=$m['eid'];
     $event = array();
@@ -140,7 +140,6 @@ function get_search_division($pdo,$division){
     foreach ($event as $p=>$q){
         if($q['createtime']<$diff_time) unset($event[$p]);
     }
-    $event = array_reverse($event);
     foreach ($event as $k=>$v){
         $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
         $divisionx = array();

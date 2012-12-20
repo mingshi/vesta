@@ -25,7 +25,7 @@
 <input type="button" value="编辑事件" onclick="location.href='index.php?op=edit&eid=<?php echo $event_info['base']['eid'];?>'">
 <?php }?>
 <?php 
-if( ($cfg['close'][$event_info['base']['level']][$username]==1) && ($event_info['base']['islock']==2)){
+if( ($cfg['close'][$event_info['base']['level']][$username]==1) && ($event_info['base']['islock']==2||$event_info['base']['islock']==0)){
 ?>
 <input type="button" value="关闭事件" onclick="location.href='index.php?op=checkclose&eid=<?php echo $event_info['base']['eid'];?>&who=<?php echo $event_info['base']['who'];?>&ok=1'">
 

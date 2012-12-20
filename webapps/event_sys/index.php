@@ -402,6 +402,10 @@ case 'do_add':
             if(!$event['who']){
                 msg_redirect('index.php?op=edit&eid='.$event['eid'],'未填写责任人的事件无法关闭');
             }
+            foreach ($mids as $mid){
+                $measure_s = intval($params['mstatus_'.$measure['mid']]);
+                if ($measure_s==0) msg_redirect('index.php?op=edit&eid='.$event['eid'],'有未完成的改进措施');
+            }
             $event['islock'] = 2;
         }
             if ($event['solvetime']!=0){
@@ -418,9 +422,6 @@ case 'do_add':
         $who = trim($params['who']);
         $info = get_event_info($pdo,$eid);
         $level = $info['base']['level'];
-        if(!$who){
-            msg_redirect('index.php?op=detail&eid='.$eid,'未填写责任人的事件无法关闭');
-        }
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])) $username = $_SESSION['name'];
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name']) && $cfg['close'][$level][$username]==1){
             $ok = intval($params['ok']);
