@@ -2,17 +2,6 @@
 require_once '/var/www/html/shijian/webapps/libraries/common.lib.php';
 require_once '/var/www/html/shijian/webapps/event_sys/smtp.class.php';
 
-$body = 111;
-$subject = "[事件关闭]";
-$subject = "=?UTF-8?B?".base64_encode($subject)."?=";
-$smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-$smtp->debug = false;
-$smtp->sendmail('yundu@anjuke.com','alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
-
-exit;
-
-
-
 $result = get_checkclose($pdo);
 
 if (empty($result)){
@@ -32,9 +21,7 @@ $subject = "[关闭邮件发送确认]";
 $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
 $smtp =   new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
 $smtp->debug = false;
-foreach ($cfg['checkclose'] as $v){
-    $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
-}
+$smtp->sendmail($cfg['checkclose'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
 
 echo $body;
 

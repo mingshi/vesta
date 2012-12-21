@@ -137,10 +137,14 @@ case 'do_add':
         break;
     case 'detail':
         if(!session_id())session_start();
+        $eid = intval($params['eid']);
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
             $username = $_SESSION['name'];
+        }else{
+            $_SESSION['eid'] = $eid;
+            msg_redirect('oauthlogin.php','请先登录');	
         }
-        $eid = intval($params['eid']);
+
         update_view_count ($pdo,$eid);
         $event_info = get_event_info($pdo,$eid);
         $report = get_event_report($pdo,$eid);
@@ -439,7 +443,7 @@ case 'do_add':
             foreach($email_arr as $k=>$v){
                 $smtp->sendmail($v['email'],'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
-            header("Location:index.php");
+            header("Location:index.php?op=detail&eid=".$eid);
         }
         else{
             msg_redirect('index.php?op=detail&eid='.$eid,'您无权关闭该事件');
@@ -749,6 +753,11 @@ case 'do_add':
         }
         $template = 'home';*/
         if(!session_id()) session_start();
+        $eid = $_SESSION['eid'];
+        if ($eid) {
+            $_SESSION['eid'] = '';
+            msg_redirect('index.php?op=detail&eid='.$eid);
+        }
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
             $user = $_SESSION['name'];
             $uid = $_SESSION['uid'];
