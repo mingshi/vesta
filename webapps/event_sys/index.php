@@ -142,7 +142,7 @@ case 'do_add':
             $username = $_SESSION['name'];
         }else{
             $_SESSION['eid'] = $eid;
-            msg_redirect('oauthlogin.php','请先登录');	
+            msg_redirect('oauthlogin.php');	
         }
 
         update_view_count ($pdo,$eid);

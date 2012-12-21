@@ -54,7 +54,15 @@ $i++;}?>
 
 </td></tr>
                             <tr><td><li><span class="dt">责任人：</span></li></td><td><span><input type="text" name="who" value="<?php echo $event_info['base']['who']; ?>" /></span></td></tr>
-                            <tr><td><li><span class="dt">状态：</span></li></td><td><span><select name="islock"><?php if(!empty($cfg['islock'])){foreach($cfg['islock'] as $k=>$v){ ?><option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option><?php } }?></select><input type="hidden" name="lock_state" value="<?php echo $event_info['base']['islock']; ?>"</span></td></tr>
+                            <tr><td><li><span class="dt">状态：</span></li></td><td><span>
+
+<select name="islock">
+<?php if($event_info['base']['islock']==0){?>
+<option value=0 <?php if($event_info['base']['islock']==0)echo selected; ?> >开启</option>
+<option value=2 <?php if($event_info['base']['islock']==2)echo selected; ?> >请求关闭</option>
+<?php }else{foreach($cfg['islock'] as $k=>$v){ ?><option value="<?php echo $k; ?>" <?php if($k==$event_info['base']['islock'])echo selected; ?> ><?php echo $v; ?></option><?php } }?>
+
+</select><input type="hidden" name="lock_state" value="<?php echo $event_info['base']['islock']; ?>"</span></td></tr>
                             </table>
                             <li><link rel="stylesheet" href="css/autocomplate.css" type="text/css" media="screen" charset="utf-8" /><span class="dt">通知到：</span>
                                 <span><select id="select3" name="select3"></select>							

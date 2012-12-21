@@ -28,6 +28,7 @@ if(!isset($_SESSION['user']) || $_SESSION['user'] != true || !isset($_SESSION['n
                 $smtp->sendmail($v,'alert@anjuke.com',$subject,$body,$cfg['smtp']['mailtype']);
             }
         }
+        echo '发送成功';
     }
     else msg_redirect('index.php','您无权发送邮件');
 }
