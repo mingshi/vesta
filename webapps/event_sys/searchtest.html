@@ -1,0 +1,138 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title></title>
+<link type="text/css" href="css/jquery-ui-1.8.16.custom.css" rel="Stylesheet" />
+<link type="text/css" href="css/core.css" rel="Stylesheet" />
+<link type="text/css" href="css/style.css" rel="Stylesheet" />
+</head>
+<body>
+<div class="pagewrap">
+	<div class="homemaincontent">
+        <a href="http://vesta.corp.anjuke.com"><img height="34px" border="0" src="/images/vestalogo.png"></a><br /><br />
+		<ul id="pageTabs" class="pagetabs">
+			<li><a href="index.php">首页</a></li>
+                        <li><a href="index.php?op=week">本周所有事件</a></li>
+                        <li><a href="index.php?op=lastmonth">上月所有事件</a></li>
+			<li><a href="index.php?op=month">本月所有事件</a></li>
+			<li><a href="index.php?op=report">数据统计</a></li>
+                        <li class="selected"><a href="search.html">搜索</a></li>
+                        <li><a href="index.php?op=add">添加事件</a></li>
+                        <li><a href="index.php?op=myatt">我的事件</a></li>
+		</ul>
+		<form name="searchform" class="searchform" action="listest.php" method="post">
+
+            <table>
+
+                <tr style="height:50px;"><td><span>事件主题：</span></td><td><input type="text" name="keyword" value="" /></td></tr>
+
+                <tr style="height:50px;"><td><span>责任人：</span></td><td><input type="text" name="who" value="" /></td></tr>
+                <tr style="height:50px;"><td><span>责任部门：</span></td><td>
+<div id=division style="float: left;">
+<input id="name_id" value="1" type="hidden" />
+</div>
+<select id=divisionadd name=divisionadd><option value=0>选择</option><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select><input type="button" value="✚" onclick="add_input()"/>
+                </td></tr>
+
+
+
+                <tr style="height:50px;"><td><span>事件类型：</span></td><td>
+                    <select name="etype" id="etype" onchange="tt(this.id)">
+                        <option value="0">所有</option>
+                        <option value="1">运营商故障</option>
+                        <!--<option value="2">网络故障</option>-->
+                        <option value="3">硬件故障</option>
+                        <option value="4">人为故障</option>
+                        <option value="5">程序bug</option>
+                        <option value="6">安全事故</option>
+                        <!--<option value="7">配置问题</option>-->
+                    </select>
+               </td></tr>
+
+               <tr style="height:50px;"><td><span>事件等级：</span></td><td>
+                    <select name="levels" id="levels">
+                        <option value="1" selected>L1</option>
+                        <option value="2">L2</option>
+                        <option value="3">L3</option>
+                        <option value="4">L4</option>
+                        <option value="5">L5</option>
+                        <option value="6">L6</option>
+                    </select> — <select name="levele" id="levele">
+                        <option value="1">L1</option>
+                        <option value="2">L2</option>
+                        <option value="3">L3</option>
+                        <option value="4">L4</option>
+                        <option value="5">L5</option>
+                        <option value="6" selected>L6</option>
+                    </select>
+                </td></tr>
+
+                <tr style="height:50px;"><td><span>事件状态：</span></td><td>
+                    <select name="status">
+                        <option value="3">所有</option>
+                        <option value="0">进行中</option>
+                        <option value="1">已关闭</option>
+                        <option value="2">审核中</option>
+                    </select>
+                </td></tr>
+
+                <tr style="height:50px;"><td>
+                    <span>发现时间:</span></td><td><input type="text" name="start" id="datepk1" /> — <input type="text" name="stop" id="datepk2"/>
+                </td></tr>
+            </table>
+
+            <div class="button">
+                <input type="hidden" name="op" value="search" /><input type="submit" class="submit" value="搜索" />
+            </div>
+		</form>
+	</div>
+	<div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
+    <script>
+
+        function tt(id) {
+            var aa = document.getElementById(id);
+            var levels = document.getElementById("levels");
+            var levele = document.getElementById("levele");
+            if ((aa.value)==6) {
+                levels.innerHTML = '<option value="1" selected>L1</option><option value="2">L2</option><option value="3">L3</option>'
+                levele.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3" selected>L3</option>'
+            }
+            else {
+                levels.innerHTML = '<option value="1" selected>L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6">L6</option>'
+                levele.innerHTML = '<option value="1">L1</option><option value="2">L2</option><option value="3">L3</option><option value="4">L4</option><option value="5">L5</option><option value="6" selected>L6</option>'
+            }
+        }
+    </script>
+    <script>
+            function add_input(){
+                var objselect = document.getElementById('divisionadd');
+                var selectLen=objselect.length;
+                var n;
+                for(n=0;n<selectLen;n++){
+                    if(objselect.options[n].selected==true){
+                        var a = objselect.options[n].value;
+                        break;
+                    }
+                }
+                var i = document.getElementById('name_id').value
+	            $('#division').append("<select id=division"+ i +" name=division"+ i +"><option value=1>二手房</option><option value=2>好租</option><option value=3>新房</option><option value=4>金铺</option><option value=5>总部运维</option><option value=6>第三方</option><option value=7>DW</option><option value=8>IT</option><option value=9>总部开发</option></select><input id=remove"+ i +" type=button value='✖' onclick='remove_input("+ i +")'/>")
+                document.getElementById('division'+i).value= a
+                document.getElementById('divisionadd').value= 0
+                document.getElementById('name_id').value = parseInt(i)+1
+            }
+            function remove_input(p){
+                //var i = document.getElementById('name_id').value
+                //var x = parseInt(i)-1
+                document.getElementById('division'+p).parentNode.removeChild(document.getElementById('division'+p));
+                document.getElementById('remove'+p).parentNode.removeChild(document.getElementById('remove'+p));
+                //document.getElementById('name_id').value = parseInt(i)-1
+            }
+    </script>
+</body>
+</html>
