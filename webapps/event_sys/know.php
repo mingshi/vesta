@@ -24,8 +24,8 @@ require_once '../libraries/common.lib.php';
 ?>
 
 
-    <div style="width:440px;height:220px;">
-        <div id="chartdiv" style="height: 195px;width:430px;padding-left:10px;"></div>
+    <div style="width:600px;height:220px;">
+        <div id="chartdiv" style="height: 195px;width:590px;padding-left:10px;"></div>
         <div style="text-align:center;font-size:15px;">月度事件走势图</div>
     </div>
 
