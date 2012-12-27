@@ -225,7 +225,7 @@ case 'do_add':
         }
         break;
 	case 'c_add':
-		$comment['comment'] = trim($params['m_comment']);
+		$comment['comment'] = nl2br($_POST['m_comment']);
 		$comment['eid'] = intval($params['c_eid']);
 		$comment['user'] = trim($params['c_user']);
 		$comment['mtime'] = time();
