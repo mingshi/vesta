@@ -178,8 +178,16 @@ foreach ($event_info['relate'] as $key){
 
 <?php } } ?>
 
-                        <form action="" method="post">
-							<textarea class="m_comment" name="m_comment"></textarea>
+<form method="post">
+
+<textarea style="resize: none;width:744px;height:78px;" class="m_comment" name="m_comment" rows="10" wrap=PHYSICAL cols="75" onKeyDown="gbcount(this.form.m_comment,this.form.total,this.form.used,this.form.remain);" onKeyUp="gbcount(this.form.m_comment,this.form.total,this.form.used,this.form.remain);"></textarea>
+
+<input name="total" size="3" value="200" type="hidden">
+<input name="used" size="3" value="0" type="hidden">
+您还可以输入：
+<input disabled maxLength="4" name="remain" size="1" value="200">字</td>
+
+<div style="float:right">
                             <input type="hidden" name="op" value="c_add" />
                             <input type="hidden" name="c_eid" value="<?php echo $event_info['base']['eid']; ?>" />
 							<?php
@@ -188,7 +196,10 @@ foreach ($event_info['relate'] as $key){
 							?>
 							<input type="hidden" name="c_user" value="<?php echo $user;?>" />
                             <input type="submit" value="评论" />
-                        </form>
+</div>
+
+</form>
+
 </div>
 <br>
  </div>
@@ -235,5 +246,39 @@ function content_submit_m(){
 	document.getElementById("content_m").value = editor.text();
 	return true;
 }
+</script>
+<SCRIPT language="javascript">
+<!--
+function checktext(text)
+{
+   allValid = true;
+   for (i = 0; i < text.length; i++)
+   {
+    if (text.charAt(i) != " ")
+    {
+     allValid = false;
+     break;
+    }
+   }
+return allValid;
+}
+
+function gbcount(message,total,used,remain)
+{
+var max;
+max = total.value;
+if (message.value.length > max) {
+message.value = message.value.substring(0,max);
+used.value = max;
+remain.value = 0;
+alert("评论不能超过 200 个字!");
+}
+else {
+used.value = message.value.length;
+remain.value = max - used.value;
+}
+}
+
+-->
 </script>
     </body></html>
