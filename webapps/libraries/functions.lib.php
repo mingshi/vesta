@@ -174,8 +174,10 @@ function get_event_unlock($pdo){
     foreach ($result as $k=>$v){
         $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
         $divisionx = array();
-        foreach ($division as $m){
-            $divisionx[] = $m['division'];
+        if (!empty($division)) {
+            foreach ($division as $m){
+                $divisionx[] = $m['division'];
+            }
         }
         $result[$k]['division'] = $divisionx;
     }
@@ -498,9 +500,7 @@ function check_attention($pdo,$att){
 }
 
 function check_open_date($pdo,$eid,$time){
-    $array =  pdo_fetch_all($pdo,'select * from measure where eid='.$eid.' and mtime>'.$time);
-    if (empty($array)){return 0;}
-    else return 1;
+    return pdo_fetch_all($pdo,'select * from measure where eid='.$eid.' and mtime<'.$time.' and status=0');
 }
 
 function insert_attention($pdo,$att){

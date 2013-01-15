@@ -530,6 +530,25 @@ case 'do_add':
         $nowyear = date('Y',time());
         $nowmonth = date('m',time());
         //每月时间统计
+
+        $preyear = $nowyear-1;
+        $premonth = $nowmonth+1;
+        for($i=intval($premonth)+6;$i<=12;$i++){
+            $p = sprintf("%02d",$i);
+            $param = $preyear.$p;
+            $daysnum = cal_days_in_month(CAL_GREGORIAN, $i, $preyear);
+            $thecount = get_every_month_event($pdo,$param);
+            $affect_time = get_every_month_affect_time($pdo,$param);
+            $the_month_time = $daysnum * 24 * 60;
+            $the_month_useable = floor((($the_month_time-$affect_time['total'])/$the_month_time)*100);
+            $the_month_useable = number_format((($the_month_time-$affect_time['total'])/$the_month_time)*100,2);
+            $event_graph_month[$p]['date'] = "new Date($preyear$p,0)";
+            $event_graph_month[$p]['value'] = $thecount['total'];
+            $event_graph_useable[$p]['date'] = "new Date($preyear$p,0)";
+            if ($the_month_useable>="100.00"){$event_graph_useable[$p]['value'] = 100;}
+            else $event_graph_useable[$p]['value'] = $the_month_useable;
+        }
+
         for($i=1;$i<=intval($nowmonth);$i++){
             $p = sprintf("%02d",$i);
             $param = $nowyear.$p;
@@ -545,6 +564,7 @@ case 'do_add':
             if ($the_month_useable>="100.00"){$event_graph_useable[$p]['value'] = 100;}
             else $event_graph_useable[$p]['value'] = $the_month_useable;
         }
+
         foreach($event_graph_month as $k=>$v){
             $total = $total+$v['value'];
             $graph_data .= "{date:".$v['date'].",value:".$v['value']."},"; 
@@ -558,6 +578,15 @@ case 'do_add':
         $useable_data = "[".$useable_data."]";
         $graph_data = "[".$graph_data."]";
         //类别趋势
+
+        for($i=intval($premonth)+6;$i<=12;$i++){
+            $p = sprintf("%02d",$i);
+            $param = $preyear.$p;
+            foreach($cfg['etype'] as $k=>$v){
+                $month_type[$param][$v] = get_month_type_event($pdo,$param,$k);
+            }
+        }
+
         for($i=1;$i<=intval($nowmonth);$i++){
             $p = sprintf("%02d",$i);
             $param = $nowyear.$p;
@@ -577,6 +606,14 @@ case 'do_add':
         $month_type_graph = "[".$month_type_graph."]";
 
         //事业部趋势
+        for($i=intval($premonth)+6;$i<=12;$i++){
+            $p = sprintf("%02d",$i);
+            $param = $preyear.$p;
+            foreach($cfg['division'] as $k=>$v){
+                $month_division[$param][$v] = get_month_division_event($pdo,$param,$k);
+            } 
+        }
+
         for($i=1;$i<=intval($nowmonth);$i++){
             $p = sprintf("%02d",$i);
             $param = $nowyear.$p;
@@ -595,6 +632,9 @@ case 'do_add':
         $month_division_graph = trim($month_division_graph,',');
         $month_division_graph = "[".$month_division_graph."]";
         $template = 'report';
+
+//echo '<pre>';print_r($graph_data);print_r($useable_data);exit;
+
         break;
     case 'ajax':
         $type = trim($params['type']);
@@ -759,7 +799,8 @@ case 'do_add':
             msg_redirect('index.php?op=detail&eid='.$eid);
         }
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
-            $user = $_SESSION['name'];
+            //$user = $_SESSION['name'];
+            $user = $_SESSION['realname'];
             $uid = $_SESSION['uid'];
         }else{
             $user = "guest";
