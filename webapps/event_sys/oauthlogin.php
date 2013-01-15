@@ -84,7 +84,7 @@ if(!$info){
     if(!getuser($pdo,$info['username'])){
         $detail = get_info_from_ldap($info['access_token'], $oauth_url);
         $detail = json_decode($detail,true);
-        $realname = $detail['chinese_name'];
+        $realname = $detail['username'];
         $email = $detail['email'];
         $username = $info['username'];
         $uid = insertuser($pdo,$username,$realname,$email);
