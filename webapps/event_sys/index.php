@@ -511,22 +511,52 @@ case 'do_add':
         $who = array();
         foreach ($month_event as $k) {
             if ($k['affecttime']) {
+                $c = count($k['division']);
                 foreach ($k['division'] as $m){
-                    $division[$m]+=ceil($k['affecttime']*((7-$k['level'])/6));
+                    $division[$m]+=ceil($k['affecttime']*((7-$k['level'])/6)/$c);
                 }
             }
             else continue;
         }
         foreach ($month_event as $k) {
-            if ($k['affecttime']) $who[$k['who']]+=ceil($k['affecttime']*((7-$k['level'])/6));
+            if ($k['affecttime']) {
+                $whoc = explode(',',$k['who']);
+                if (!empty($whoc[1])) {
+                    $c = count($whoc);
+                    foreach ($whoc as $v) {
+                        $who[$v]+=ceil($k['affecttime']*((7-$k['level'])/6)/$c);
+                    }
+                }
+                else $who[$k['who']]+=ceil($k['affecttime']*((7-$k['level'])/6));
+            }
             else continue;
         }
         arsort($division);
         arsort($who);
+
         $by_division = get_by_division($pdo);
         $by_type = get_by_type($pdo);
         $by_who = get_by_who($pdo);
+
+        foreach ($by_who as $k=>$key) {
+            $whoc = explode(',',$key['who']);
+            $s = number_format($key['total']/count($whoc),2); 
+            if (!empty($whoc[1])) {
+                foreach ($whoc as $v) {
+                    $i = 0;
+                    foreach ($by_who as $n=>$m) { 
+                        if ($m['who'] == $v) {
+                            $by_who[$n]['total'] += $s;$i=1;
+                        }
+                    }
+                    if ($i==0) $by_who[] = array ('who'=>$v,'total'=>$s);
+                }
+            unset ($by_who[$k]);
+            }
+        }
+
         $by_affecttime = get_by_affecttime($pdo);
+
         $nowyear = date('Y',time());
         $nowmonth = date('m',time());
         //每月时间统计

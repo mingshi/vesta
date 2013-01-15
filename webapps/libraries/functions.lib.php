@@ -210,8 +210,9 @@ function get_by_division($pdo){
         $array[]=$divisionx;
     }
     foreach ($array as $o){
+        $c = count($o);
         foreach ($o as $p=>$q){
-            $divisiony[$q] += 1;
+            $divisiony[$q] += number_format((1/$c),2);
         }
     }
     arsort($divisiony);
