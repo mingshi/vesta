@@ -533,7 +533,7 @@ case 'do_add':
 
         $preyear = $nowyear-1;
         $premonth = $nowmonth+1;
-        for($i=intval($premonth)+6;$i<=12;$i++){
+        for($i=intval($premonth);$i<=12;$i++){
             $p = sprintf("%02d",$i);
             $param = $preyear.$p;
             $daysnum = cal_days_in_month(CAL_GREGORIAN, $i, $preyear);
@@ -579,7 +579,7 @@ case 'do_add':
         $graph_data = "[".$graph_data."]";
         //类别趋势
 
-        for($i=intval($premonth)+6;$i<=12;$i++){
+        for($i=intval($premonth);$i<=12;$i++){
             $p = sprintf("%02d",$i);
             $param = $preyear.$p;
             foreach($cfg['etype'] as $k=>$v){
@@ -606,7 +606,7 @@ case 'do_add':
         $month_type_graph = "[".$month_type_graph."]";
 
         //事业部趋势
-        for($i=intval($premonth)+6;$i<=12;$i++){
+        for($i=intval($premonth);$i<=12;$i++){
             $p = sprintf("%02d",$i);
             $param = $preyear.$p;
             foreach($cfg['division'] as $k=>$v){
