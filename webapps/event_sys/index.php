@@ -799,8 +799,8 @@ case 'do_add':
             msg_redirect('index.php?op=detail&eid='.$eid);
         }
         if(isset($_SESSION['user']) && $_SESSION['user']===true && isset($_SESSION['name'])){
-            //$user = $_SESSION['name'];
-            $user = $_SESSION['realname'];
+            $user = $_SESSION['name'];
+            //$user = $_SESSION['realname'];
             $uid = $_SESSION['uid'];
         }else{
             $user = "guest";

@@ -1,9 +1,10 @@
 <?php
 require_once '../libraries/common.lib.php';
-$client_id = 'sl11011';/*在oAuth注册的应用名*/
-$client_secret = 'd32a2b01';/*在oAuth注册的应用密码*/
-$oauth_url = 'https://auth.corp.anjuke.com';/*线上oAuth地址*/
+$client_id = 'event-test';/*在oAuth注册的应用名*/
+$client_secret = 'af6e5741';/*在oAuth注册的应用密码*/
+//$oauth_url = 'https://auth.corp.anjuke.com';/*线上oAuth地址*/
 
+$oauth_url = 'http://auth.corp.anjuke.com';
 if(!session_id()) session_start();
 /*
 * 用户身份认证，
@@ -84,13 +85,15 @@ if(!$info){
     if(!getuser($pdo,$info['username'])){
         $detail = get_info_from_ldap($info['access_token'], $oauth_url);
         $detail = json_decode($detail,true);
-        $realname = $detail['username'];
+        $realname = $detail['chinese_name'];
         $email = $detail['email'];
         $username = $info['username'];
         $uid = insertuser($pdo,$username,$realname,$email);
         $_SESSION['uid'] = $uid;
+        $_SESSION['realname'] = $realname;
     }else{
         $_SESSION['uid'] = get_user_info($pdo,$info['username']);
+        $_SESSION['realname'] = $_SESSION['uid']['realname'];
         $_SESSION['uid'] = $_SESSION['uid']['id'];
     }   
     header('Location:index.php');
