@@ -554,7 +554,6 @@ case 'do_add':
             unset ($by_who[$k]);
             }
         }
-        arsort($by_who);
 
         $by_affecttime = get_by_affecttime($pdo);
 
