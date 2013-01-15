@@ -42,14 +42,8 @@ foreach ($result as $k=>$key){
         $subject = "安居客未关闭事件日报";
         $subject = "=?UTF-8?B?".base64_encode($subject)."?=";
         $smtp = new smtp($cfg['smtp']['server'],$cfg['smtp']['port'],true,$cfg['smtp']['user'],$cfg['smtp']['password'],$cfg['smtp']['sender']);
-        $email_arr = array(
-            //'0' => $who_mail,
-            '1' => 'yundu@anjuke.com',
-            //'0' => 'cimena1989@163.com',
-        );
-        foreach($email_arr as $k=>$v){
-            $smtp->sendmail($v,"",$subject,$body,$cfg['smtp']['mailtype']);
-        }
+        $email_arr = $who_mail.',yundu@anjuke.com,fzhou@anjuke.com,wellerkong@anjuke.com,kaicai@anjuke.com';
+        $smtp->sendmail($email_arr,"",$subject,$body,$cfg['smtp']['mailtype']);
         echo $body;
     }
 }
