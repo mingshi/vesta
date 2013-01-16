@@ -1,10 +1,8 @@
 <?php
 require_once '../libraries/common.lib.php';
-$client_id = 'event-test';/*在oAuth注册的应用名*/
-$client_secret = 'af6e5741';/*在oAuth注册的应用密码*/
-//$oauth_url = 'https://auth.corp.anjuke.com';/*线上oAuth地址*/
-
-$oauth_url = 'http://auth.corp.anjuke.com';
+$client_id = 'sl11011';/*在oAuth注册的应用名*/
+$client_secret = 'd32a2b01';/*在oAuth注册的应用密码*/
+$oauth_url = 'https://auth.corp.anjuke.com';/*线上oAuth地址*/ 
 if(!session_id()) session_start();
 /*
 * 用户身份认证，
