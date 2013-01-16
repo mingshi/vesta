@@ -185,7 +185,7 @@ function get_event_unlock($pdo){
 }
 
 function get_checkclose($pdo){
-    $result = pdo_fetch_all($pdo, 'select * from event where islock=2 order by level asc');
+    $result = pdo_fetch_all($pdo, 'select * from event where islock=2 and check_close_state = 0 order by level asc');
     foreach ($result as $k=>$v){
         $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
         $divisionx = array();
@@ -195,6 +195,26 @@ function get_checkclose($pdo){
         $result[$k]['division'] = $divisionx;
     }
     return $result;
+}
+
+function get_checkclose_sended($pdo){
+    $result = pdo_fetch_all($pdo, 'select * from event where islock=2 and check_close_state != 0 order by level asc');
+    foreach ($result as $k=>$v){
+        $division = pdo_fetch_all($pdo,'select division from division where eid=?',array($v['eid']));
+        $divisionx = array();
+        foreach ($division as $m){
+            $divisionx[] = $m['division'];
+        }
+        $result[$k]['division'] = $divisionx;
+    }
+    return $result;
+}
+
+function update_checkclose($pdo) {
+    $time = time();
+    $sql = "update event set check_close_state=? where islock=2";
+    $sth = $pdo->prepare($sql);
+    $sth ->execute(array($time));
 }
 
 function get_by_division($pdo){

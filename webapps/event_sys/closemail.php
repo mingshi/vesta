@@ -9,6 +9,7 @@ if(!isset($_SESSION['user']) || $_SESSION['user'] != true || !isset($_SESSION['n
     $user = $_SESSION['name'];
     if ($user=='yundu'){
         $result = get_checkclose($pdo);
+        update_checkclose($pdo);
         foreach ($result as $k){
             $mail_level[$k['level']][] = $k;
         }

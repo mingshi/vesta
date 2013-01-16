@@ -28,10 +28,14 @@
 <STYLE type=text/css>
 #d1 {display: block}
 #d2 {display: none}
+#d3 {display: none}
 </STYLE>
             <ul id="pageTabs" class="pagetabs">
-                <li class="selected" style="width:102px;"><a href="#" target=_self onclick="changecss('d1','d2')" style="font-size: 11px;">我负责的事件</font></a></li>
-                <li style="width:102px;"><a href="#" target=_self onclick="changecss('d2','d1')" style="font-size: 11px;">我关注的事件</a></li>
+                <li class="selected" style="width:102px;"><a href="#" target=_self onclick="changecss('d1','d2','d3')" style="font-size: 11px;">我负责的事件</font></a></li>
+                <li style="width:102px;"><a href="#" target=_self onclick="changecss('d2','d1','d3')" style="font-size: 11px;">我关注的事件</a></li>
+<?php if (in_array($user,$cfg['checker'])) { ?>
+                <li style="width:102px;"><a href="#" target=_self onclick="changecss('d3','d1','d2')" style="font-size: 11px;">待关闭的事件</a></li>
+<?php } ?>
             </ul>              
 
 <div id=d1>
@@ -204,6 +208,83 @@ if(!check_attention($pdo,$att)){
         </div>		
 </div>
 
+<?php if (in_array($user,$cfg['checker'])) { ?>
+<div id=d3>
+        <?php if(!empty($my_close_event)){foreach($my_close_event as $key=>$v){ ?>
+        <div <?php if($v['islock']==0||$v['islock']==2){echo "class='event highlight'";}else{echo "class='event highlightc'";} ?>>
+            <div class="event_title">
+                <div class="title">
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>"><?php echo $v['subject']; ?></a>
+                </div>
+                <div class="tright">
+                    <div <?php if($v['islock']==0||$v['islock']==2){ echo "class='status running'";}else{echo "class='status running'";} ?>><?php if($v['islock']==0){echo "进行中";}elseif($v['islock']==2){echo "审核中";}else{echo "已关闭";} ?>
+                    </div>
+                </div>
+            </div>
+            <div class="datetime">
+<?php
+if ($v['addtime']) echo $v['fuser']."  记录于  ".date('Y-m-d H:i:s',$v['addtime']);
+else echo $v['fuser']."  记录于  ".date('Y-m-d H:i:s',$v['createtime']);
+?>
+        </div>
+            <ul class="event_detail mb20">
+<?php
+    if ($v['summary']){
+?>
+                <li><a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid'];?>"><img border="0" align="right" height=100px alt="事件类型<?php echo $v['etypeid'];?>" src="/images/type_icons/<?php echo $v['etypeid'];?>.png"></a>
+                    <span class="dt"><?php echo $v['summary']?></span>
+                </li>
+<?php
+}
+else{
+?>
+                <a href="/index.php?op=params&params_name=etypeid&params_value=<?php echo $v['etypeid'];?>"><img border="0" align="right" height=100px alt="事件类型<?php echo $v['etypeid'];?>" src="/images/type_icons/<?php echo $v['etypeid'];?>.png"></a>
+                <li><span class="dt">事件描述：</span><span><?php echo $v['description']; ?></span></li>
+                <li><span class="dt">发生时间：</span><span><?php echo date('Y-m-d H:i:s',$v['createtime']); ?></span></li>
+                <li><span class="dt">影响时长：</span><span><?php echo $v['affecttime']."分钟";?></span></li>
+                <li><span class="dt">事件影响：</span><span><?php echo $v['affect']; ?></span></li>
+                <li><span class="dt">事件等级：</span><span>
+<?php
+if ($event_info['base']['etypeid'] =="6"){
+?>
+                    <a href='/levelinfo.php'><!---<img border='0' height='15px' src="http://vesta.corp.anjuke.com/images/level/ls<?php echo (4-$v['level']);?>.png">---></a>
+<?
+}
+else {
+?>
+                    <a href='/levelinfo.php'><!---<img border='0' height='15px' src="http://vesta.corp.anjuke.com/images/level/lv<?php echo (7-$v['level']);?>.png">---></a>
+<?php
+}
+?>
+L<?php echo $v['level'];?></span></li>
+<?
+}
+?>
+            </ul>
+            <div class="event_footer">
+                <div class="footer">
+                    <a href="index.php?op=detail&eid=<?php echo $v['eid']; ?>" class="view_detail"><strong>详细内容</strong></a> |
+                    <span class="view_detail">查看次数: <?php echo $v['view_count'];?></span> |
+                    <span class="view_detail">评论数: <?php echo $v['comment_count']['count(*)']; ?></span> |
+<?php 
+$att['eid'] = $v['eid'];
+$att['uid'] = $_SESSION['uid'];
+if(!check_attention($pdo,$att)){ 
+?>
+                    <a class="focus" href="index.php?op=attention&eid=<?php echo $v['eid']; ?>">加入关注</a>
+<?php
+}else{
+?>
+                    <a class="focus" href="index.php?op=delatt&eid=<?php echo $v['eid']; ?>">取消关注</a>
+<?php
+}
+?>
+                </div>
+            </div>
+        </div>
+<?php } } ?>
+</div>
+<?php } ?>
 
 <div id="pageTabs-2" class="hide"></div><div id="pageTabs-3" class="hide"></div><div id="pageTabs-4" class="hide"></div>
 <div id="pageTabs-5" class="hide"></div></div><div class="page_footer">&copy;2012事件管理系统|安居客运维团队</div>
@@ -211,9 +292,10 @@ if(!check_attention($pdo,$att)){
 <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 <script language="javascript">
-function changecss(A,B) {
+function changecss(A,B,C) {
 document.getElementById(A).style.display= "block";
 document.getElementById(B).style.display= "none";
+document.getElementById(C).style.display= "none";
 }
 </script>
 

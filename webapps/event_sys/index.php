@@ -480,6 +480,13 @@ case 'do_add':
                 if($page){
                 $limit = (($page-1) * $offset).', '.$offset;
                 $my_event_page = get_my_att_page($pdo,$limit,$uid);
+                $close_event = get_checkclose_sended($pdo);
+                $my_close_event = array();
+                foreach ($close_event as $key) {
+                    if (in_array($user,$cfg['checkerlevel'][$key['level']])) {
+                        $my_close_event[] = $key;
+                    }
+                }
             }
                 $template = 'myevent';
             }
