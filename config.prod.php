@@ -1,30 +1,25 @@
 <?php
-$cfg['database']['host']='10.10.8.35';
+$cfg['database']['host']='';
 $cfg['database']['port']='3306';
 $cfg['database']['user']='uvesta';
 $cfg['database']['password']='pvesta';
 $cfg['database']['dbname']='vesta';
 
 
-$cfg['ldapurl'] = "http://10.11.6.164/ldap/2.1/ldap_anjuke_login.php";
-$cfg['hostname'] = "vesta.corp.anjuke.com";
+$cfg['ldapurl'] = "";
+$cfg['hostname'] = "";
 
 $cfg['checkermail'] = array(
-      '1' => array('justinni@anjukeinc.com'),
-      '2' => array('enzhang@anjuke.com'),
-      '3' => array('kevinkuang@anjukeinc.com'),
-      '4' => array('kevinkuang@anjukeinc.com','daoyuanwang@anjuke.com'),
-      '5' => array('kevinkuang@anjukeinc.com','daoyuanwang@anjuke.com'),
-      '6' => array('kevinkuang@anjukeinc.com','daoyuanwang@anjuke.com'),
+      '1' => array(''),
 );
 
 $cfg['smtp'] = array(
-    'server' => 'smtp.anjuke.com',
+    'server' => '',
     'port' => '25',
-    'user' => 'alert@anjuke.com',
-    'password' => 'alert@ajk_ops',
+    'user' => '',
+    'password' => '',
     'mailtype' => 'HTML',
-    'sender' => 'alert@anjuke.com',
+    'sender' => '',
 );
 
 $cfg['etype'] = array(
@@ -49,58 +44,17 @@ $cfg['level'] = array(
     '6' => '6',
 );
 $cfg['division'] = array(
-    '1' => '二手房',
-    '2' => '好租',
-    '3' => '新房',
-    '4' => '金铺',
-    '5' => '总部运维',
-    '6' => '第三方',
-    '7' => 'DW',
-    '8' => 'IT',
-    '9' => '总部开发',
 );
 $cfg['islock'] = array(
     '0' => '开',
     '1' => '关',
 );
 $cfg['user'] = array(
-    '1' => 'mingshi',
-    '2' => 'zhiwensun',
-    '3' => 'leichen_sh',
-    '4' => 'cathyzhang',
-    '5' => 'peterzhu',
-    '6' => 'gywang',
-    '7' => 'zorrozuo',
-    '8' => 'liming',
-    '9' => 'fzhou',
-    '10' => 'tomleng',
-    '11' => 'kevinkuang',
-    '12' => 'wellerkong',
-    '13' => 'canzhang',
 );
 $cfg['authority'] = array(
-    'mingshi' => '1',
-    'liming' => '1',
-    'fzhou' => '1',
-    'gywang' => '1',
-    'zhongshengchen' => '1',
-    'wellerkong' => '1',
-    'canzhang' => '1',
-    'jizhang' => '1',
-    'tomleng' => '1',
-    'Keithlan' => '1',
-    'huashengliao' => '1',
-    'kaicai' => '1',
-    'yundu' => '1',
 );
 
 $cfg['close'] = array(
-    '1'=> array('justinni'=>'1',),
-    '2'=> array('enzhang'=>'1',),
-    '3'=> array('kevinkuang'=>'1',),
-    '4'=> array('kevinkuang'=>'1','daoyuanwang'=>'1',),
-    '5'=> array('kevinkuang'=>'1','daoyuanwang'=>'1',),
-    '6'=> array('kevinkuang'=>'1','daoyuanwang'=>'1',),
 );
 
 $cfg['color'] = array(
